@@ -3,4 +3,16 @@
 
 // TODO(students): Add some stuff here
 
+#include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
+
+#define MAX_LENGTH 100
+
+void PrintLadder(std::vector<std::string>);
+std::vector<std::string> DifferentLetterGen(std::string start, 
+                                            std::vector<std::string> same_length_lexicon);
+std::vector<std::vector<std::string>> BfsAlgorithm(std::string start, std::string finish, std::vector<std::string> same_length_lexicon);
+
 #endif  // ASSIGNMENTS_WL_WORD_LADDER_H_
