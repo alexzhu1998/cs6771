@@ -9,15 +9,15 @@
 
 // generates a filtered lexicon only containing words 
 // with the same length as the start
-std::vector<std::string> SameLengthGen(std::string start, 
+std::unordered_set<std::string> SameLengthGen(std::string start, 
                                        std::unordered_set<std::string> lexicon) {
   
-  std::vector<std::string> same_length_lexicon;
+  std::unordered_set<std::string> same_length_lexicon;
 
   for (auto& word : lexicon) {
     // check if the length is the same
     if (word.size() == start.size()) {
-      same_length_lexicon.push_back(word);
+      same_length_lexicon.insert(word);
     }
   }
 
@@ -39,12 +39,16 @@ int main() {
   std::cout << "Enter destination word: ";
   std::cin >> finish;
 
-  // TODO: this should all be handled by word_ladder.cpp in the future
-
+  // Only lexicons of the same length are needed
   auto same_length_lexicon = SameLengthGen(start, lexicon);
   auto results = BfsAlgorithm(start, finish, same_length_lexicon);
 
-  for (auto &r : results) {
-    PrintLadder(r);
+  if (int(results.size()) == 0) {
+    std::cout << "No ladder found\n";
+  } else {
+    std::cout << "Found ladder: ";
+    for (auto &r : results) {
+      PrintLadder(r);
+    }
   }
 }

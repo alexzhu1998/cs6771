@@ -12,8 +12,7 @@ void PrintLadder(std::vector<std::string> ladder ) {
 
 // function that generates a vector of one different character using same length
 std::vector<std::string> DifferentLetterGen(std::string start, 
-                                            std::vector<std::string> same_length_lexicon) {
-
+                                            std::unordered_set<std::string> same_length_lexicon) {
   std::vector<std::string> permutations;
   const std::string original = start;
 
@@ -42,7 +41,8 @@ std::vector<std::string> DifferentLetterGen(std::string start,
 }
 
 // bfs algorithm, takes in start word, same_length_lexicon, results (by reference)
-std::vector<std::vector<std::string>> BfsAlgorithm(std::string start, std::string finish, std::vector<std::string> same_length_lexicon) {
+std::vector<std::vector<std::string>> BfsAlgorithm(std::string start, std::string finish, 
+                                                   std::unordered_set<std::string> same_length_lexicon) {
   
   // queue of ladders
   std::queue<std::vector<std::string>> ladders_queue;  
@@ -88,6 +88,8 @@ std::vector<std::vector<std::string>> BfsAlgorithm(std::string start, std::strin
         // pushing new vector to end of ladders queue
         ladders_queue.push(temp);
       }
+      // delete the last occurrence of the digit in an unordered set
+      same_length_lexicon.erase(front_of_queue.back());
     }
     ladders_queue.pop();
   }
