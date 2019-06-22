@@ -3,15 +3,31 @@
 // TODO(students): Add your stuff here
 
 // print ladder
-void PrintLadder(std::vector<std::string> ladder ) {
-  for (auto& word: ladder) {
+void PrintLadder(std::vector<std::string> ladder) {
+  for (auto& word : ladder) {
     std::cout << word << " ";
   }
   std::cout << "\n";
 }
 
-// function that generates a vector of one different character using same length
-std::vector<std::string> DifferentLetterGen(std::string start, 
+// generates a filtered lexicon only containing words
+// with the same length as the start
+std::unordered_set<std::string> SameLengthGen(std::string start,
+                                              std::unordered_set<std::string> lexicon) {
+  std::unordered_set<std::string> same_length_lexicon;
+
+  for (auto& word : lexicon) {
+    // check if the length is the same
+    if (word.size() == start.size()) {
+      same_length_lexicon.insert(word);
+    }
+  }
+
+  return same_length_lexicon;
+}
+
+// function that generates a vector of one different character using lexicons with same length
+std::vector<std::string> DifferentLetterGen(std::string start,
                                             std::unordered_set<std::string> same_length_lexicon) {
   std::vector<std::string> permutations;
   const std::string original = start;
@@ -24,7 +40,7 @@ std::vector<std::string> DifferentLetterGen(std::string start,
   for (auto& target : same_length_lexicon) {
     int differences = 0;
     // for every character in the length of the words/sl.lexicon
-    for (int i = 0; i < int(start.size()); i++) {
+    for (int i = 0; i < static_cast<int>(start.size()); i++) {
       if (start[i] != target[i]) {
         differences++;
         if (differences > 1)
@@ -40,58 +56,78 @@ std::vector<std::string> DifferentLetterGen(std::string start,
   return permutations;
 }
 
-// bfs algorithm, takes in start word, same_length_lexicon, results (by reference)
-std::vector<std::vector<std::string>> BfsAlgorithm(std::string start, std::string finish, 
-                                                   std::unordered_set<std::string> same_length_lexicon) {
-  
-  // queue of ladders
-  std::queue<std::vector<std::string>> ladders_queue;  
-  // pqueue of vector strings to store result ladders
-  std::priority_queue<std::vector<std::string>, 
-                      std::vector<std::vector<std::string>>, 
-                      std::greater<std::vector<std::string>>> results;
-
-  // setting up ladder queue with initial permutation of word
-  auto initial_permutations = DifferentLetterGen(start, same_length_lexicon);
-  for (auto &p : initial_permutations) {
-    std::vector<std::string> temp;
-    temp.push_back(start);
-    temp.push_back(p);
-    ladders_queue.push(temp);
+// separate function because the results need to be generated/recursed.
+void generateResults(std::string& start,
+                     std::string last,
+                     std::unordered_map<std::string, std::vector<std::string>>& map,
+                     std::priority_queue<std::vector<std::string>,
+                                         std::vector<std::vector<std::string>>,
+                                         std::greater<std::vector<std::string>>>& results,
+                     std::vector<std::string>& path) {
+  if (last == start) {
+    reverse(path.begin(), path.end());
+    results.push(path);
+    reverse(path.begin(), path.end());
+  } else {
+    for (int i = 0; i < static_cast<int>(map[last].size()); i++) {
+      path.push_back(map[last][i]);
+      generateResults(start, map[last][i], map, results, path);
+      path.pop_back();
+    }
   }
+}
 
-  // ACTUAL MEAT OF THE BFS
-  int shortest_size = MAX_LENGTH;
-  while (ladders_queue.empty() == false) {
-    std::vector<std::string> front_of_queue = ladders_queue.front();
-    PrintLadder(front_of_queue);
-    
-    // if greater than the shortest size, break
-    if (int(front_of_queue.size()) > shortest_size) 
+// bfs algorithm, takes in start word, same_length_lexicon
+std::vector<std::vector<std::string>> BFSAlgorithm(
+    std::string start, std::string finish, std::unordered_set<std::string> same_length_lexicon) {
+
+  // bfs setup
+  // 1. unorderedmap < str, vec<str>> - to map current words to previously visited
+  // 2. priority_queue of vector strings to hold results - allows alphabetical insertion
+  // 3. vector string: path - the vector string that valid paths will be recursed back into
+  std::unordered_map<std::string, std::vector<std::string>> map;
+  // pqueue of vector strings to store result ladders
+  std::priority_queue<std::vector<std::string>, std::vector<std::vector<std::string>>,
+                      std::greater<std::vector<std::string>>>
+      results;
+  std::vector<std::string> path;
+
+  // the backtracing solution involves storing previous paths in a unordered_map(hashmap),
+  // each depth of movement will be stored in an unordered_set for memory management
+  // the next depth of movement contains the word to be found, it will generate all the
+  // previous movements from the previous paths stored in the unordered_map, recursively
+
+  std::unordered_set<std::string> current_depth;
+  std::unordered_set<std::string> next_depth;
+  current_depth.insert(start);
+  path.push_back(finish);
+
+  // real meat of the BFS
+  while (true) {
+    for (auto& word : current_depth) {
+      same_length_lexicon.erase(word);
+    }
+    for (auto& word : current_depth) {
+      // for all permutations with one letter difference:
+      // next_ladder.insert(permutations)
+      // map[permutations].push_back(word)
+      auto permutations = DifferentLetterGen(word, same_length_lexicon);
+      for (auto& p : permutations) {
+        next_depth.insert(p);
+        map[p].push_back(word);
+      }
+    }
+
+    if (next_depth.empty())
       break;
 
-    // if the back of the front_of_queue is 
-    // equal to finish add to results vector
-    if (front_of_queue.back() == finish) {
-      results.size();
-      results.push(front_of_queue);
-      shortest_size = front_of_queue.size();
-      
-    } else {
-      // re-permute using the end of the vector to create more variations
-      auto permutations = DifferentLetterGen(front_of_queue.back(), same_length_lexicon);
-      for (auto &p : permutations) {
-        // copying contents from vector in front to new vector
-        std::vector<std::string> temp = front_of_queue;
-        // adding all possible combinations of p to end of new vector
-        temp.push_back(p);
-        // pushing new vector to end of ladders queue
-        ladders_queue.push(temp);
-      }
-      // delete the last occurrence of the digit in an unordered set
-      same_length_lexicon.erase(front_of_queue.back());
+    // if finish word is found in the next ladder, generate results recursively
+    if (next_depth.find(finish) != next_depth.end()) {
+      generateResults(start, finish, map, results, path);
+      break;
     }
-    ladders_queue.pop();
+    current_depth = next_depth;
+    next_depth.clear();
   }
 
   // convert priority queue into vector of vector strings
