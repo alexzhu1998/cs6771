@@ -11,6 +11,7 @@ incrementing - An output iterator allows write and increment. ^^ same as above.
 - A random access iterator allows read, write, increment decrement, +x, and -x.
 
 Multiple passes means you can read an old value of an iterator
+- Does that mean a single pass can only read the value of an iterator once?
 
 ```
 Think like you can do 	(vector.begin())++; 		- for increment eg
