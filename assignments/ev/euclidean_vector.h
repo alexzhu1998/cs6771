@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <vector>
+#include <ostream>
 
 class EuclideanVectorError : public std::exception {
  	public:
@@ -47,26 +48,45 @@ class EuclideanVector {
 		}
 
 		// Copy constructor
-		EuclideanVector(const EuclideanVector& other);
+		EuclideanVector(const EuclideanVector&);
 		// Move constructor
-		EuclideanVector(EuclideanVector&& other) noexcept;
-		// Copy assignment operator
-		EuclideanVector& operator=(const EuclideanVector&) = default;
-		// Move assignment operator
-		EuclideanVector& operator=(EuclideanVector&&) = default;
+		EuclideanVector(EuclideanVector&&) noexcept;
 
-		// + operator
-		EuclideanVector& operator+=(const EuclideanVector& b);
-
-		// Destructor
+	  // Destructor
 		~EuclideanVector() noexcept;
 
-		int GetNumDimensions();
 
+    // Copy assignment operator
+		EuclideanVector& operator=(const EuclideanVector&);
+		// Move assignment operator
+		EuclideanVector& operator=(EuclideanVector&&) noexcept;
+    // Subscript operator (write/read)
+    double& operator[](const int index);
+    const double& operator[](const int index) const;
+		// += operator
+		EuclideanVector& operator+=(const EuclideanVector&);
+    // -= operator
+   	EuclideanVector& operator-=(const EuclideanVector&);
+    // *= operator (scalar multiplication only)
+    EuclideanVector& operator*=(const double);
+    // /= operator (scalar division only)
+    EuclideanVector& operator/=(const double);
+
+    // Vector type conversion
+    explicit operator std::vector<double>();
+
+    // Methods
+		int GetNumDimensions() const;
+
+
+    // Friends
+    // Output Stream
   	friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
+
+
   	// TODO(you): add more
  	private:
-		std::unique_ptr<double[]> magnitudes_;
+    std::unique_ptr<double[]> magnitudes_;
 		// TODO(you): add more
 		int size_;
 
