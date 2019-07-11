@@ -14,10 +14,22 @@ class EuclideanVectorError : public std::exception {
 
 class EuclideanVector {
  public:
-  explicit EuclideanVector(int i);
+  // Constructor with default value of 1
+  EuclideanVector(): EuclideanVector{1} {}
+  // Default constructor
+  explicit EuclideanVector(int i): magnitudes_{std::make_unique<double[]>(i)}, size_{i} {}
+  
+  // Constructor with int size and double dimension
+  EuclideanVector(int size, double dimension) : EuclideanVector(size) {
+    for (int i = 0; i < size_; i++) {
+      magnitudes_[i] = dimension;
+    }
+  }
+
   friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
   // TODO(you): add more
  private:
   std::unique_ptr<double[]> magnitudes_;
   // TODO(you): add more
+  int size_;
 };
