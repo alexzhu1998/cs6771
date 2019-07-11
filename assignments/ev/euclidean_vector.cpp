@@ -94,6 +94,37 @@ EuclideanVector& EuclideanVector::operator/=(const double sc) {
   return *this;
 }
 
+// Vector type conversion
+EuclideanVector::operator std::vector<double>() const {
+  std::vector<double> ret;
+
+  auto size = this->GetNumDimensions();
+  for (int i = 0; i < size; i++) {
+    ret.push_back(magnitudes_[i]);
+  }
+  return ret;
+}
+
+// List type conversion
+EuclideanVector::operator std::list<double>() const{
+  std::list<double> ret;
+
+  auto size = this->GetNumDimensions();
+  for (int i = 0; i < size; i++) {
+    ret.push_front(magnitudes_[i]);
+  }
+  return ret;
+}
+
+// Value of magnitude
+double EuclideanVector::at(int i) const {
+  return magnitudes_[i];
+}
+
+// Reference of magnitude
+double& EuclideanVector::at(int i) {
+  return magnitudes_[i];
+}
 
 // GetNumDimensions
 int EuclideanVector::GetNumDimensions() const {

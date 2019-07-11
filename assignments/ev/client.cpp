@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <list>
 #include <utility>
 
 #include "assignments/ev/euclidean_vector.h"
@@ -31,9 +32,16 @@ int main() {
   d = std::move(b);
   std::cout << d << "\n";
 
-  d[1] = 4.3;
-  std::cout << d[1] << "\n";
+  d.at(1) = 4.3;
+  std::cout << d.at(1) << "\n";
   std::cout << d << "\n";
+
+
+  //std::cout << "list conversion\n";
+  //auto vf = std::list<double>{d};
+  //for (auto v: vf) {
+    //std::cout << v << "\n";
+  //}
 	
   // std::cout << a.GetNumDimensions() << ": " << a << '\n';
   // std::cout << "D1:" << b.at(1) << " " << b << '\n';

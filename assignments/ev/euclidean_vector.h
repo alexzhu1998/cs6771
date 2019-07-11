@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <vector>
+#include <list>
 #include <ostream>
 
 class EuclideanVectorError : public std::exception {
@@ -22,7 +23,7 @@ class EuclideanVector {
 		// especially how you would structure delegated constructors in .cpp file
 
 		// Default constructor if no values are set
-		// EuclideanVector(): EuclideanVector{1} {};
+    EuclideanVector(): EuclideanVector{1} {};
 	
 		// Default constructor - takes in dimensions, but no magnitudes
 		explicit EuclideanVector(int i): magnitudes_{std::make_unique<double[]>(i)},
@@ -72,11 +73,16 @@ class EuclideanVector {
     // /= operator (scalar division only)
     EuclideanVector& operator/=(const double);
 
-    // Vector type conversion
-    explicit operator std::vector<double>();
+    // Vector type conversion operator
+    explicit operator std::vector<double>() const;
+    // List type conversion operator
+    explicit operator std::list<double>() const;
 
     // Methods
+    double at(int) const;
+    double& at(int);
 		int GetNumDimensions() const;
+    double GetEuclideanNorm();
 
 
     // Friends
