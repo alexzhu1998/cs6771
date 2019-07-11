@@ -11,8 +11,7 @@ class Car {
 		Car(): Car{"unknown", 4} {}
 
 		// I think this is like the constructor
-		Car(const std::string& manufacturer, int n_seats): manufacturer_{manufacturer}, 	
-																											 num_seats_{n_seats} {
+		Car(const std::string& manufacturer, int n_seats): manufacturer_{manufacturer}, num_seats_{n_seats} {
 			++n_objects;
 		}
 

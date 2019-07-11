@@ -7,23 +7,29 @@
 // 	 inside a function, and provides both const and non-const overloads for when a 
 // 	 function returns a reference to a data member that user may be able to modify.
 
-
-// static object count initilaised to 0
 int Car::n_objects = 0;
 
-// oh jokes this is the destructor
+Car::Car(const Car& other): manufacturer_{other.manufacturer_}, num_seats_{other.num_seats_} {
+	n_objects++;
+}
+
+Car::Car(Car&& other) noexcept: manufacturer_{std::move(other.manufacturer_)}, num_seats_{other.num_seats_} {
+	n_objects++;
+}
+
 Car::~Car() noexcept {
-	--n_objects;
+  --n_objects;
 }
 
 const std::string& Car::GetManufacturer() const {
-	return manufacturer_;
+  return manufacturer_;
 }
 
 int Car::GetNumSeats() const {
-	return num_seats_;
+  return num_seats_;
 }
 
-int Car::GetNumCars() {
-	return n_objects;
+int Car::getObjectCount() {
+  return n_objects;
 }
+
