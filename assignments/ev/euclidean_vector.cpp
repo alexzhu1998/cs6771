@@ -144,14 +144,28 @@ int EuclideanVector::GetNumDimensions() const {
 	return size_;
 }
 
+// GetEuclideanNorm
 double EuclideanVector::GetEuclideanNorm() const {
   auto size = this->GetNumDimensions();
   int sum = 0;
   for (int i = 0; i < size; i++) {
-    sum += std::pow(magnitudes_[i], 2);
+    sum += std::pow(this->at(i), 2);
   }
 
   return std::sqrt(sum);
+}
+
+// CreateUnitVector
+EuclideanVector EuclideanVector::CreateUnitVector() {
+  auto size = this->GetNumDimensions();
+  auto normal = this->GetEuclideanNorm();
+  auto ret = EuclideanVector(size);
+
+  for (int i = 0; i < size; ++i) {
+    ret[i] = this->at(i) / normal;
+  }
+
+  return ret;
 }
 
 // Friends
