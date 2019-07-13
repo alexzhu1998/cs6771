@@ -208,21 +208,31 @@ double operator*(const EuclideanVector& a, const EuclideanVector& b) {
 }
 
 // Scalar multiplication
-EuclideanVector operator*(const EuclideanVector& a, double d) {
-  auto size = a.GetNumDimensions();
+EuclideanVector operator*(const EuclideanVector& ev, double d) {
+  auto size = ev.GetNumDimensions();
   auto ret = EuclideanVector(size);
   for (int i = 0; i < size; ++i) {
-    ret[i] = a.at(i) * d;
+    ret[i] = ev.at(i) * d;
   }
 
   return ret;
 }
 
-EuclideanVector operator*(double d, const EuclideanVector& a) {
-  auto size = a.GetNumDimensions();
+EuclideanVector operator*(double d, const EuclideanVector& ev) {
+  auto size = ev.GetNumDimensions();
   auto ret = EuclideanVector(size);
   for (int i = 0; i < size; ++i) {
-    ret[i] = a.at(i) * d;
+    ret[i] = ev.at(i) * d;
+  }
+
+  return ret;
+}
+
+EuclideanVector operator/(const EuclideanVector& ev, double d) {
+  auto size = ev.GetNumDimensions();
+  auto ret = EuclideanVector(size);
+  for (int i = 0; i < size; ++i) {
+    ret[i] = ev.at(i) / d;
   }
 
   return ret;

@@ -24,6 +24,8 @@ int main() {
 	EuclideanVector f{e};
   auto x = d * 2.0;
   std::cout << x << "\n";
+  auto z = x / 2.0;
+  std::cout << z << "\n";
 
   std::cout  << "testing dot product "<< d * e << "\n";
   
