@@ -155,6 +155,8 @@ double EuclideanVector::GetEuclideanNorm() const {
 }
 
 // Friends
+
+// Addition
 bool operator==(const EuclideanVector& lhs, const EuclideanVector& rhs) {
   bool eq = true;
   auto size = lhs.GetNumDimensions();
@@ -167,10 +169,12 @@ bool operator==(const EuclideanVector& lhs, const EuclideanVector& rhs) {
   return eq;
 }
 
+// Not equal to
 bool operator!=(const EuclideanVector& lhs, const EuclideanVector& rhs) {
   return !(lhs == rhs);
 }
 
+// Addition
 EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
   auto size = a.GetNumDimensions();
   auto ret = EuclideanVector(size);
@@ -181,11 +185,44 @@ EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
   return ret;
 }
 
+// Subtraction
 EuclideanVector operator-(const EuclideanVector& a, const EuclideanVector& b) {
   auto size = a.GetNumDimensions();
   auto ret = EuclideanVector(size);
   for (int i = 0; i < size; ++i) {
     ret[i] = a.at(i) - b.at(i);
+  }
+
+  return ret;
+}
+
+// Dot product
+double operator*(const EuclideanVector& a, const EuclideanVector& b) {
+  auto size = a.GetNumDimensions();
+  int sum = 0;
+  for (int i = 0; i < size; ++i) {
+    sum += a.at(i) * b.at(i);
+  }
+
+  return sum;
+}
+
+// Scalar multiplication
+EuclideanVector operator*(const EuclideanVector& a, double d) {
+  auto size = a.GetNumDimensions();
+  auto ret = EuclideanVector(size);
+  for (int i = 0; i < size; ++i) {
+    ret[i] = a.at(i) * d;
+  }
+
+  return ret;
+}
+
+EuclideanVector operator*(double d, const EuclideanVector& a) {
+  auto size = a.GetNumDimensions();
+  auto ret = EuclideanVector(size);
+  for (int i = 0; i < size; ++i) {
+    ret[i] = a.at(i) * d;
   }
 
   return ret;

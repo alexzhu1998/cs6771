@@ -91,7 +91,10 @@ class EuclideanVector {
     friend bool operator!=(const EuclideanVector&, const EuclideanVector&);
     friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
     friend EuclideanVector operator-(const EuclideanVector&, const EuclideanVector&);
-
+    friend double operator*(const EuclideanVector&, const EuclideanVector&);
+    friend EuclideanVector operator*(const EuclideanVector&, double);
+    friend EuclideanVector operator*(double, const EuclideanVector&);
+    friend EuclideanVector operator/(const EuclideanVector&, double);
 
   	friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
 
