@@ -22,8 +22,7 @@ int main() {
 
 	// use the copy constructor
   
-  c += b;
-  std::cout << c << "\n";
+  std::cout << (b == c)<< "\n";
 
 
 	EuclideanVector f{e};

@@ -144,8 +144,7 @@ EuclideanVector::operator std::list<double>() const{
 
 // Value of magnitude
 double EuclideanVector::at(int i) const {
-  // TODO provide error checking
-  if (i < 0 || i >= this->GetNumDimensions) {
+  if (i < 0 || i >= this->GetNumDimensions()) {
     std::ostringstream error_stream;
     error_stream << "Index X is not valid for this EuclideanVector object";
     throw EuclideanVectorError(error_stream.str());
@@ -155,8 +154,7 @@ double EuclideanVector::at(int i) const {
 
 // Reference of magnitude
 double& EuclideanVector::at(int i) {
-  // TODO provide error checking
-  if (i < 0 || i >= this->GetNumDimensions) {
+  if (i < 0 || i >= this->GetNumDimensions()) {
     std::ostringstream error_stream;
     error_stream << "Index X is not valid for this EuclideanVector object";
     throw EuclideanVectorError(error_stream.str());
@@ -172,6 +170,12 @@ int EuclideanVector::GetNumDimensions() const {
 // GetEuclideanNorm
 double EuclideanVector::GetEuclideanNorm() const {
   auto size = this->GetNumDimensions();
+  if (size == 0) {
+    std::ostringstream error_stream;
+    error_stream << "EuclideanVector with no dimensions does not have a norm";
+    throw EuclideanVectorError(error_stream.str());
+  }
+
   int sum = 0;
   for (int i = 0; i < size; ++i) {
     sum += std::pow(this->at(i), 2);
@@ -183,7 +187,17 @@ double EuclideanVector::GetEuclideanNorm() const {
 // CreateUnitVector
 EuclideanVector EuclideanVector::CreateUnitVector() {
   auto size = this->GetNumDimensions();
+  if (size == 0) {
+    std::ostringstream error_stream;
+    error_stream << "EuclideanVector with no dimensions does not have a norm";
+    throw EuclideanVectorError(error_stream.str());
+  }
   auto normal = this->GetEuclideanNorm();
+  if (normal == 0) {
+    std::ostringstream error_stream;
+    error_stream << "EuclideanVector with euclidean normal of 0 does not have a unit vector";
+    throw EuclideanVectorError(error_stream.str());
+  }
   auto ret = EuclideanVector(size);
 
   for (int i = 0; i < size; ++i) {
@@ -215,9 +229,16 @@ bool operator!=(const EuclideanVector& lhs, const EuclideanVector& rhs) {
 
 // Addition
 EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
-  auto size = a.GetNumDimensions();
-  auto ret = EuclideanVector(size);
-  for (int i = 0; i < size; ++i) {
+  auto X = a.GetNumDimensions();
+  auto Y = b.GetNumDimensions();
+  if (X != Y) {
+    std::ostringstream error_stream;
+    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    throw EuclideanVectorError(error_stream.str());
+  }
+  
+  auto ret = EuclideanVector(X);
+  for (int i = 0; i < X; ++i) {
     ret[i] = a.at(i) + b.at(i);
   }
 
@@ -226,9 +247,16 @@ EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
 
 // Subtraction
 EuclideanVector operator-(const EuclideanVector& a, const EuclideanVector& b) {
-  auto size = a.GetNumDimensions();
-  auto ret = EuclideanVector(size);
-  for (int i = 0; i < size; ++i) {
+  auto X = a.GetNumDimensions();
+  auto Y = b.GetNumDimensions();
+  if (X != Y) {
+    std::ostringstream error_stream;
+    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    throw EuclideanVectorError(error_stream.str());
+  }
+  
+  auto ret = EuclideanVector(X);
+  for (int i = 0; i < X; ++i) {
     ret[i] = a.at(i) - b.at(i);
   }
 
@@ -237,9 +265,16 @@ EuclideanVector operator-(const EuclideanVector& a, const EuclideanVector& b) {
 
 // Dot product
 double operator*(const EuclideanVector& a, const EuclideanVector& b) {
-  auto size = a.GetNumDimensions();
+  auto X = a.GetNumDimensions();
+  auto Y = b.GetNumDimensions();
+  if (X != Y) {
+    std::ostringstream error_stream;
+    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    throw EuclideanVectorError(error_stream.str());
+  }
+
   int sum = 0;
-  for (int i = 0; i < size; ++i) {
+  for (int i = 0; i < X; ++i) {
     sum += a.at(i) * b.at(i);
   }
 
@@ -267,7 +302,13 @@ EuclideanVector operator*(double d, const EuclideanVector& ev) {
   return ret;
 }
 
+// Scalar division
 EuclideanVector operator/(const EuclideanVector& ev, double d) {
+  if (d == 0) {
+    std::ostringstream error_stream;
+    error_stream << "Invalid vector division by 0";
+    throw EuclideanVectorError(error_stream.str());
+  }
   auto size = ev.GetNumDimensions();
   auto ret = EuclideanVector(size);
   for (int i = 0; i < size; ++i) {
