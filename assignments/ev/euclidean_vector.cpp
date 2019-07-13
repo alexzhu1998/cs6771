@@ -65,8 +65,11 @@ const double& EuclideanVector::operator[](const int index) const {
 
 //+= operator
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
-  //auto X = this->GetNumDimensions();
-  //auto Y = ev->GetNumDimensions();
+  auto X = this->GetNumDimensions();
+  auto Y = ev.GetNumDimensions();
+  if (X != Y) {
+
+  }
   for (int i = 0; i < size_; ++i) {
     magnitudes_[i]+= ev.magnitudes_[i];
   } 
