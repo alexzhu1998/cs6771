@@ -23,7 +23,7 @@ int main() {
 	// use the copy constructor
 	EuclideanVector f{e};
 
-  std::cout  << "testing dot product "<< d * e << "\n";
+  //std::cout  << "testing dot product "<< d * e << "\n";
   
   //d.at(1) = 4.3;
   //std::cout << d.at(1) << "\n";

@@ -129,11 +129,13 @@ EuclideanVector::operator std::list<double>() const{
 
 // Value of magnitude
 double EuclideanVector::at(int i) const {
+  // TODO provide error checking
   return magnitudes_[i];
 }
 
 // Reference of magnitude
 double& EuclideanVector::at(int i) {
+  // TODO provide error checking
   return magnitudes_[i];
 }
 
@@ -151,6 +153,25 @@ double EuclideanVector::GetEuclideanNorm() {
 
   return std::sqrt(sum);
 }
+
+// Friends
+bool operator==(const EuclideanVector& lhs, const EuclideanVector& rhs) {
+  bool eq = true;
+  auto size = lhs.GetNumDimensions();
+  for (int i = 0; i < size; ++i) {
+    if (lhs.at(i) != rhs.at(i)) {
+      eq = false;
+      break;
+    }
+  }
+  return eq;
+}
+
+bool operator!=(const EuclideanVector& lhs, const EuclideanVector& rhs) {
+  return !(lhs == rhs);
+}
+
+
 
 // Output Stream
 std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
