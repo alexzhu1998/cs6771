@@ -89,6 +89,9 @@ class EuclideanVector {
     // Output Stream
     friend bool operator==(const EuclideanVector&, const EuclideanVector&);
     friend bool operator!=(const EuclideanVector&, const EuclideanVector&);
+    friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
+    friend EuclideanVector operator-(const EuclideanVector&, const EuclideanVector&);
+
 
   	friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
 

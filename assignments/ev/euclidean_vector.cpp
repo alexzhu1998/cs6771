@@ -65,8 +65,8 @@ const double& EuclideanVector::operator[](const int index) const {
 
 //+= operator
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
-  auto X = this->GetNumDimensions();
-  auto Y = ev->GetNumDimensions();
+  //auto X = this->GetNumDimensions();
+  //auto Y = ev->GetNumDimensions();
   for (int i = 0; i < size_; i++) {
     magnitudes_[i]+= ev.magnitudes_[i];
   } 
@@ -144,7 +144,7 @@ int EuclideanVector::GetNumDimensions() const {
 	return size_;
 }
 
-double EuclideanVector::GetEuclideanNorm() {
+double EuclideanVector::GetEuclideanNorm() const {
   auto size = this->GetNumDimensions();
   int sum = 0;
   for (int i = 0; i < size; i++) {
@@ -171,6 +171,25 @@ bool operator!=(const EuclideanVector& lhs, const EuclideanVector& rhs) {
   return !(lhs == rhs);
 }
 
+EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
+  auto size = a.GetNumDimensions();
+  auto ret = EuclideanVector(size);
+  for (int i = 0; i < size; ++i) {
+    ret[i] = a.at(i) + b.at(i);
+  }
+
+  return ret;
+}
+
+EuclideanVector operator-(const EuclideanVector& a, const EuclideanVector& b) {
+  auto size = a.GetNumDimensions();
+  auto ret = EuclideanVector(size);
+  for (int i = 0; i < size; ++i) {
+    ret[i] = a.at(i) - b.at(i);
+  }
+
+  return ret;
+}
 
 
 // Output Stream
