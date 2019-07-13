@@ -86,7 +86,6 @@ class EuclideanVector {
     EuclideanVector CreateUnitVector();
 
     // Friends
-    // Output Stream
     friend bool operator==(const EuclideanVector&, const EuclideanVector&);
     friend bool operator!=(const EuclideanVector&, const EuclideanVector&);
     friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
@@ -96,7 +95,6 @@ class EuclideanVector {
     friend EuclideanVector operator*(double, const EuclideanVector&);
     friend EuclideanVector operator/(const EuclideanVector&, double);
   	friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
-
 
   	// TODO(you): add more
  	private:

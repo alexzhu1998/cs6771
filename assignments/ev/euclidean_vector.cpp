@@ -6,6 +6,8 @@
 #include <sstream>
 #include <cassert>
 
+#include <iostream>
+
 // Copy constructor 
 EuclideanVector::EuclideanVector(const EuclideanVector& other) : 
 	magnitudes_{std::make_unique<double[]>(other.size_)}, size_{other.size_} {
@@ -73,7 +75,8 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
   auto Y = ev.GetNumDimensions();
   if (X != Y) {
     std::ostringstream error_stream;
-    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    error_stream << "Dimensions of LHS("
+                 << X << ") and RHS(" << Y << ") do not match";
     throw EuclideanVectorError(error_stream.str());
   }
   for (int i = 0; i < size_; ++i) {
@@ -88,7 +91,9 @@ EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& ev) {
   auto Y = ev.GetNumDimensions();
   if (X != Y) {
     std::ostringstream error_stream;
-    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    error_stream << "Dimensions of LHS("
+                 << X << ") and RHS(" << Y << ") do not match";
+  
     throw EuclideanVectorError(error_stream.str());
   }
 
@@ -146,7 +151,7 @@ EuclideanVector::operator std::list<double>() const{
 double EuclideanVector::at(int i) const {
   if (i < 0 || i >= this->GetNumDimensions()) {
     std::ostringstream error_stream;
-    error_stream << "Index X is not valid for this EuclideanVector object";
+    error_stream << "Index " << i << "i is not valid for this EuclideanVector object";
     throw EuclideanVectorError(error_stream.str());
   }
   return magnitudes_[i];
@@ -156,7 +161,7 @@ double EuclideanVector::at(int i) const {
 double& EuclideanVector::at(int i) {
   if (i < 0 || i >= this->GetNumDimensions()) {
     std::ostringstream error_stream;
-    error_stream << "Index X is not valid for this EuclideanVector object";
+    error_stream << "Index " << i << " is not valid for this EuclideanVector object";
     throw EuclideanVectorError(error_stream.str());
   }
   return magnitudes_[i];
@@ -176,7 +181,7 @@ double EuclideanVector::GetEuclideanNorm() const {
     throw EuclideanVectorError(error_stream.str());
   }
 
-  int sum = 0;
+  double sum = 0;
   for (int i = 0; i < size; ++i) {
     sum += std::pow(this->at(i), 2);
   }
@@ -209,11 +214,15 @@ EuclideanVector EuclideanVector::CreateUnitVector() {
 
 // Friends
 
-// Addition
+// Equal to
 bool operator==(const EuclideanVector& lhs, const EuclideanVector& rhs) {
+  auto X = lhs.GetNumDimensions();
+  auto Y = rhs.GetNumDimensions();
+  if (X != Y)
+    return false;
+  
   bool eq = true;
-  auto size = lhs.GetNumDimensions();
-  for (int i = 0; i < size; ++i) {
+  for (int i = 0; i < X; ++i) {
     if (lhs.at(i) != rhs.at(i)) {
       eq = false;
       break;
@@ -233,10 +242,10 @@ EuclideanVector operator+(const EuclideanVector& a, const EuclideanVector& b) {
   auto Y = b.GetNumDimensions();
   if (X != Y) {
     std::ostringstream error_stream;
-    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    error_stream << "Dimensions of LHS("
+                 << X << ") and RHS(" << Y << ") do not match";
     throw EuclideanVectorError(error_stream.str());
   }
-  
   auto ret = EuclideanVector(X);
   for (int i = 0; i < X; ++i) {
     ret[i] = a.at(i) + b.at(i);
@@ -251,7 +260,8 @@ EuclideanVector operator-(const EuclideanVector& a, const EuclideanVector& b) {
   auto Y = b.GetNumDimensions();
   if (X != Y) {
     std::ostringstream error_stream;
-    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    error_stream << "Dimensions of LHS("
+                 << X << ") and RHS(" << Y << ") do not match";
     throw EuclideanVectorError(error_stream.str());
   }
   
@@ -269,11 +279,12 @@ double operator*(const EuclideanVector& a, const EuclideanVector& b) {
   auto Y = b.GetNumDimensions();
   if (X != Y) {
     std::ostringstream error_stream;
-    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    error_stream << "Dimensions of LHS("
+                 << X << ") and RHS(" << Y << ") do not match";
     throw EuclideanVectorError(error_stream.str());
   }
 
-  int sum = 0;
+  double sum = 0;
   for (int i = 0; i < X; ++i) {
     sum += a.at(i) * b.at(i);
   }
