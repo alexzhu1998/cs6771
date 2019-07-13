@@ -10,7 +10,6 @@ int main() {
 
 	std::vector<double> l{1, 2, 3};
 	EuclideanVector b{l.begin(), l.end()};
-  std::cout << b << "\n";
 
 	std::vector<double> v2{4, 5, 6, 7};
 	EuclideanVector c{v2.begin(), v2.end()};
@@ -20,21 +19,15 @@ int main() {
 	
 	std::vector<double> a2{9, 0, 8, 6, 7};
 	EuclideanVector e{a2.begin(), a2.end()};
-	
+
 	// use the copy constructor
 	EuclideanVector f{e};
 
-  // use the copy assignment operator
-  d = e;
-  std::cout << d << "\n";
-
-  // use the move assignment operator
-  d = std::move(b);
-  std::cout << d << "\n";
-
-  d.at(1) = 4.3;
-  std::cout << d.at(1) << "\n";
-  std::cout << d << "\n";
+  std::cout  << "testing dot product "<< d * e << "\n";
+  
+  //d.at(1) = 4.3;
+  //std::cout << d.at(1) << "\n";
+  //std::cout << d << "\n";
 
 
   //std::cout << "list conversion\n";

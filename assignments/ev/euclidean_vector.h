@@ -82,10 +82,26 @@ class EuclideanVector {
     double at(int) const;
     double& at(int);
 		int GetNumDimensions() const;
-    double GetEuclideanNorm();
-
+    double GetEuclideanNorm() const;
+    EuclideanVector CreateUnitVector();
 
     // Friends
+    // Equal
+    friend bool operator==(const EuclideanVector&, const EuclideanVector&);
+    // Not equal
+    friend bool operator!=(const EuclideanVector&, const EuclideanVector&);
+    // Addition
+    friend EuclideanVector operator+(const EuclideanVector&, const EuclideanVector&);
+    // Subtraction
+    friend EuclideanVector operator-(const EuclideanVector&, const EuclideanVector&);
+    // Dot multiplication
+    friend double operator*(const EuclideanVector&, const EuclideanVector&);
+    // Scalar multiplication
+    friend EuclideanVector operator*(const EuclideanVector&, double);
+    friend EuclideanVector operator*(double, const EuclideanVector&);
+    // Scalar division
+    friend EuclideanVector operator/(const EuclideanVector&, double);
+
     // Output Stream
   	friend std::ostream& operator<<(std::ostream& os, const EuclideanVector& v);
 

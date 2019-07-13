@@ -2,6 +2,7 @@
 
 #include <algorithm>  // Look at these - they are helpful 
 // https://en.cppreference.com/w/cpp/algorithm
+#include <cmath>
 
 // Copy constructor 
 EuclideanVector::EuclideanVector(const EuclideanVector& other) : 
@@ -64,11 +65,21 @@ const double& EuclideanVector::operator[](const int index) const {
 
 //+= operator
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
+  auto X = this->GetNumDimensions();
+  auto Y = ev->GetNumDimensions();
   for (int i = 0; i < size_; i++) {
     magnitudes_[i]+= ev.magnitudes_[i];
   } 
   return *this;  
 }
+
+//if (this->size_ != o.size_) {
+  //std::ostringstream error_stream;
+  //error_stream << "Dimensions of LHS(" 
+               //<< this->GetNumDimensions() << ") and RHS(" 
+               //<< o.GetNumDimensions() << ") do not match";
+  //throw std::invalid_argument(error_stream.str());
+//}
 
 //-= operator
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& ev) {
@@ -129,6 +140,16 @@ double& EuclideanVector::at(int i) {
 // GetNumDimensions
 int EuclideanVector::GetNumDimensions() const {
 	return size_;
+}
+
+double EuclideanVector::GetEuclideanNorm() {
+  auto size = this->GetNumDimensions();
+  int sum = 0;
+  for (int i = 0; i < size; i++) {
+    sum += std::pow(magnitudes_[i], 2);
+  }
+
+  return std::sqrt(sum);
 }
 
 // Output Stream
