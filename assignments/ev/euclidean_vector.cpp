@@ -7,7 +7,7 @@
 // Copy constructor 
 EuclideanVector::EuclideanVector(const EuclideanVector& other) : 
 	magnitudes_{std::make_unique<double[]>(other.size_)}, size_{other.size_} {
-	for (int i = 0; i < size_; i++) {
+	for (int i = 0; i < size_; ++i) {
 		magnitudes_[i] = other.magnitudes_[i];
 	}
 }
@@ -40,7 +40,7 @@ EuclideanVector& EuclideanVector::operator=(const EuclideanVector& ev) {
   size_ = size;
   magnitudes_ = std::make_unique<double[]>(size);
 
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; ++i) {
     magnitudes_[i] = ev.magnitudes_[i];
   }
   return *this;
@@ -67,7 +67,7 @@ const double& EuclideanVector::operator[](const int index) const {
 EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
   //auto X = this->GetNumDimensions();
   //auto Y = ev->GetNumDimensions();
-  for (int i = 0; i < size_; i++) {
+  for (int i = 0; i < size_; ++i) {
     magnitudes_[i]+= ev.magnitudes_[i];
   } 
   return *this;  
@@ -83,7 +83,7 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
 
 //-= operator
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& ev) {
-  for (int i = 0; i < size_; i++) {
+  for (int i = 0; i < size_; ++i) {
     magnitudes_[i]-= ev.magnitudes_[i];
   } 
   return *this;  
@@ -91,7 +91,7 @@ EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& ev) {
 
 // *= operator
 EuclideanVector& EuclideanVector::operator*=(const double sc) {
-  for (int i = 0; i < size_; i++) {
+  for (int i = 0; i < size_; ++i) {
     magnitudes_[i]*=sc;
   }
   return *this;
@@ -99,7 +99,7 @@ EuclideanVector& EuclideanVector::operator*=(const double sc) {
 
 // /= operator
 EuclideanVector& EuclideanVector::operator/=(const double sc) {
-  for (int i = 0; i < size_; i++) {
+  for (int i = 0; i < size_; ++i) {
     magnitudes_[i]/=sc;
   }
   return *this;
@@ -110,7 +110,7 @@ EuclideanVector::operator std::vector<double>() const {
   std::vector<double> ret;
 
   auto size = this->GetNumDimensions();
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; ++i) {
     ret.push_back(magnitudes_[i]);
   }
   return ret;
@@ -121,7 +121,7 @@ EuclideanVector::operator std::list<double>() const{
   std::list<double> ret;
 
   auto size = this->GetNumDimensions();
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; ++i) {
     ret.push_front(magnitudes_[i]);
   }
   return ret;
@@ -148,7 +148,7 @@ int EuclideanVector::GetNumDimensions() const {
 double EuclideanVector::GetEuclideanNorm() const {
   auto size = this->GetNumDimensions();
   int sum = 0;
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < size; ++i) {
     sum += std::pow(this->at(i), 2);
   }
 
@@ -257,7 +257,7 @@ EuclideanVector operator/(const EuclideanVector& ev, double d) {
 std::ostream& operator<<(std::ostream& os, const EuclideanVector& v) {
   os << "[";
   auto d = v.GetNumDimensions();
-  for (int i = 0; i < d; i++) {
+  for (int i = 0; i < d; ++i) {
     // replace with subscript operator
     os << v.magnitudes_[i];
     if (d - i != 1) {

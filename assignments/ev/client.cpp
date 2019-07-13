@@ -27,6 +27,8 @@ int main() {
   auto z = x / 2.0;
   std::cout << z << "\n";
 
+
+  std::cout << z.CreateUnitVector() << "\n";
   std::cout  << "testing dot product "<< d * e << "\n";
   
   //d.at(1) = 4.3;
