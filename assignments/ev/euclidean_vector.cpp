@@ -3,6 +3,8 @@
 #include <algorithm>  // Look at these - they are helpful 
 // https://en.cppreference.com/w/cpp/algorithm
 #include <cmath>
+#include <sstream>
+#include <cassert>
 
 // Copy constructor 
 EuclideanVector::EuclideanVector(const EuclideanVector& other) : 
@@ -56,10 +58,12 @@ EuclideanVector& EuclideanVector::operator=(EuclideanVector&& ev) noexcept {
 
 // Subscript operator
 double& EuclideanVector::operator[](const int index) {
+  assert (index <= size_ && index >= 0);
   return magnitudes_[index];
 }
 
 const double& EuclideanVector::operator[](const int index) const {
+  assert (index <= size_ && index >= 0);
   return magnitudes_[index];
 }
 
@@ -68,7 +72,9 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
   auto X = this->GetNumDimensions();
   auto Y = ev.GetNumDimensions();
   if (X != Y) {
-
+    std::ostringstream error_stream;
+    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    throw EuclideanVectorError(error_stream.str());
   }
   for (int i = 0; i < size_; ++i) {
     magnitudes_[i]+= ev.magnitudes_[i];
@@ -76,16 +82,16 @@ EuclideanVector& EuclideanVector::operator+=(const EuclideanVector& ev) {
   return *this;  
 }
 
-//if (this->size_ != o.size_) {
-  //std::ostringstream error_stream;
-  //error_stream << "Dimensions of LHS(" 
-               //<< this->GetNumDimensions() << ") and RHS(" 
-               //<< o.GetNumDimensions() << ") do not match";
-  //throw std::invalid_argument(error_stream.str());
-//}
-
 //-= operator
 EuclideanVector& EuclideanVector::operator-=(const EuclideanVector& ev) {
+  auto X = this->GetNumDimensions();
+  auto Y = ev.GetNumDimensions();
+  if (X != Y) {
+    std::ostringstream error_stream;
+    error_stream << "Dimensions of LHS(X) and RHS(Y) do not match";
+    throw EuclideanVectorError(error_stream.str());
+  }
+
   for (int i = 0; i < size_; ++i) {
     magnitudes_[i]-= ev.magnitudes_[i];
   } 
@@ -102,6 +108,12 @@ EuclideanVector& EuclideanVector::operator*=(const double sc) {
 
 // /= operator
 EuclideanVector& EuclideanVector::operator/=(const double sc) {
+  if (sc == 0) {
+    std::ostringstream error_stream;
+    error_stream << "Invalid vector division by 0";
+    throw EuclideanVectorError(error_stream.str());
+  }
+
   for (int i = 0; i < size_; ++i) {
     magnitudes_[i]/=sc;
   }
@@ -133,12 +145,22 @@ EuclideanVector::operator std::list<double>() const{
 // Value of magnitude
 double EuclideanVector::at(int i) const {
   // TODO provide error checking
+  if (i < 0 || i >= this->GetNumDimensions) {
+    std::ostringstream error_stream;
+    error_stream << "Index X is not valid for this EuclideanVector object";
+    throw EuclideanVectorError(error_stream.str());
+  }
   return magnitudes_[i];
 }
 
 // Reference of magnitude
 double& EuclideanVector::at(int i) {
   // TODO provide error checking
+  if (i < 0 || i >= this->GetNumDimensions) {
+    std::ostringstream error_stream;
+    error_stream << "Index X is not valid for this EuclideanVector object";
+    throw EuclideanVectorError(error_stream.str());
+  }
   return magnitudes_[i];
 }
 

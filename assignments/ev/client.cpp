@@ -21,15 +21,20 @@ int main() {
 	EuclideanVector e{a2.begin(), a2.end()};
 
 	// use the copy constructor
+  
+  c += b;
+  std::cout << c << "\n";
+
+
 	EuclideanVector f{e};
-  auto x = d * 2.0;
-  std::cout << x << "\n";
-  auto z = x / 2.0;
-  std::cout << z << "\n";
+  //auto x = d * 2.0;
+  //std::cout << x << "\n";
+  //auto z = x / 2.0;
+  //std::cout << z << "\n";
 
 
-  std::cout << z.CreateUnitVector() << "\n";
-  std::cout  << "testing dot product "<< d * e << "\n";
+  //std::cout << z.CreateUnitVector() << "\n";
+  //std::cout  << "testing dot product "<< d * e << "\n";
   
   //d.at(1) = 4.3;
   //std::cout << d.at(1) << "\n";
