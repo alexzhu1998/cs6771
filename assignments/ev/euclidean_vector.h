@@ -25,10 +25,10 @@ class EuclideanVector {
 		// Default constructor if no values are set
     EuclideanVector(): EuclideanVector{1} {};
 	
-		// Default constructor - takes in dimensions, but no magnitudes
+		// Base constructor - takes in dimensions, but no magnitudes
 		explicit EuclideanVector(int i): magnitudes_{std::make_unique<double[]>(i)},
 																		 size_{i} {}
-    // 
+
 		// A constructor takes in the number of dimensions (int) and initialises 
 		// the magnitude in each dimension as the second argument (double)
 		EuclideanVector(int size, double dimension) : EuclideanVector(size) {

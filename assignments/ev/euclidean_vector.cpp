@@ -24,7 +24,7 @@ EuclideanVector::EuclideanVector(EuclideanVector&& other) noexcept :
 }
 
 // Destructor implementation
-EuclideanVector::~EuclideanVector() {
+EuclideanVector::~EuclideanVector() noexcept {
   magnitudes_.reset();
   size_ = 0;
 }
@@ -194,7 +194,7 @@ EuclideanVector EuclideanVector::CreateUnitVector() {
   auto size = this->GetNumDimensions();
   if (size == 0) {
     std::ostringstream error_stream;
-    error_stream << "EuclideanVector with no dimensions does not have a norm";
+    error_stream << "EuclideanVector with no dimensions does not have a unit vector";
     throw EuclideanVectorError(error_stream.str());
   }
   auto normal = this->GetEuclideanNorm();
