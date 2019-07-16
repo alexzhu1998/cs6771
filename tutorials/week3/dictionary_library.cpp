@@ -23,6 +23,7 @@ std::vector<std::string> ToWordList(std::istream& input) {
 // TODO(tutors): Discuss why we don't just use std::cin and std::cout with respect to testing.
 void PrintValidWords(const std::vector<std::string>& valid_words,
                      std::istream& input,
+<<<<<<< HEAD
                      std::ostream& output) {
 
 	std::copy_if(
@@ -37,3 +38,6 @@ void PrintValidWords(const std::vector<std::string>& valid_words,
 	// word_dict and reconstruct this into a string
 	//
 }
+=======
+                     std::ostream& output) {}
+>>>>>>> upstream/master
