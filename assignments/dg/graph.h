@@ -1,7 +1,9 @@
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
+
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace gdwg {
@@ -21,21 +23,20 @@ class Graph {
     Node(N node_value) : value{node_value} {};
     
     // TODO: Destructor
-
-  }
+  };
 
   struct Edge {
     std::weak_ptr<Node> dest;
     std::weak_ptr<Node> src;
     E weight; /* Given in template */
 
-    Edge(std::weak_ptr<Node> source, std::weak_ptr<Edge> destination, E wei) : dst{destination}, src{source}, weight{w} {};
+    Edge(std::weak_ptr<Node> source, std::weak_ptr<Edge> destination, E w) : dest{destination}, src{source}, weight{w} {};
   
     // TODO: Destructor
-  }
+  };
 
-  std::set<std::shared_ptr<Node>, NodeCompare> nodes;
-  std::set<std::shared_ptr<Edge>, EdgeCompare> edges;
+  std::set<std::shared_ptr<Node>> nodes;
+  std::set<std::shared_ptr<Edge>> edges;
 
   // graph constructors
   Graph(): nodes{}, edges{}{};
