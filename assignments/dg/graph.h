@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <string>
 #include <tuple>
@@ -114,20 +115,20 @@ class Graph {
     	for (const auto& edge : o.edges) {
     		// TODO: insert edge
     	}
-    	delete(o.nodes);
-    	delete(o.edges);
-    	delete(o);
+    	// todo; delete
   	} 
   }
 
 	/* Destructor */
+  	// TODO
 	~Graph() {
+		/*
 		for (auto& edge : edges) {
-			delete(edge);
+			// todo
 		}
 		for (auto& node : nodes) {
-			delete(node);
-		}
+			// dammit
+		}*/
 	}
 
 	/*************
@@ -168,6 +169,45 @@ class Graph {
 		}
 		return *this;
 	}
+
+	/***********
+	 * METHODS *
+	 ***********/
+
+	bool InsertNode(const N&);
+	bool InsertEdge(const N&, const N&, const E&);
+	bool DeleteNode(const N&);
+	bool Replace(const N&, const N&);
+	void MergeReplace(const N&, const N&);
+	void Clear();
+	bool IsNode(const N&);
+	bool IsConnected(const N&, const N&);
+	std::vector<N> GetNodes();
+	std::vector<N> GetConnected(const N&);
+	std::vector<E> GetWeights(const N&, const N&);
+	const_iterator find(const N&, const N&);
+	bool erase(const N&, const N&, const E&);
+
+	/*************
+	 * ITERATORS *
+	 *************/
+	const_iterator erase(const_iterator);
+	const_iterator cbegin();
+	const_iterator cend();
+	const_iterator crbegin();
+	const_iterator crend();
+	//const_reverse_iterator crend();
+	const_iterator begin();
+	const_iterator end();
+	//const_reverse_iterator rbegin();
+	//const_reverse_iterator rend();
+
+	/***********
+	 * FRIENDS *
+	 ***********/
+	bool operator==(const Graph&);
+	bool operator!=(const Graph&);
+	std::ostream& operator<<(std::ostream&);
 
  private:
   // TODO set compare protocol
