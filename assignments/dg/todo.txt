@@ -1,0 +1,58 @@
+2.1 constructors and destructors
+x default constructor 
+x constructor
+x iterator constructor
+x initializer list constructor
+copy constructor
+move constructor
+destructor
+
+2.2 operations
+copy assignment
+move assignment
+
+2.3 methods
+insert node
+insert edge
+delete node
+replace
+merge replace
+clear
+is node
+is connected
+get nodes
+get connected
+get weights
+
+2.3.2 iterators
+find
+erase
+erase
+cbegin
+eend
+crbegin
+crend
+begin
+end
+rbegin
+rend
+
+2.4 friends
+equal
+not equal
+output stream
+
+3.5 edge custom iterator
+3.5.2 iterator order
+
+3.6 internal representation
+
+3.7 throw exceptions
+
+3.8 other
+- header guard
+- c++17 style
+- move object something
+- mark functions noexcept
+
+3.9 const correctness
