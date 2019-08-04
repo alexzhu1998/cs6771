@@ -30,6 +30,14 @@ class Graph {
     Node(N node_value) : value{node_value} {};
     
     // TODO: Destructor
+    ~Node() {
+    	for (auto& edge : out_edges) {
+    		delete(edge);
+    	}
+    	for (auto& edge : in_edges) {
+    		delete(edge);
+    	}
+    }
   };
 
   struct Edge {
@@ -37,14 +45,21 @@ class Graph {
     std::weak_ptr<Node> src;
     E weight; /* Given in template */
 
+	/* Set default */
+  	Edge() = default;
+
     Edge(std::weak_ptr<Node> source, std::weak_ptr<Edge> destination, E w) : dest{destination}, src{source}, weight{w} {};
   
-    // TODO: Destructor
+  	/* Destructor */
+  	~Edge() {
+  		/* Reset weak pointer to destination, destroying path */
+  		dest.reset(); 
+  	}
   };
 
-  /****************
-   * CONSTRUCTORS *
-   ****************/
+  /******************************
+   * CONSTRUCTORS & DESTRUCTORS *
+   ******************************/
   /* Default contructor*/
   Graph(): nodes{}, edges{} {};
 
@@ -60,7 +75,6 @@ class Graph {
    */
   Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
         std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
-    for  
   }
 
   /* Initialiser list constructor */
@@ -70,19 +84,91 @@ class Graph {
 
   class const_iterator {};
 
-  /*************************************
-  * COPY/MOVE CONSTRUCTORS, DESTRUCTOR *
-  **************************************/
-
   /* Copy constructor */
-  Graph(const Graph& o) {
-    // iterate
+  Graph(const Graph& o) : nodes{}, edges{} {
+    if (this != &o) {
+    	// TODO: delete "this"
+
+    	/* Copy across class atttributes */
+    	for (const auto& node : o.nodes) {
+    		// TODO: insert node
+    	}
+
+    	for (const auto& edge : o.edges) {
+    		// TODO: insert edge
+    	}
+    }
+    /* Else, same object. No copy required */
   }
 
   /* Move constructor */
+  Graph (const Graph&& o) {
+  	if (this != &o) {
+  		// TODO: delete "this" properly
 
-  /* Destructor */
-  
+    	/* Copy across class atttributes */
+    	for (const auto& node : o.nodes) {
+    		// TODO: insert node
+    	}
+
+    	for (const auto& edge : o.edges) {
+    		// TODO: insert edge
+    	}
+    	delete(o.nodes);
+    	delete(o.edges);
+    	delete(o);
+  	} 
+  }
+
+	/* Destructor */
+	~Graph() {
+		for (auto& edge : edges) {
+			delete(edge);
+		}
+		for (auto& node : nodes) {
+			delete(node);
+		}
+	}
+
+	/*************
+	* OPERATORS *
+	*************/
+
+	/* Copy assignment */
+	Graph& operator=(Graph& o) {
+		if (this != &o) {
+	    	// TODO: delete "this"
+
+	    	/* Copy across class atttributes */
+	    	for (const auto& node : o.nodes) {
+	    		// TODO: insert node
+	    	}
+
+	    	for (const auto& edge : o.edges) {
+	    		// TODO: insert edge
+	    	}
+    	}
+    	return *this;
+	}
+
+	/* Move assigment */
+	Graph& operator= (const Graph&& o) {
+		if (this != &o) {
+	    	// TODO: delete "this"
+
+	    	/* Copy across class atttributes */
+	    	for (const auto& node : o.nodes) {
+	    		// TODO: insert node
+	    	}
+
+	    	for (const auto& edge : o.edges) {
+	    		// TODO: insert edge
+	    	}
+	    	// delete other - for move
+		}
+		return *this;
+	}
+
  private:
   // TODO set compare protocol
   std::set<std::shared_ptr<Node>> nodes;

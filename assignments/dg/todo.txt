@@ -7,6 +7,8 @@ copy constructor
 move constructor
 destructor
 
+note: freeing/dstroying needs work to mark off copy/move/destructor
+
 2.2 operations
 copy assignment
 move assignment
