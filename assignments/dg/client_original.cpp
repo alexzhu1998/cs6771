@@ -7,7 +7,7 @@
 
 int main() {
   gdwg::Graph<std::string, int> g;
-  /*g.InsertNode("hello");
+  g.InsertNode("hello");
   g.InsertNode("how");
   g.InsertNode("are");
   g.InsertNode("you?");
@@ -32,5 +32,5 @@ int main() {
   // It allows you to unpack your tuple.
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
-  }*/
+  }
 }
