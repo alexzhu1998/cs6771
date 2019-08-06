@@ -39,26 +39,28 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
   return nodes;
 }
 
-/* Output Friend */
-template <typename N, typename E>
-std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-  g.num;
-  // for each node in the nodes
-  // for (const auto& node : g.Nodes) {
-  //   os << node.value;
-  //   os << " (\n";
-    // for (const auto& out_edge : node) {
-    //   os << "  " << out_edge.dest << " | " << out_edge.weight << "\n";
-    // }
-  //   os << ")\n";
-  // }
-
-  return os;
-}
-
 /* Clear/delete */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::Clear() {
     edges.clear();
     nodes.clear();
 }
+
+// template <typename N, typename E>
+// std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
+//   // for (const auto &it : g.nodes) {
+//   //   os << it->value << "\n";
+//   // }
+
+//   // for each node in the nodes
+//   // for (const auto& node : g.Nodes) {
+//   //   os << node.value;
+//   //   os << " (\n";
+//     // for (const auto& out_edge : node) {
+//     //   os << "  " << out_edge.dest << " | " << out_edge.weight << "\n";
+//     // }
+//   //   os << ")\n";
+//   // }
+
+//   return os;
+// }

@@ -10,11 +10,15 @@ int main() {
 	
 	std::vector<std::string> v{"Hello", "how", "are", "you"};
   gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
-  auto set = b1.nodes;
+	// auto set = b1.nodes;
 
-  for (const auto it : set) {
-    std::cout << *it << "\n";
-  }
+	// for (const auto &it : set) {
+	// 	std::cout << it->value << "\n";
+	// }
+
+  std::cout << b1 << "\n";
+
+  
 
   
 
