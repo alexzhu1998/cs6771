@@ -10,7 +10,6 @@
 #include <tuple>
 #include <vector>
 
-#include <iostream>
 #include <algorithm>
 
 namespace gdwg {
@@ -79,8 +78,11 @@ class Graph {
   Graph(std::vector<std::string>::const_iterator begin, 
 				std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
-      // Node n = Node(*i)
-      nodes.insert(std::make_shared<Node>(*i));
+      std::cout << *i << "\n";
+      Node n = Node(*i);
+      std::cout << n.value << "\n";
+      nodes.insert(std::make_shared<Node>(n));
+      // nodes.insert(std::make_shared<Node>(n));
     }
   }
   
@@ -252,22 +254,20 @@ class Graph {
 	/***********
 	 * FRIENDS *
 	 ***********/
-	friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
-	friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
-	friend std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&);
+	// friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
+	// friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
+	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g);
 
 
 	/***************
 	 * EXTRA FUNCTIONS
 	 ***************/
-  std::set<std::shared_ptr<Node>> GetNodesSet() const;
-
- private:
-  // TODO set compare protocol
   std::set<std::shared_ptr<Node>> nodes;
   std::set<std::shared_ptr<Edge>> edges;
-  int num = 0;
-  
+ 
+ private:
+  // TODO set compare protocol
+ 
 };
 
 }  // namespace gdwg

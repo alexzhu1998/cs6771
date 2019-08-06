@@ -42,7 +42,7 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 /* Output Friend */
 template <typename N, typename E>
 std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-  os << g.num;
+  g.num;
   // for each node in the nodes
   // for (const auto& node : g.Nodes) {
   //   os << node.value;

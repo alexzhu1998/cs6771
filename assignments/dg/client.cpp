@@ -10,7 +10,13 @@ int main() {
 	
 	std::vector<std::string> v{"Hello", "how", "are", "you"};
   gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
-  std::cout << b1;
+  auto set = b1.nodes;
+
+  for (const auto it : set) {
+    std::cout << *it << "\n";
+  }
+
+  
 
 	// std::string s1{"Hello"};
 	// std::string s2{"how"};
