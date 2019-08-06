@@ -8,9 +8,9 @@
 int main() {
   gdwg::Graph<std::string, int> g;
 	
-
-	// std::vector<std::string> v{"Hello", "how", "are", "you"};
-  // gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
+	std::vector<std::string> v{"Hello", "how", "are", "you"};
+  gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
+  std::cout << b1;
 
 	// std::string s1{"Hello"};
 	// std::string s2{"how"};

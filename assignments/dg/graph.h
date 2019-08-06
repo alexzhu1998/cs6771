@@ -38,17 +38,7 @@ class Graph {
     Node(N node_value) : value{node_value} {};
 		
 		// TODO should we have initialisers/methods for adding to int/out_edges?
-		
     
-    // TODO: Destructor
-    ~Node() {
-    	for (auto& edge : out_edges) {
-    		delete(edge);
-    	}
-    	for (auto& edge : in_edges) {
-    		delete(edge);
-    	}
-    }
   };
 
 	// Edge Definition
@@ -60,7 +50,8 @@ class Graph {
 		// Edge Constructors
   	Edge() = default;
 
-    Edge(std::weak_ptr<Node> source, std::weak_ptr<Node> destination, E w) : dest{destination}, src{source}, weight{w} {};
+    Edge(std::weak_ptr<Node> source, 
+         std::weak_ptr<Node> destination, E w) : dest{destination}, src{source}, weight{w} {};
   
   	/* Destructor */
   	~Edge() {
@@ -70,8 +61,8 @@ class Graph {
   };
 
 	/* Sorting edges */
+	// TODO
 	struct SortEdgeComparator {
-
 	};
 
   /************************************
@@ -88,8 +79,8 @@ class Graph {
   Graph(std::vector<std::string>::const_iterator begin, 
 				std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
-      Node n = Node{*i};	
-      nodes.insert(n);
+      // Node n = Node(*i)
+      nodes.insert(std::make_shared<Node>(*i));
     }
   }
   
@@ -97,43 +88,44 @@ class Graph {
 	 * 		and edge weight and add them to the graph
    * Essentially iterates over a vector of edges and adds them to a new graph
 	 */
-  Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
-        std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
-		// tuple is of <string, string, double> 
-		// Assumption is made that first string is dest and second string is src
+  // Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
+  //       std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
+	// 	// tuple is of <string, string, double> 
+	// 	// Assumption is made that first string is dest and second string is src
+
+  //   // TODO, make_shared
     
-		// for each tuple in the vector
-		// create the edge and add to edges{}
-		// if either node not present, create the node
-		// add edges to src.out_edges and dest.in_edges
-		for (auto i = begin; i != end; ++i) {
-      std::string dest_string = std::get<0>(*i);
-      std::string src_string = std::get<1>(*i);
+	// 	// for each tuple in the vector
+	// 	// create the edge and add to edges{}
+	// 	// if either node not present, create the node
+	// 	// add edges to src.out_edges and dest.in_edges
+	// 	for (auto i = begin; i != end; ++i) {
+  //     std::string dest_string = std::get<0>(*i);
+  //     std::string src_string = std::get<1>(*i);
 
-			// if nodes missing, create them
-			if (nodes.find(dest_string) < 1) {
-				nodes.insert(Node(dest_string));
-			}
-			if (nodes.find(src_string) < 1) {
-				nodes.insert(Node(src_string));
-			}
+	// 		// if nodes missing, create them
+	// 		if (nodes.find(dest_string) < 1) {
+	// 			nodes.insert(Node(dest_string));
+	// 		}
+	// 		if (nodes.find(src_string) < 1) {
+	// 			nodes.insert(Node(src_string));
+	// 		}
 
-			auto destNode = nodes.find(dest_string);
-			auto srcNode = nodes.find(src_string);
+	// 		auto destNode = nodes.find(dest_string);
+	// 		auto srcNode = nodes.find(src_string);
 
-			// create the edge and add to edges{}
-			auto edge = Edge(dest_string, src_string, std::get<2>(*i));
-			edges.insert(edge);
-      destNode.in_edges.push_back(edge);
-      srcNode.out_edges.push_back(edge);
-       
-		}
-  }
+	// 		// create the edge and add to edges{}
+	// 		auto edge = Edge(dest_string, src_string, std::get<2>(*i));
+	// 		edges.insert(edge);
+  //     destNode.in_edges.push_back(edge);
+  //     srcNode.out_edges.push_back(edge);
+	// 	}
+  // }
 
-  /* Initialiser list constructor */
-  Graph(std::initializer_list<N> new_nodes) {
-    nodes.insert(nodes.end(), new_nodes.begin(), new_nodes.end());
-  };
+  // /* Initialiser list constructor */
+  // Graph(std::initializer_list<N> new_nodes) {
+  //   nodes.insert(nodes.end(), new_nodes.begin(), new_nodes.end());
+  // };
 
   class const_iterator {};
 
@@ -229,7 +221,6 @@ class Graph {
 	/***********
 	 * METHODS *
 	 ***********/
-
 	bool InsertNode(const N&);
 	bool InsertEdge(const N&, const N&, const E&);
 	bool DeleteNode(const N&);
@@ -238,7 +229,7 @@ class Graph {
 	void Clear();
 	bool IsNode(const N&);
 	bool IsConnected(const N&, const N&);
-	std::vector<N> GetNodes();
+	std::vector<N> GetNodes() const ;
 	std::vector<N> GetConnected(const N&);
 	std::vector<E> GetWeights(const N&, const N&);
 	const_iterator find(const N&, const N&);
@@ -261,20 +252,21 @@ class Graph {
 	/***********
 	 * FRIENDS *
 	 ***********/
-	bool operator==(const Graph&);
-	bool operator!=(const Graph&);
-	std::ostream& operator<<(std::ostream&);
+	friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
+	friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
+	friend std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&);
 
 
 	/***************
 	 * EXTRA FUNCTIONS
 	 ***************/
-	
+  std::set<std::shared_ptr<Node>> GetNodesSet() const;
 
  private:
   // TODO set compare protocol
   std::set<std::shared_ptr<Node>> nodes;
   std::set<std::shared_ptr<Edge>> edges;
+  int num = 0;
   
 };
 

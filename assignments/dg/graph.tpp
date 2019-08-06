@@ -27,17 +27,31 @@
 //   }
 // }
 
-/* Output Friend */
-std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-  // for each node in the nodes
-  for (const auto& node : g.nodes) {
-    os << node.value;
-    os << " (\n";
-    for (const auto& out_edge : node) {
-      os << "  " << out_edge.dest << " | " << out_edge.weight << "\n";
-    }
-    os << ")\n";
+
+
+template <typename N, typename E>
+std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
+  std::vector<N> ret_nodes;
+  for (const auto& node : this->nodes) {
+    ret_nodes.push_back(node.value);
   }
+
+  return nodes;
+}
+
+/* Output Friend */
+template <typename N, typename E>
+std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
+  os << g.num;
+  // for each node in the nodes
+  // for (const auto& node : g.Nodes) {
+  //   os << node.value;
+  //   os << " (\n";
+    // for (const auto& out_edge : node) {
+    //   os << "  " << out_edge.dest << " | " << out_edge.weight << "\n";
+    // }
+  //   os << ")\n";
+  // }
 
   return os;
 }

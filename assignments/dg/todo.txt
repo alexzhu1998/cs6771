@@ -59,4 +59,6 @@ output stream
 
 3.9 const correctness
 
+misc todo: 
+
 make edge and node implementations privtae
