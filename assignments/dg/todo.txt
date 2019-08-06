@@ -58,3 +58,5 @@ output stream
 - mark functions noexcept
 
 3.9 const correctness
+
+make edge and node implementations privtae

@@ -38,6 +38,7 @@ class Graph {
     Node(N node_value) : value{node_value} {};
 		
 		// TODO should we have initialisers/methods for adding to int/out_edges?
+		
     
     // TODO: Destructor
     ~Node() {
@@ -59,7 +60,7 @@ class Graph {
 		// Edge Constructors
   	Edge() = default;
 
-    Edge(std::weak_ptr<Node> source, std::weak_ptr<Edge> destination, E w) : dest{destination}, src{source}, weight{w} {};
+    Edge(std::weak_ptr<Node> source, std::weak_ptr<Node> destination, E w) : dest{destination}, src{source}, weight{w} {};
   
   	/* Destructor */
   	~Edge() {
@@ -67,6 +68,11 @@ class Graph {
   		dest.reset(); 
   	}
   };
+
+	/* Sorting edges */
+	struct SortEdgeComparator {
+
+	};
 
   /************************************
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
@@ -79,36 +85,48 @@ class Graph {
   Graph(): nodes{}, edges{} {};
 
   /* Constructor iterates over nodes and adds them to the graph*/
-  Graph(std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end) {
+  Graph(std::vector<std::string>::const_iterator begin, 
+				std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
       Node n = Node{*i};	
       nodes.insert(n);
     }
   }
   
-  /* Constructor iterates over tuples of source node, destination node and edge weight and add them to the graph
+  /* Constructor iterates over tuples of source node, destination node 
+	 * 		and edge weight and add them to the graph
    * Essentially iterates over a vector of edges and adds them to a new graph
 	 */
   Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
         std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
 		// tuple is of <string, string, double> 
 		// Assumption is made that first string is dest and second string is src
-
+    
 		// for each tuple in the vector
+		// create the edge and add to edges{}
 		// if either node not present, create the node
-		// create the edge and add to graph
+		// add edges to src.out_edges and dest.in_edges
 		for (auto i = begin; i != end; ++i) {
+      std::string dest_string = std::get<0>(*i);
+      std::string src_string = std::get<1>(*i);
+
 			// if nodes missing, create them
-			if (nodes.find(std::get<0>(*i)) < 1) {
-				nodes.insert(Node(std::get<0>(*i)));
+			if (nodes.find(dest_string) < 1) {
+				nodes.insert(Node(dest_string));
 			}
-			if (nodes.find(std::get<1>(*i)) < 1) {
-				nodes.insert(Node(std::get<1>(*i)));
+			if (nodes.find(src_string) < 1) {
+				nodes.insert(Node(src_string));
 			}
 
-			edges.insert(Edge(std::get<0>(*i), std::get<1>(*i), std::get<2>(*i)));
-			// TODO this insert does not add edges to the in_edges and out_edges
-			// create a custom insert() function that adds to in_edges and out_edges
+			auto destNode = nodes.find(dest_string);
+			auto srcNode = nodes.find(src_string);
+
+			// create the edge and add to edges{}
+			auto edge = Edge(dest_string, src_string, std::get<2>(*i));
+			edges.insert(edge);
+      destNode.in_edges.push_back(edge);
+      srcNode.out_edges.push_back(edge);
+       
 		}
   }
 
@@ -121,49 +139,53 @@ class Graph {
 
   /* Copy constructor */
   Graph(const Graph& o) : nodes{}, edges{} {
+		if (this == &o)
+			return *this;
+
     if (this != &o) {
-    	// TODO: delete "this"
+    	// TODO: delete "this" // TODO do you need to delete this if this is a copy constructor?
 
     	/* Copy across class atttributes */
     	for (const auto& node : o.nodes) {
-    		// TODO: insert node
+				// TODO: insert node
+				nodes.insert(node);
     	}
 
     	for (const auto& edge : o.edges) {
     		// TODO: insert edge
+				edges.insert(edge);
     	}
     }
     /* Else, same object. No copy required */
   }
 
   /* Move constructor */
-  Graph (const Graph&& o) {
+  Graph (const Graph&& o) noexcept {
   	if (this != &o) {
   		// TODO: delete "this" properly
 
     	/* Copy across class atttributes */
     	for (const auto& node : o.nodes) {
     		// TODO: insert node
+				nodes.insert(node);
     	}
 
     	for (const auto& edge : o.edges) {
     		// TODO: insert edge
+				edges.insert(edge);
     	}
+
+			~Graph(o);
     	// todo; delete
   	} 
   }
 
 	/* Destructor */
-  	// TODO
+  // TODO not sure if this looks correct
 	~Graph() {
-		/*
-		for (auto& edge : edges) {
-			// todo
-		}
-		for (auto& node : nodes) {
-			// dammit
-		}*/
-	}
+    nodes.clear();
+    edges.clear();
+  }
 
 	/*************
 	* OPERATORS *
@@ -242,6 +264,12 @@ class Graph {
 	bool operator==(const Graph&);
 	bool operator!=(const Graph&);
 	std::ostream& operator<<(std::ostream&);
+
+
+	/***************
+	 * EXTRA FUNCTIONS
+	 ***************/
+	
 
  private:
   // TODO set compare protocol
