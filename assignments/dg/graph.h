@@ -10,6 +10,9 @@
 #include <tuple>
 #include <vector>
 
+#include <iostream>
+#include <algorithm>
+
 namespace gdwg {
 
 template <typename N, typename E>
@@ -29,6 +32,8 @@ class Graph {
     std::vector<std::weak_ptr<Edge>> in_edges;
     Node() = default;
     Node(N node_value) : value{node_value} {};
+		
+		// do we not have initialisers/methods for adding to int/out_edges?
     
     // TODO: Destructor
     ~Node() {
@@ -72,10 +77,27 @@ class Graph {
     }
   }
   
-  /* Iterates over tuples of source node, destination node and edge weight and add them to the gra
+  /* Iterates over tuples of source node, destination node and edge weight and add them to the graph
    */
   Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
         std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
+		// tuple is of <string, string, double> 
+		// Assumption is made that first string is dest and second string is src
+
+		// for each tuple in the vector
+		// if either node not present, create the node
+		// create the edge and add to graph
+		for (auto i = begin; i != end; ++i) {
+			// if nodes missing, create them
+			if (nodes.find(std::get<0>(*i)) < 1) {
+				nodes.insert(Node(std::get<0>(*i)));
+			}
+			if (nodes.find(std::get<1>(*i)) < 1) {
+				nodes.insert(Node(std::get<1>(*i)));
+			}
+
+			edges.insert(Edge(std::get<0>(*i), std::get<1>(*i), std::get<2>(*i)));
+		}
   }
 
   /* Initialiser list constructor */
