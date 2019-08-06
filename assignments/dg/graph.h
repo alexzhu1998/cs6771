@@ -10,6 +10,9 @@
 #include <tuple>
 #include <vector>
 
+#include <iostream>
+#include <algorithm>
+
 namespace gdwg {
 
 template <typename N, typename E>
@@ -17,18 +20,24 @@ class Graph {
  public:
 
   /******************
-   * NODE AND EDGES *
-   *****************/
-  // node and edge implementation
+   * NODE AND EDGES * 
+	 ******************/
+
+  // Node and Edge Declaration
   struct Node;
   struct Edge;
 
+	// Node Definition
   struct Node {
     N value;
     std::vector<std::weak_ptr<Edge>> out_edges;
     std::vector<std::weak_ptr<Edge>> in_edges;
+
+		// Node Constructors
     Node() = default;
     Node(N node_value) : value{node_value} {};
+		
+		// TODO should we have initialisers/methods for adding to int/out_edges?
     
     // TODO: Destructor
     ~Node() {
@@ -41,12 +50,13 @@ class Graph {
     }
   };
 
+	// Edge Definition
   struct Edge {
     std::weak_ptr<Node> dest;
     std::weak_ptr<Node> src;
-    E weight; /* Given in template */
+    E weight;
 
-	/* Set default */
+		// Edge Constructors
   	Edge() = default;
 
     Edge(std::weak_ptr<Node> source, std::weak_ptr<Edge> destination, E w) : dest{destination}, src{source}, weight{w} {};
@@ -58,24 +68,48 @@ class Graph {
   	}
   };
 
-  /******************************
-   * CONSTRUCTORS & DESTRUCTORS *
-   ******************************/
-  /* Default contructor*/
+  /************************************
+   * GRAPH CONSTRUCTORS & DESTRUCTORS *
+   ************************************/
+
+	// Nodes == strings (out_edges and in_edges)
+	// Edges == dest_node, src_node, weight(double)
+
+  /* Default contructor*/	
   Graph(): nodes{}, edges{} {};
 
-  /* Iterator constructor */
+  /* Constructor iterates over nodes and adds them to the graph*/
   Graph(std::vector<std::string>::const_iterator begin, std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
-      Node n = Node{*i};
+      Node n = Node{*i};	
       nodes.insert(n);
     }
   }
   
-  /* Iterates over tuples of source node, destination node and edge weight and add them to the gra
-   */
+  /* Constructor iterates over tuples of source node, destination node and edge weight and add them to the graph
+   * Essentially iterates over a vector of edges and adds them to a new graph
+	 */
   Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
         std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
+		// tuple is of <string, string, double> 
+		// Assumption is made that first string is dest and second string is src
+
+		// for each tuple in the vector
+		// if either node not present, create the node
+		// create the edge and add to graph
+		for (auto i = begin; i != end; ++i) {
+			// if nodes missing, create them
+			if (nodes.find(std::get<0>(*i)) < 1) {
+				nodes.insert(Node(std::get<0>(*i)));
+			}
+			if (nodes.find(std::get<1>(*i)) < 1) {
+				nodes.insert(Node(std::get<1>(*i)));
+			}
+
+			edges.insert(Edge(std::get<0>(*i), std::get<1>(*i), std::get<2>(*i)));
+			// TODO this insert does not add edges to the in_edges and out_edges
+			// create a custom insert() function that adds to in_edges and out_edges
+		}
   }
 
   /* Initialiser list constructor */
