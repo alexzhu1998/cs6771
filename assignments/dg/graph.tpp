@@ -24,7 +24,7 @@ template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsNode(const N& val) {
 	// loop through nodes in (this)
 	for (const auto &it : this->nodes) {
-		if (it.value == val) {
+		if (it->value == val) {
 			return true;
 		}
 	}
@@ -44,14 +44,17 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 
 /* GetNode (Gets Single Node) */ 
 // Use IsNode first before this function
-template <typename N, typename E>
-std::shared_ptr<N> gdwg::Graph<N, E>::GetNode(const N& val) {
-	for (const auto &it : this->nodes) {
-		if (it.value == val) {
-			return it;
-		}
-	}
-}
+// template <typename N, typename E>
+// std::shared_ptr<typename gdwg::Graph<N, E>::Node> gdwg::Graph<N, E>::GetNode(const N& val) {
+//   for (const auto &it : this->nodes) {
+//     if (it->value == val) {
+//       return it;
+//     }
+//   }
+//   // To keep compiler happy only
+//   auto node = std::make_shared<typename gdwg::Graph<N, E>::Node>("NULL");
+//   return node;
+// }
 
 /* Clear/delete */
 template <typename N, typename E>
