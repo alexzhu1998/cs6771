@@ -1,4 +1,5 @@
-#include "assignments/dg/graph.h" // probably not needed... 
+// #include "assignments/dg/graph.h" // probably not needed... 
+
 
 /***********
  * METHODS *
@@ -19,16 +20,18 @@
 // }
 
 /* IsNode */
-// bool gdwg::Graph<N, E>::IsNode(const N&) {
-//   if (nodes.find(N) != 0) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::IsNode(const N& val) {
+	// loop through nodes in (this)
+	for (const auto &it : this->nodes) {
+		if (it.value == val) {
+			return true;
+		}
+	}
+	return false;
+}
 
-
-
+/* GetNodes */
 template <typename N, typename E>
 std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
   std::vector<N> ret_nodes;
@@ -39,28 +42,20 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
   return nodes;
 }
 
+/* GetNode (Gets Single Node) */ 
+// Use IsNode first before this function
+template <typename N, typename E>
+std::shared_ptr<N> gdwg::Graph<N, E>::GetNode(const N& val) {
+	for (const auto &it : this->nodes) {
+		if (it.value == val) {
+			return it;
+		}
+	}
+}
+
 /* Clear/delete */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::Clear() {
     edges.clear();
     nodes.clear();
 }
-
-// template <typename N, typename E>
-// std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-//   // for (const auto &it : g.nodes) {
-//   //   os << it->value << "\n";
-//   // }
-
-//   // for each node in the nodes
-//   // for (const auto& node : g.Nodes) {
-//   //   os << node.value;
-//   //   os << " (\n";
-//     // for (const auto& out_edge : node) {
-//     //   os << "  " << out_edge.dest << " | " << out_edge.weight << "\n";
-//     // }
-//   //   os << ")\n";
-//   // }
-
-//   return os;
-// }
