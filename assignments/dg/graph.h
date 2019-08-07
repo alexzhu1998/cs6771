@@ -95,8 +95,8 @@ class Graph {
 		// TODO, make_shared
 		
 		// for each tuple in the vector
-		// create the edge and add to edges{}
 		// if either node not present, create the node
+		// create the edge and add to edges{}
 		// add edges to src.out_edges and dest.in_edges
 		for (auto i = begin; i != end; ++i) {
 			std::string dest_string = std::get<0>(*i);
@@ -109,6 +109,17 @@ class Graph {
 			if (this->IsNode(src_string) == false) {
 				nodes.insert(std::make_shared<Node>(dest_string));
 			}
+
+
+			auto dest_node = this->GetNode(dest_string);
+			auto src_node = this->GetNode(src_string);
+
+
+			// creating edge
+			std::make_shared			
+
+
+
 			// auto destNode = nodes.find(dest_string);
 			// auto srcNode = nodes.find(src_string);
       // 
