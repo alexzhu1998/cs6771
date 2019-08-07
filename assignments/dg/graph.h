@@ -83,9 +83,9 @@ class Graph {
     }
   }
   
-  /* Constructor iterates over tuples of source node, destination node 
-	 * 		and edge weight and add them to the graph
-   * Essentially iterates over a vector of edges and adds them to a new graph
+  /* Constructor iterates over tuples containing source node, destination node and edge 
+	 * weight and add them to the graph. Essentially iterates over a vector of edges and 
+	 * adds them to a new graph.
 	 */
 	Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
 				std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
@@ -133,7 +133,9 @@ class Graph {
 
 	/* Initialiser list constructor */
 	Graph(std::initializer_list<N> new_nodes) {
-		nodes.insert(nodes.end(), new_nodes.begin(), new_nodes.end());
+		for (const auto &it : new_nodes) {
+			nodes.insert(std::make_shared<Node>(it));
+		}
 	};
 
   class const_iterator {};
