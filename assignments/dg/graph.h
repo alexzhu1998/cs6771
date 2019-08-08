@@ -79,7 +79,8 @@ class Graph {
   Graph(std::vector<std::string>::const_iterator begin, 
 				std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
-      nodes.insert(std::make_shared<Node>(*i));
+      // nodes.insert(std::make_shared<Node>(*i));
+			this->InsertNode(*i);
     }
   }
   
@@ -141,27 +142,8 @@ class Graph {
   class const_iterator {};
 
   /* Copy constructor */
-  Graph(const Graph& o) : nodes{}, edges{} {
-		// if (this == &o)
-		//   return *this;
-
-    if (this != &o) {
-    	// TODO: delete "this" // TODO do you need to delete this if this is a copy constructor?
-
-    	/* Copy across class atttributes */
-    	for (const auto& node : o.nodes) {
-				// TODO: insert node
-				nodes.insert(node);
-    	}
-
-    	for (const auto& edge : o.edges) {
-    		// TODO: insert edge
-				edges.insert(edge);
-    	}
-    }
-    /* Else, same object. No copy required */
-  }
-
+  Graph(const Graph&);
+		
   /* Move constructor */
   Graph (const Graph&& o) noexcept {
   	if (this != &o) {

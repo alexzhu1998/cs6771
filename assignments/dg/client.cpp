@@ -10,9 +10,9 @@ int main() {
   // gdwg::Graph<std::string, int> g;
 	// 
 	// Constructor using a vector of strings representing nodes
-	// std::vector<std::string> v{"Hello", "how", "are", "you"};
-  // gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
-  // std::cout << b1 << "\n";
+	std::vector<std::string> v{"Hello", "how", "are", "you"};
+	gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
+	std::cout << b1 << "\n";
 
 	// Constructor using a vector of tuples representing edges
 	// std::string s1{"Hello"};
@@ -27,8 +27,8 @@ int main() {
 	
 
 	// Constructor using initialiser list
-	gdwg::Graph<char, std::string> b{'a', 'b', 'x', 'y'};
-	std::cout << b;
+	// gdwg::Graph<char, std::string> b{'a', 'b', 'x', 'y'};
+	// std::cout << b;
 
 
   /*g.InsertNode("hello");

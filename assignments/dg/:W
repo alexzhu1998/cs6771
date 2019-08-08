@@ -4,7 +4,6 @@
  * CONSTRUCTORS
  *****************/
 
-/* Copy constructor for graph */
 template <typename N, typename E>
 gdwg::Graph<N, E>::Graph(const Graph&) {
 	// this.nodes = copy nodes
@@ -15,10 +14,9 @@ gdwg::Graph<N, E>::Graph(const Graph&) {
 /***********
  * METHODS *
  ***********/
-template <typename N, typename E>
-bool gdwg::Graph<N, E>::InsertNode(const N& new_node) {
-	return nodes.insert(std::make_unique<gdwg::Graph<N, E>::Node >(new_node));
-}
+// bool gdwg::Graph<N, E>::InsertNode(const N& new_node) {
+// 	return nodes.insert(Node(new_node)).second;
+// }
 
 // bool gdwg::Graph<N, E>::InsertEdge(const N& new_node) {
 //     //return nodes.insert(std::make_shared<Node>(Node{input_node})).second;
