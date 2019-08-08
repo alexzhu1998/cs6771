@@ -111,7 +111,7 @@ class Graph {
 	Graph(std::initializer_list<N> new_nodes) {
 		for (const auto &it : new_nodes) {
 			this->InsertNode(it);
-			// nodes.insert(std::make_shared<Node>(it));
+			nodes.insert(std::make_shared<Node>(it));
 		}
 	};
 
