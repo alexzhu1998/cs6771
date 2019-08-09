@@ -118,28 +118,8 @@ class Graph {
 
   /* Copy constructor */
   Graph(const Graph&);
+	Graph(const Graph&&) noexcept;
 		
-  /* Move constructor */
-  Graph (const Graph&& o) noexcept {
-  	if (this != &o) {
-  		// TODO: delete "this" properly
-
-    	/* Copy across class atttributes */
-    	for (const auto& node : o.nodes) {
-    		// TODO: insert node
-				nodes.insert(node);
-    	}
-
-    	for (const auto& edge : o.edges) {
-    		// TODO: insert edge
-				edges.insert(edge);
-    	}
-
-			~Graph(o);
-    	// todo; delete
-  	} 
-  }
-
 	/* Destructor */
   // TODO not sure if this looks correct
 	~Graph() {

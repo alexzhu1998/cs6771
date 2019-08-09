@@ -24,6 +24,28 @@ gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& other) {
 	}
 }
 
+/* Move constructor */
+template <typename N, typename E>
+gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>&& other) noexcept {
+	// this.nodes = copy nodes
+	for (const auto &it : other.nodes) {
+		InsertNode(it->value);
+	}
+
+	// this.edges = copy edges
+	for (const auto &it : other.edges) {
+		auto src_sptr = it->src.lock();
+		auto dst_sptr = it->dst.lock();
+
+		auto src_string = src_sptr->value;
+		auto dst_string = dst_sptr->value;
+		
+		InsertEdge(src_string, dst_string, it->weight);
+	}
+
+	// but delete other afterwards
+	other.~Graph();
+}
 
 /***********
  * METHODS *
