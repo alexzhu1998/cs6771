@@ -4,11 +4,24 @@
  * CONSTRUCTORS
  *****************/
 
-/* Copy constructor for graph */
+/* Copy constructor */
 template <typename N, typename E>
-gdwg::Graph<N, E>::Graph(const Graph&) {
+gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& other) {
 	// this.nodes = copy nodes
+	for (const auto &it : other.nodes) {
+		InsertNode(it->value);
+	}
+
 	// this.edges = copy edges
+	for (const auto &it : other.edges) {
+		auto src_sptr = it->src.lock();
+		auto dst_sptr = it->dst.lock();
+
+		auto src_string = src_sptr->value;
+		auto dst_string = dst_sptr->value;
+		
+		InsertEdge(src_string, dst_string, it->weight);
+	}
 }
 
 
@@ -40,7 +53,7 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 		}
 	}
 	
-	// housekeeping
+	// housekeeping TODO test
 	std::weak_ptr<gdwg::Graph<N, E>::Node> src_node;
 	std::weak_ptr<gdwg::Graph<N, E>::Node> dst_node;
 
@@ -69,8 +82,6 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	// returns true if successfully added
 	return true;
 }
-
-
 
 // /* Delete node */
 // void gdwg::Graph<N, E>::DeleteNode(const N &node) noexcept { 

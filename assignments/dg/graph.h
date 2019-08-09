@@ -36,7 +36,6 @@ class Graph {
 		// Node Constructors
     Node() = default;
     Node(N node_value) : value{node_value} {};
-		
 		// TODO should we have initialisers/methods for adding to int/out_edges?
     
   };
@@ -52,6 +51,7 @@ class Graph {
 
     Edge(std::weak_ptr<Node> source, 
          std::weak_ptr<Node> destination, E w) : src{source}, dst{destination}, weight{w} {};
+
   
   	/* Destructor */
   	~Edge() {
@@ -111,7 +111,6 @@ class Graph {
 	Graph(std::initializer_list<N> new_nodes) {
 		for (const auto &it : new_nodes) {
 			this->InsertNode(it);
-			// nodes.insert(std::make_shared<Node>(it));
 		}
 	};
 
