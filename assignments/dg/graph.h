@@ -37,6 +37,9 @@ class Graph {
     Node() = default;
     Node(N node_value) : value{node_value} {};
 		// TODO should we have initialisers/methods for adding to int/out_edges?
+		
+
+		// Node Destroyer?
     
   };
 
@@ -118,10 +121,12 @@ class Graph {
 
   /* Copy constructor */
   Graph(const Graph&);
+	/* Move constructor */
 	Graph(const Graph&&) noexcept;
 		
 	/* Destructor */
   // TODO not sure if this looks correct
+	// - Chris: have tested it and I think it works
 	~Graph() {
     nodes.clear();
     edges.clear();
@@ -132,21 +137,23 @@ class Graph {
 	*************/
 
 	/* Copy assignment */
-	Graph& operator=(Graph& o) {
-		if (this != &o) {
-	    	// TODO: delete "this"
+	Graph& operator=(Graph&);
 
-	    	/* Copy across class atttributes */
-	    	for (const auto& node : o.nodes) {
-	    		// TODO: insert node
-	    	}
-
-	    	for (const auto& edge : o.edges) {
-	    		// TODO: insert edge
-	    	}
-    	}
-    	return *this;
-	}
+	// Graph& operator=(Graph& o) {
+	//   if (this != &o) {
+	//       // TODO: delete "this"
+  // 
+	//       [> Copy across class atttributes <]
+	//       for (const auto& node : o.nodes) {
+	//         // TODO: insert node
+	//       }
+  // 
+	//       for (const auto& edge : o.edges) {
+	//         // TODO: insert edge
+	//       }
+  //     }
+  //     return *this;
+	// }
 
 	/* Move assigment */
 	Graph& operator= (const Graph&& o) {

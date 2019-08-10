@@ -47,6 +47,16 @@ gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>&& other) noexcept {
 	other.~Graph();
 }
 
+template <typename N, typename E>
+gdwg::Graph<N, E>& operator=(const gdwg::Graph<N, E>& other) {
+	if (this == &other) {
+		return *this;
+	}
+
+
+
+}
+
 /***********
  * METHODS *
  ***********/
@@ -75,7 +85,7 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 		}
 	}
 	
-	// housekeeping TODO test
+	// housekeeping 
 	std::weak_ptr<gdwg::Graph<N, E>::Node> src_node;
 	std::weak_ptr<gdwg::Graph<N, E>::Node> dst_node;
 
