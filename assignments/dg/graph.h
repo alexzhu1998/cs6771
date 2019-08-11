@@ -38,9 +38,13 @@ class Graph {
     Node(N node_value) : value{node_value} {};
 		// TODO should we have initialisers/methods for adding to int/out_edges?
 		
+	bool operator==(const Node& o) {
+		return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+	}
 
-		// Node Destroyer?
-    
+	bool operator!=(const Node& o) {
+		return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+	}    
   };
 
 	// Edge Definition
@@ -55,6 +59,13 @@ class Graph {
     Edge(std::weak_ptr<Node> source, 
          std::weak_ptr<Node> destination, E w) : src{source}, dst{destination}, weight{w} {};
 
+    bool operator==(const Edge& rhs) {
+	    return (this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+	}
+
+	bool operator!=(const Edge& rhs) {
+	    return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+	}
   
   	/* Destructor */
   	~Edge() {
@@ -178,8 +189,8 @@ class Graph {
 	// friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
 	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
 		// For each node
-    for (const auto& node : g.nodes) {
-      os << node->value;
+	    for (const auto& node : g.nodes) {
+	      	os << node->value;
 			os << " (\n";
 			// Each node has a vector containing edges
 			auto begin = node->out_edges.begin();
@@ -191,12 +202,20 @@ class Graph {
 				auto dest_node = edge->dst.lock();
 				os << "  " << dest_node->value << " | " << edge->weight << "\n";
 			}
-			
 			os << ")\n";
-    }
+	    }
 
-    return os;
-  }
+	    return os;
+	}
+
+	// This is probably wrong tbh, right now relying on operator overloading with nodes and edges
+	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+		return (a.edges == b.edges || a.nodes == b.nodes);
+	}
+
+	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+		return !(a.edges == b.edges || a.nodes == b.nodes);
+	}
 
 
 	/***************
