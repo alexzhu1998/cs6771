@@ -51,8 +51,8 @@ int main() {
 	// std::cout << b2;
 	
 	// Testing mergereplace
-	std::vector<std::string> v{"a", "b", "c", "d"};
-	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
+	// std::vector<std::string> v{"a", "b", "c", "d"};
+	// gdwg::Graph<std::string, double> g{v.begin(), v.end()};
 
 	// basic case for merge replace~
 	// g.InsertEdge("a", "b", 1);
@@ -62,6 +62,18 @@ int main() {
 	// g.MergeReplace("a", "b");
 	// std::cout << "------\n";
 	// std::cout << g;
+
+
+	// duplicate case for merge replace~
+	// g.InsertEdge("a", "b", 1);
+	// g.InsertEdge("a", "c", 2);
+	// g.InsertEdge("a", "d", 3);
+	// g.InsertEdge("b", "b", 1);
+	// std::cout << g;
+	// g.MergeReplace("a", "b");
+	// std::cout << "------\n";
+	// std::cout << g;
+
 
 	// diagramtic case 1 for merge replace
 	// g.InsertEdge("a", "b", 3);

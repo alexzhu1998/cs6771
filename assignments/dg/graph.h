@@ -142,27 +142,27 @@ class Graph {
 		typename std::set<std::shared_ptr<Edge>>::iterator edge_it_;
 
 		// TODO: tuple-ise?
-		Edge operator*() const { return edges_->lock(); }
-
-		const_iterator operator++() {
-		  edges_ = edges_->next.get();
-		  return *this;
-		}
-		const_iterator operator++(int) {
-			auto copy{*this};
-			++(*this);
-			return copy;
-		}
-
-		const_iterator operator--() {
-		  edges_ = edges_->back.get();
-		  return *this;
-		}
-		const_iterator operator--(int) {
-			auto copy{*this};
-			--(*this);
-			return copy;
-		}
+		// Edge operator*() const { return edges_->lock(); }
+    // 
+		// const_iterator operator++() {
+		//   edges_ = edges_->next.get();
+		//   return *this;
+		// }
+		// const_iterator operator++(int) {
+		//   auto copy{*this};
+		//   ++(*this);
+		//   return copy;
+		// }
+    // 
+		// const_iterator operator--() {
+		//   edges_ = edges_->back.get();
+		//   return *this;
+		// }
+		// const_iterator operator--(int) {
+		//   auto copy{*this};
+		//   --(*this);
+		//   return copy;
+		// }
 
 		friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
 		  return *lhs == *rhs;
@@ -265,9 +265,19 @@ class Graph {
 	 * EXTRA FUNCTIONS
 	 ***************/
 
-	// bool edge_exists(N src, N dst, W)a {
-  // 
-	// }
+	bool edge_exists(N src, N dst, E w) {
+		// check if edge already exists (return false)
+		for (const auto &it : this->edges_) {
+			auto src_node = it->src.lock();
+			auto dst_node = it->dst.lock();
+			if (src_node->value == src && dst_node->value == dst && it->weight == w) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	std::shared_ptr<Node> node_exists(N val) const{
 		for(const auto& node : nodes_){
 			if(node.get()->value == val){

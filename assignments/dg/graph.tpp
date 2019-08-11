@@ -158,10 +158,8 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 	}
 
 	for (const auto &it : this->edges_) {
-		std::cout << it->src.lock()->value << "\n";
 		if (it->src.lock()->value == del || it->dst.lock()->value == del) {
 			this->erase(it->src.lock()->value, it->dst.lock()->value, it->weight);
-			std::cout << "nyes\n";
 		}
 	}
 
@@ -191,17 +189,21 @@ void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
 
 	// replace old_node with new_node in node->out_edges_ and node->in_edges_
 	for (const auto &it : old_node->out_edges_) {
-		// set the src of the edge to new_node
-		it.lock()->src = new_node;
-		// add weak pointers to new_node->out_edges_
-		new_node->out_edges_.push_back(it);
+		if (edge_exists(new_node->value, it.lock()->dst.lock()->value, it.lock()->weight) == false) {
+			// set the src of the edge to new_node
+			it.lock()->src = new_node;
+			// add weak pointers to new_node->out_edges_
+			new_node->out_edges_.push_back(it);
+		}
 	}
 
 	for (const auto &it : old_node->in_edges_) {
-		// set the dst of the edge to new_node
-		it.lock()->dst = new_node;
-		// add weak pointers to new_node->in_edges_
-		new_node->in_edges_.push_back(it);
+		if (edge_exists(it.lock()->src.lock()->value, new_node->value, it.lock()->weight) == false) {
+			// set the dst of the edge to new_node
+			it.lock()->dst = new_node;
+			// add weak pointers to new_node->in_edges_
+			new_node->in_edges_.push_back(it);
+		}
 	}
 
 	// clean all of old_node;
