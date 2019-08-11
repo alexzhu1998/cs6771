@@ -3,15 +3,6 @@
 /*****************
  * CONSTRUCTORS
  *****************/
-/*template <typename N, typename E>
-std::shared_ptr<Node> gdwg::Graph<N, E>::node_exists(const N& node_name) const{
-    for(const auto& node : nodes){
-        if(i.get()->val == node_name){
-            return node;
-        }
-    }
-    return {};
-}*/
 
 /* Copy constructor */
 template <typename N, typename E>
@@ -86,6 +77,8 @@ gdwg::Graph<N, E>& gdwg::Graph<N, E>::operator=(gdwg::Graph<N, E>&& other) {
 /***********
  * METHODS *
  ***********/
+
+/* InsertNode */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::InsertNode(const N& val) {
 	// check if node containing val already exists (return false)
@@ -97,6 +90,7 @@ bool gdwg::Graph<N, E>::InsertNode(const N& val) {
 	return ret.second;
 }
 
+/* InsertEdge */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	// raise an exception if src or dst not found in graph
@@ -111,7 +105,7 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 		}
 	}
 	
-	// housekeeping 
+	// housekeeping TODO can we initiate them as shared_ptrs
 	std::weak_ptr<gdwg::Graph<N, E>::Node> src_node;
 	std::weak_ptr<gdwg::Graph<N, E>::Node> dst_node;
 
@@ -143,32 +137,51 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 
 /* Delete node */
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::DeleteNode(const N &node) noexcept { 
-	/* Check if in list of nodes */
-	const auto& found_node = node_exists(node);
+bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept { 
+	// Delete note and all associated incoming/outgoing edges
+	std::shared_ptr<gdwg::Graph<N, E>::Node> del_node = nullptr;
 
-	if (found_node == nullptr) {
-		return 0;
+	// Check if in list of nodes
+	for (const auto &it : this->nodes) {
+		if (it->value == del) {
+			del_node = it;	
+		}
 	}
 
-	for (const auto& out_node : found_node.get()->out_edges) {
-		if (!out_node.expired()) {
-			edges.erase(out_node.lock());
-		}	
+	// If node not found
+	if (del_node == nullptr) {
+		return false;
 	}
 
-	for (const auto& in_node : found_node.get()->in_edges) {
-		if (!in_node.expired()) {
-			edges.erase(in_node.lock());
-		}	
+	std::cout << "DEBUG OUTPUT\n";
+
+	std::cout << "outnodes from " << del << "\n";
+	for (const auto& out_edge : del_node.get()->out_edges) {
+		auto edge_sptr = out_edge.lock();
+		auto dst_sptr = edge_sptr->dst.lock();
+		std::cout << dst_sptr->value << edge_sptr->weight << "\n";	
+		// Call edge erase
 	}
 
-	nodes.erase(found_node);
+	// for (const auto& out_node : del_node.get()->out_edges) {
+	//   if (!out_node.expired()) {
+	//     edges.erase(out_node.lock());
+	//   }	
+	// }
+	// 
+	// for (const auto& in_node : del_node.get()->in_edges) {
+	//   if (!in_node.expired()) {
+	//     edges.erase(in_node.lock());
+	//   }	
+	// }
+	
+	std::cout << "END DEBUG OUTPUT\n";
+	// nodes.erase(del_node);
 
-	return 1;
+	return true;
 }
 
-/* Delete node */
+/* Replace node */
 // TODOS
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
@@ -238,6 +251,40 @@ void gdwg::Graph<N, E>::Clear() noexcept {
 	
 //}
 
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
+	std::cout << "debug output for erase\n";
+	for (const auto &it : this->edges) {
+		auto src_node = it->src.lock();
+		auto dst_node = it->dst.lock();
+
+		if (src_node->value == src && dst_node->value == dst && it->weight == w) {
+			// first delete outedge link from src node
+			// std::weak_ptr<gdwg::Graph<N, E>::Edge> out_edge;
+			int out_pos = 0;
+			for (auto out = src_node->out_edges.begin(); out != src_node->out_edges.end(); ++out) {
+				auto out_edge_dst = out.lock()->dst.lock();
+				std::cout << out_edge_dst->value << "\n";
+				if (out_edge_dst->value == dst) {
+					// out_edge = out;
+					std::cout << "OUT_EDGE ASSIGNED\n";
+					src_node->out_edges.erase(out);
+					break;
+				}
+				out_pos++;
+			}
+
+			std::cout << out_pos;
+
+			// remove weak_ptr from vector
+			
+		}
+	}
+	
+	std:: cout << "debug output finish\n";
+	
+	return true;
+}
 
 /*************
  * ITERATORS *

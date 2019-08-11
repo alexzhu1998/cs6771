@@ -27,9 +27,22 @@ int main() {
 	auto e2 = std::make_tuple(s2, s3, 7.6);
 	auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
 	gdwg::Graph<std::string, double> b2{e.begin(), e.end()};
+
+	// Testing delete
+	b2.InsertNode("lmao");
+	b2.InsertEdge("lmao", "Hello", 2);
+	b2.InsertEdge("Hello", "lmao", 5);
+	
+	// Testing erase(src, dst, w)
+	std::cout << b2 << "\n" << "--------------------\n";
+	b2.erase("Hello", "lmao", 5);
 	std::cout << b2;
 
-	std::cout << "-----------\n";
+	// Testing DeleteNode
+	// std::cout << b2;
+	// std::cout << "-----------\n";
+	// b2.DeleteNode("lmao");
+	// std::cout << b2;
 
 	// Testing copy operator
 	// gdwg::Graph<std::string, double> b3;
@@ -37,10 +50,10 @@ int main() {
 	// std::cout << b3;
 	
 	// Testing move operator
-	gdwg::Graph<std::string, double> b3;
-	b3 = std::move(b2);
-	std::cout << b3;
-	std::cout << b2;
+	// gdwg::Graph<std::string, double> b3;
+	// b3 = std::move(b2);
+	// std::cout << b3;
+	// std::cout << b2;
 
 	// Testing copy constructor
 	// gdwg::Graph<std::string, double> b3{b2};
