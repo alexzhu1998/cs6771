@@ -36,8 +36,9 @@ int main() {
 	
 	// Testing erase(src, dst, w)
 	std::cout << b2 << "\n" << "--------------------\n";
-	b2.erase("Hello", "lmao", 5);
-	b2.erase("lmao", "Hello", 2);
+	// b2.erase("Hello", "lmao", 5);
+	// b2.erase("lmao", "Hello", 2);
+	b2.DeleteNode("lmao");
 	std::cout << b2;
 
 	// Testing DeleteNode

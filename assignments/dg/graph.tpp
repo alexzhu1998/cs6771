@@ -156,31 +156,15 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 		return false;
 	}
 
-	std::cout << "DEBUG OUTPUT\n";
-
-	std::cout << "outnodes from " << del << "\n";
-	for (const auto& out_edge : del_node.get()->out_edges) {
-		auto edge_sptr = out_edge.lock();
-		auto dst_sptr = edge_sptr->dst.lock();
-		std::cout << dst_sptr->value << edge_sptr->weight << "\n";	
-		// Call edge erase
+	for (const auto &it : this->edges) {
+		std::cout << it->src.lock()->value << "\n";
+		if (it->src.lock()->value == del || it->dst.lock()->value == del) {
+			this->erase(it->src.lock()->value, it->dst.lock()->value, it->weight);
+			std::cout << "nyes\n";
+		}
 	}
 
-	// for (const auto& out_node : del_node.get()->out_edges) {
-	//   if (!out_node.expired()) {
-	//     edges.erase(out_node.lock());
-	//   }	
-	// }
-	// 
-	// for (const auto& in_node : del_node.get()->in_edges) {
-	//   if (!in_node.expired()) {
-	//     edges.erase(in_node.lock());
-	//   }	
-	// }
-	
-	std::cout << "END DEBUG OUTPUT\n";
-	// nodes.erase(del_node);
-
+	nodes.erase(del_node);
 	return true;
 }
 
@@ -302,8 +286,8 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src,
 /* erase(edge) */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
+	// return false if edge not found
 	bool found = false;
-
 	for (const auto &edge : this->edges) {
 		auto src_node = edge->src.lock();
 		auto dst_node = edge->dst.lock();

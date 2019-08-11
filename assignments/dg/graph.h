@@ -45,11 +45,16 @@ class Graph {
 	bool operator!=(const Node& o) {
 		return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
 	}    
+		// Node Destroyer?
+		~Node() {
+			
+		}
+
   };
 
 	// Edge Definition
   struct Edge {
-	std::weak_ptr<Node> src;
+		std::weak_ptr<Node> src;
     std::weak_ptr<Node> dst;
     E weight;
 
@@ -130,16 +135,16 @@ class Graph {
 
   class const_iterator {};
 
-	/* Copy constructor */
-	Graph(const Graph&);
+  /* Copy constructor */
+  Graph(const Graph&);
 	/* Move constructor */
 	Graph(Graph&&) noexcept;
 		
 	/* Destructor */
 	~Graph() {
-		nodes.clear();
-		edges.clear();
-	}
+    nodes.clear();
+    edges.clear();
+  }
 
 	/*************
 	* OPERATORS *
