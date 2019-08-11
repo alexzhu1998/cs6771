@@ -1,10 +1,11 @@
 // #include "assignments/dg/graph.h" // probably not needed... 
 
+#include <iterator>
+#include <vector>
+
 /*****************
  * CONSTRUCTORS
  *****************/
-#include <iterator>
-#include <vector>
 
 
 /* Copy constructor */

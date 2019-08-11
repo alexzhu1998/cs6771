@@ -58,7 +58,7 @@ class Graph {
     std::weak_ptr<Node> dst;
     E weight;
 
-		// Edge Constructors
+	// Edge Constructors
   	Edge() = default;
 
     Edge(std::weak_ptr<Node> source, 
@@ -133,7 +133,45 @@ class Graph {
 		}
 	};
 
-  class const_iterator {};
+	/*
+	 * THIS IS NOT DONE
+	 * Has to utilise the actual attributes - node it and edge it
+	 */
+	class const_iterator {
+		typename std::set<std::shared_ptr<Node>>::iterator node_it_;
+		typename std::set<std::shared_ptr<Edge>>::iterator edge_it_;
+
+		// TODO: tuple-ise?
+		Edge operator*() const { return edges->lock(); }
+
+		const_iterator operator++() {
+		  edges = edges->next.get();
+		  return *this;
+		}
+		const_iterator operator++(int) {
+			auto copy{*this};
+			++(*this);
+			return copy;
+		}
+
+		const_iterator operator--() {
+		  edges = edges->back.get();
+		  return *this;
+		}
+		const_iterator operator--(int) {
+			auto copy{*this};
+			--(*this);
+			return copy;
+		}
+
+		friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
+		  return *lhs == *rhs;
+		}
+
+		friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) { 
+			return !(lhs == rhs); 
+		}
+	};
 
   /* Copy constructor */
   Graph(const Graph&);
@@ -230,10 +268,10 @@ class Graph {
 	std::shared_ptr<Node> node_exists(const N&) const;
  
  private:
-  // TODO set compare protocol
-  std::set<std::shared_ptr<Node>> nodes;
-  std::set<std::shared_ptr<Edge>> edges;
- 
+	// TODO set compare protocol
+	std::set<std::shared_ptr<Node>> nodes;
+	std::set<std::shared_ptr<Edge>> edges;
+ 	//explicit const_iterator(std::set<std::shared_ptr<Edge>> edge_it_): edge_it_{edges} {}
 };
 
 }  // namespace gdwg
