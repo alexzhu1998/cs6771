@@ -322,4 +322,8 @@ bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
 /*************
  * ITERATORS *
  *************/
+ 
+template <typename N, typename E>
+typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
 
+}
