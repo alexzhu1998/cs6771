@@ -30,20 +30,20 @@ class Graph {
 	// Node Definition
   struct Node {
     N value;
-    std::vector<std::weak_ptr<Edge>> out_edges;
-    std::vector<std::weak_ptr<Edge>> in_edges;
+    std::vector<std::weak_ptr<Edge>> out_edges_;
+    std::vector<std::weak_ptr<Edge>> in_edges_;
 
 		// Node Constructors
     Node() = default;
     Node(N node_value) : value{node_value} {};
-		// TODO should we have initialisers/methods for adding to int/out_edges?
+		// TODO should we have initialisers/methods for adding to int/out_edges_?
 		
 		bool operator==(const Node& o) {
-			return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+			return (this->value == o.value && this->out_edges_ == o.out_edges_ && this->in_edges_ == o.in_edges_);
 		}
 
 		bool operator!=(const Node& o) {
-			return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+			return !(this->value == o.value && this->out_edges_ == o.out_edges_ && this->in_edges_ == o.in_edges_);
 		}    
 		// Node Destroyer?
 		~Node() {
@@ -79,7 +79,7 @@ class Graph {
   	}
   };
 
-	/* Sorting edges */
+	/* Sorting edges_ */
 	// TODO
 	struct SortEdgeComparator {
 	};
@@ -88,13 +88,13 @@ class Graph {
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
    ************************************/
 
-	// Nodes == strings (out_edges and in_edges)
+	// Nodes == strings (out_edges_ and in_edges_)
 	// Edges == dest_node, src_node, weight(double)
 
   /* Default contructor*/	
-  Graph(): nodes{}, edges{} {};
+  Graph(): nodes_{}, edges_{} {};
 
-  /* Constructor iterates over nodes and adds them to the graph*/
+  /* Constructor iterates over nodes_ and adds them to the graph*/
   Graph(std::vector<std::string>::const_iterator begin, 
 				std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
@@ -103,7 +103,7 @@ class Graph {
   }
   
   /* Constructor iterates over tuples containing source node, destination node and edge 
-	 * weight and add them to the graph. Essentially iterates over a vector of edges and 
+	 * weight and add them to the graph. Essentially iterates over a vector of edges_ and 
 	 * adds them to a new graph.
 	 */
 	Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin, 
@@ -114,7 +114,7 @@ class Graph {
 			std::string src_string = std::get<0>(*i);
 			std::string dest_string = std::get<1>(*i);
 
-			// if nodes missing, create them
+			// if nodes_ missing, create them
 			if (this->IsNode(src_string) == false) {
 				this->InsertNode(src_string);
 			}
@@ -127,8 +127,8 @@ class Graph {
 	}
 
 	/* Initialiser list constructor */
-	Graph(std::initializer_list<N> new_nodes) {
-		for (const auto &it : new_nodes) {
+	Graph(std::initializer_list<N> new_nodes_) {
+		for (const auto &it : new_nodes_) {
 			this->InsertNode(it);
 		}
 	};
@@ -142,10 +142,10 @@ class Graph {
 		typename std::set<std::shared_ptr<Edge>>::iterator edge_it_;
 
 		// TODO: tuple-ise?
-		Edge operator*() const { return edges->lock(); }
+		Edge operator*() const { return edges_->lock(); }
 
 		const_iterator operator++() {
-		  edges = edges->next.get();
+		  edges_ = edges_->next.get();
 		  return *this;
 		}
 		const_iterator operator++(int) {
@@ -155,7 +155,7 @@ class Graph {
 		}
 
 		const_iterator operator--() {
-		  edges = edges->back.get();
+		  edges_ = edges_->back.get();
 		  return *this;
 		}
 		const_iterator operator--(int) {
@@ -180,8 +180,8 @@ class Graph {
 		
 	/* Destructor */
 	~Graph() {
-    nodes.clear();
-    edges.clear();
+    nodes_.clear();
+    edges_.clear();
   }
 
 	/*************
@@ -232,12 +232,12 @@ class Graph {
 	// friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
 	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
 		// For each node
-	    for (const auto& node : g.nodes) {
+	    for (const auto& node : g.nodes_) {
 	      	os << node->value;
 			os << " (\n";
-			// Each node has a vector containing edges
-			auto begin = node->out_edges.begin();
-			auto end = node->out_edges.end();
+			// Each node has a vector containing edges_
+			auto begin = node->out_edges_.begin();
+			auto end = node->out_edges_.end();
 			// Loop through this vector
 			for (auto it = begin; it != end; ++it) {
 				// Create shared_ptr from weak_ptr to manage
@@ -251,13 +251,13 @@ class Graph {
 	    return os;
 	}
 
-	// This is probably wrong tbh, right now relying on operator overloading with nodes and edges
+	// This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_
 	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-		return (a.edges == b.edges || a.nodes == b.nodes);
+		return (a.edges_ == b.edges_ || a.nodes_ == b.nodes_);
 	}
 
 	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-		return !(a.edges == b.edges || a.nodes == b.nodes);
+		return !(a.edges_ == b.edges_ || a.nodes_ == b.nodes_);
 	}
 
 
@@ -268,7 +268,7 @@ class Graph {
 	// std::shared_ptr<Node> node_exists(const N&) const;
 
 	std::shared_ptr<Node> node_exists(N val) const{
-		for(const auto& node : nodes){
+		for(const auto& node : nodes_){
 			if(node.get()->value == val){
 					return node;
 			}
@@ -278,9 +278,9 @@ class Graph {
  
  private:
 	// TODO set compare protocol
-	std::set<std::shared_ptr<Node>> nodes;
-	std::set<std::shared_ptr<Edge>> edges;
- 	//explicit const_iterator(std::set<std::shared_ptr<Edge>> edge_it_): edge_it_{edges} {}
+	std::set<std::shared_ptr<Node>> nodes_;
+	std::set<std::shared_ptr<Edge>> edges_;
+ 	//explicit const_iterator(std::set<std::shared_ptr<Edge>> edge_it_): edge_it_{edges_} {}
 };
 
 }  // namespace gdwg

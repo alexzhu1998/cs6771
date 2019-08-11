@@ -22,7 +22,7 @@ merge replace
 clear
 is node
 is connected
-get nodes
+get nodes_
 get connected
 get weights
 

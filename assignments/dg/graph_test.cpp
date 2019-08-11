@@ -46,7 +46,7 @@ SCENARIO("Constructing a graph with default, copy, and move") {
       REQUIRE(b.at(1) == "how");
       REQUIRE(b.at(2) == "are");
       REQUIRE(b.getEdges() == 2);
-      // TODO: check the edges
+      // TODO: check the edges_
     }
   }
   WHEN("You construct a graph with an initialiser list") {
@@ -60,5 +60,8 @@ SCENARIO("Constructing a graph with default, copy, and move") {
       REQUIRE(b.at(3) == "y");
       REQUIRE(b.getEdges() == 0);
     }
+  }
+  WHEN("You construct a graph with a copy constructor") {
+    
   }
 }
