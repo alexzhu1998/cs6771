@@ -236,20 +236,50 @@ void gdwg::Graph<N, E>::Clear() noexcept {
     nodes.clear();
 }
 
-// template <typename N, typename E>
-// std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
-// 
-// }
-// 
-// template <typename N, typename E>
-// std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
-//   
-// }
+/*
+ * Return all nodes connected by outgoing edges to a given node
+ */ 
+template <typename N, typename E>
+std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
+	const auto &node = node_exists(src);
+    std::vector<N> ret_nodes = {};
 
-//template <typename N, typename E>
-//const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
+	if (node == nullptr) {
+		throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
+	}
+
+	for (const auto &out_edge : node.out_edges) {
+		ret_nodes.push_back(out_edge->lock()->dst->lock());
+	}
+
+	return ret_nodes;
+}
+ 
+template <typename N, typename E>
+std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
+  	const auto &src_node = node_exists(src);
+  	const auto &dst_node = node_exists(dst);
+  	std::vector<E> ret_edges = {};
+
+
+	if (src_node == nullptr || dst_node == nullptr) {
+		throw std::out_of_range("Cannot call Graph::GetWeights if src doesn't exist in the graph");
+	}
+
+	for (const auto &out_edge : src_node.out_edges) {
+		ret_edges.push_back(out_edge->lock());
+	}
+
+	return ret_edges;
+}
+
+/*
+ * Find a given edge in the graph.
+ */
+template <typename N, typename E>
+const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
 	
-//}
+}
 
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
@@ -263,7 +293,7 @@ bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
 			// std::weak_ptr<gdwg::Graph<N, E>::Edge> out_edge;
 			int out_pos = 0;
 			for (auto out = src_node->out_edges.begin(); out != src_node->out_edges.end(); ++out) {
-				auto out_edge_dst = out.lock()->dst.lock();
+				auto out_edge_dst = out->lock()->dst.lock();
 				std::cout << out_edge_dst->value << "\n";
 				if (out_edge_dst->value == dst) {
 					// out_edge = out;
