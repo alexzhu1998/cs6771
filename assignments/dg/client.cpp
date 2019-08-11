@@ -63,13 +63,13 @@ int main() {
 	// std::cout << "------\n";
 	// std::cout << g;
 
-	// diagramtic case for merge replace
-	g.InsertEdge("a", "b", 3);
-	g.InsertEdge("c", "b", 2);
-	g.InsertEdge("d", "b", 4);
-	std::cout << g << "-------\n";
-	g.MergeReplace("b", "a");
-	std::cout << g;
+	// diagramtic case 1 for merge replace
+	// g.InsertEdge("a", "b", 3);
+	// g.InsertEdge("c", "b", 2);
+	// g.InsertEdge("d", "b", 4);
+	// std::cout << g << "-------\n";
+	// g.MergeReplace("b", "a");
+	// std::cout << g;
 
 	// Testing copy operator
 	// gdwg::Graph<std::string, double> b3;
