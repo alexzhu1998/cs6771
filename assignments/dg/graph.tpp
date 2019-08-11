@@ -185,8 +185,26 @@ bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
 /* MergeReplace */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
-	std::cout << oldData << newData << "\n";
+	const auto &old_node = node_exists(oldData);
+	const auto &new_node = node_exists(newData);
 
+	// replace old_node with new_node in node->out_edges and node->in_edges
+	for (const auto &it : old_node->out_edges) {
+		// set the src of the edge to new_node
+		it.lock()->src = new_node;
+		// add weak pointers to new_node->out_edges
+		new_node->out_edges.push_back(it);
+	}
+
+	for (const auto &it : old_node->in_edges) {
+		// set the dst of the edge to new_node
+		it.lock()->dst = new_node;
+		// add weak pointers to new_node->in_edges
+		new_node->in_edges.push_back(it);
+	}
+
+	// clean all of old_node;
+	this->DeleteNode(oldData);
 }
 
 /* IsNode */

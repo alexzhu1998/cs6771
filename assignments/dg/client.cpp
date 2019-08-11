@@ -50,14 +50,25 @@ int main() {
 	// b2.Replace("lmao", "lol");
 	// std::cout << b2;
 	
+	// Testing mergereplace
 	std::vector<std::string> v{"a", "b", "c", "d"};
 	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
-	g.InsertEdge("a", "b", 1);
-	g.InsertEdge("a", "c", 2);
-	g.InsertEdge("a", "d", 3);
-	std::cout << g;
-	g.MergeReplace("a", "b");
-	std::cout << "------\n";
+
+	// basic case for merge replace~
+	// g.InsertEdge("a", "b", 1);
+	// g.InsertEdge("a", "c", 2);
+	// g.InsertEdge("a", "d", 3);
+	// std::cout << g;
+	// g.MergeReplace("a", "b");
+	// std::cout << "------\n";
+	// std::cout << g;
+
+	// diagramtic case for merge replace
+	g.InsertEdge("a", "b", 3);
+	g.InsertEdge("c", "b", 2);
+	g.InsertEdge("d", "b", 4);
+	std::cout << g << "-------\n";
+	g.MergeReplace("b", "a");
 	std::cout << g;
 
 	// Testing copy operator

@@ -38,13 +38,13 @@ class Graph {
     Node(N node_value) : value{node_value} {};
 		// TODO should we have initialisers/methods for adding to int/out_edges?
 		
-	bool operator==(const Node& o) {
-		return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
-	}
+		bool operator==(const Node& o) {
+			return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+		}
 
-	bool operator!=(const Node& o) {
-		return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
-	}    
+		bool operator!=(const Node& o) {
+			return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+		}    
 		// Node Destroyer?
 		~Node() {
 			
@@ -66,11 +66,11 @@ class Graph {
 
     bool operator==(const Edge& rhs) {
 	    return (this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
-	}
+		}
 
-	bool operator!=(const Edge& rhs) {
-	    return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
-	}
+		bool operator!=(const Edge& rhs) {
+				return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+		}
   
   	/* Destructor */
   	~Edge() {
@@ -227,7 +227,16 @@ class Graph {
 	 * EXTRA FUNCTIONS
 	 ***************/
 	std::shared_ptr<Node> GetNode(const N&);
-	std::shared_ptr<Node> node_exists(const N&) const;
+	// std::shared_ptr<Node> node_exists(const N&) const;
+
+	std::shared_ptr<Node> node_exists(N val) const{
+		for(const auto& node : nodes){
+			if(node.get()->value == val){
+					return node;
+			}
+		}
+		return {};
+	}
  
  private:
   // TODO set compare protocol
