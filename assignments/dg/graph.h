@@ -122,11 +122,9 @@ class Graph {
   /* Copy constructor */
   Graph(const Graph&);
 	/* Move constructor */
-	Graph(const Graph&&) noexcept;
+	Graph(Graph&&) noexcept;
 		
 	/* Destructor */
-  // TODO not sure if this looks correct
-	// - Chris: have tested it and I think it works
 	~Graph() {
     nodes.clear();
     edges.clear();
@@ -137,35 +135,10 @@ class Graph {
 	*************/
 
 	/* Copy assignment */
-	Graph& operator=(Graph& other) {
-		if (this == &other) {
-		} else {
-			this->clear();
-			for (const auto & node : other.nodes) {
-				this->InsertNode(node);
-			}
-			for (const auto & edge : other.edges) {
-				this->InsertEdge(edge->src.lock().get()->value, edge->dest.lock().get()->value, edge.weight);
-			}
-		}
-		return *this;
-	}
-
+	Graph& operator=(const Graph& other);
 	/* Move assigment */
-	Graph& operator= (const Graph&& other) {
-		if (this == &other) {
-		} else {
-			this->clear();
-			for (const auto & node : other.nodes) {
-				this->InsertNode(node);
-			}
-			for (const auto & edge : other.edges) {
-				this->InsertEdge(edge->src.lock().get()->value, edge->dest.lock().get()->value, edge.weight);
-			}
-			other.clear();
-		}
-		return *this;
-	}
+	Graph& operator=(Graph&& other);
+
 
 	/***********
 	 * METHODS *

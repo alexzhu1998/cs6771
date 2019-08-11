@@ -17,44 +17,71 @@ std::shared_ptr<Node> gdwg::Graph<N, E>::node_exists(const N& node_name) const{
 template <typename N, typename E>
 gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& other) {
 	// this.nodes = copy nodes
-	for (const auto &it : other.nodes) {
-		InsertNode(it->value);
+	for (const auto &node : other.nodes) {
+		InsertNode(node->value);
 	}
 
 	// this.edges = copy edges
-	for (const auto &it : other.edges) {
-		auto src_sptr = it->src.lock();
-		auto dst_sptr = it->dst.lock();
-
-		auto src_string = src_sptr->value;
-		auto dst_string = dst_sptr->value;
-		
-		InsertEdge(src_string, dst_string, it->weight);
+	for (const auto &edge : other.edges) {
+		InsertEdge(edge->src.lock().get()->value, edge->dst.lock().get()->value, edge->weight);
 	}
 }
 
 /* Move constructor */
 template <typename N, typename E>
-gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>&& other) noexcept {
+gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& other) noexcept {
 	// this.nodes = copy nodes
-	for (const auto &it : other.nodes) {
-		InsertNode(it->value);
+	for (const auto &node : other.nodes) {
+		InsertNode(node->value);
 	}
 
 	// this.edges = copy edges
-	for (const auto &it : other.edges) {
-		auto src_sptr = it->src.lock();
-		auto dst_sptr = it->dst.lock();
-
-		auto src_string = src_sptr->value;
-		auto dst_string = dst_sptr->value;
-		
-		InsertEdge(src_string, dst_string, it->weight);
+	for (const auto &edge : other.edges) {
+		InsertEdge(edge->src.lock().get()->value, edge->dst.lock().get()->value, edge->weight);
 	}
 
 	// but delete other afterwards
 	other.~Graph();
 }
+
+
+/*****************
+ * OPERATORS
+ *****************/
+
+/* Copy Operator */
+template <typename N, typename E>
+gdwg::Graph<N, E>& gdwg::Graph<N, E>::operator=(const gdwg::Graph<N, E>& other) {
+	if (this == &other) {
+		} else {
+			this->Clear();
+			for (const auto &node : other.nodes) {
+				this->InsertNode(node->value);
+			}
+			for (const auto &edge : other.edges) {
+				this->InsertEdge(edge->src.lock().get()->value, edge->dst.lock().get()->value, edge->weight);
+			}
+		}
+	return *this;
+}
+
+/* Move operator */
+template <typename N, typename E>
+gdwg::Graph<N, E>& gdwg::Graph<N, E>::operator=(gdwg::Graph<N, E>&& other) {
+		if (this == &other) {
+		} else {
+			this->Clear();
+			for (const auto & node : other.nodes) {
+				this->InsertNode(node->value);
+			}
+			for (const auto & edge : other.edges) {
+				this->InsertEdge(edge->src.lock().get()->value, edge->dst.lock().get()->value, edge->weight);
+			}
+			other.Clear();
+		}
+		return *this;
+	}
+
 
 /***********
  * METHODS *
@@ -196,15 +223,15 @@ void gdwg::Graph<N, E>::Clear() noexcept {
     nodes.clear();
 }
 
-template <typename N, typename E>
-std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
-
-}
-
-template <typename N, typename E>
-std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
-	
-}
+// template <typename N, typename E>
+// std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
+// 
+// }
+// 
+// template <typename N, typename E>
+// std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
+//   
+// }
 
 //template <typename N, typename E>
 //const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {

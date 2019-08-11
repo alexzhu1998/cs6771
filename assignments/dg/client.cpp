@@ -31,24 +31,36 @@ int main() {
 
 	std::cout << "-----------\n";
 
+	// Testing copy operator
+	// gdwg::Graph<std::string, double> b3;
+	// b3 = b2;
+	// std::cout << b3;
+	
+	// Testing move operator
+	gdwg::Graph<std::string, double> b3;
+	b3 = std::move(b2);
+	std::cout << b3;
+	std::cout << b2;
+
 	// Testing copy constructor
 	// gdwg::Graph<std::string, double> b3{b2};
 	// std::cout << b3;
 	// b3.InsertNode("lmao");
 	// std::cout << b3;
-  // 
+	// 
 	// // testing that changing OG graph doesn't change new graph
-	// std::cout << "lol2\n";
+	// std::cout << "------------\n";
 	// std::cout << b2;
 	
 	// Testing move constructor
-	gdwg::Graph<std::string, double> b3{std::move(b2)};
-	std::cout << b3;
-	b3.InsertNode("lmao");
-	std::cout << b3;
-
-	std::cout << "-----------\n";
-	std::cout << b2;
+	// gdwg::Graph<std::string, double> b3{std::move(b2)};
+	// std::cout << b3;
+	// b3.InsertNode("lmao");
+	// std::cout << "-------------\n";
+	// std::cout << b3;
+	// 
+	// std::cout << "-----------\n";
+	// std::cout << b2;
 	
 	// Same test as above but also testing invalid edge insertion
 	// std::string s1{"Hello"};
