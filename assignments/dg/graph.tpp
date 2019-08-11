@@ -186,8 +186,8 @@ bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
 /* MergeReplace */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
-	const auto &old_node = node_exists(oldData);
-	const auto &new_node = node_exists(newData);
+	const auto &old_node = NodeExists(oldData);
+	const auto &new_node = NodeExists(newData);
 
 	// replace old_node with new_node in node->out_edges_ and node->in_edges_
 	for (const auto &it : old_node->out_edges_) {
@@ -244,7 +244,7 @@ void gdwg::Graph<N, E>::Clear() noexcept {
  */ 
 template <typename N, typename E>
 std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
-	const auto &node = node_exists(src);
+	const auto &node = NodeExists(src);
     std::vector<N> ret_nodes_ = {};
 
 	if (node == nullptr) {
@@ -261,8 +261,8 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
 // GetWeights
 template <typename N, typename E>
 std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
-  	const auto &src_node = node_exists(src);
-  	const auto &dst_node = node_exists(dst);
+  	const auto &src_node = NodeExists(src);
+  	const auto &dst_node = NodeExists(dst);
   	std::vector<E> ret_edges_ = {};
 
 
@@ -282,8 +282,8 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
  */
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
-	const auto &src_node = node_exists(src);
-	const auto &dst_node = node_exists(dst);
+	const auto &src_node = NodeExists(src);
+	const auto &dst_node = NodeExists(dst);
 	if (src_node == nullptr || dst_node == nullptr) {
 		return edges_.end();
 	}

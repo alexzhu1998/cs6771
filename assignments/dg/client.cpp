@@ -9,7 +9,7 @@ int main() {
 	// Base Constructor
   // gdwg::Graph<std::string, int> g;
 	// 
-	// Constructor using a vector of strings representing nodes 
+	// Constructor using a vector of strings representing nodes_ 
 	// std::vector<std::string> v{"Hello", "how", "are", "you"};
 	// gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
 	// std::cout << b1 << "\n";
@@ -19,7 +19,7 @@ int main() {
 	// gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
 	// std::cout << b1 << "\n";
 
-	// Constructor using a vector of tuples representing edges
+	// Constructor using a vector of tuples representing edges_
 	// std::string s1{"Hello"};
 	// std::string s2{"how"};
 	// std::string s3{"are"};

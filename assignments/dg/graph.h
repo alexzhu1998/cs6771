@@ -265,9 +265,9 @@ class Graph {
 	 * EXTRA FUNCTIONS
 	 ***************/
 	std::shared_ptr<Node> GetNode(const N&);
-	// std::shared_ptr<Node> node_exists(const N&) const;
+	// std::shared_ptr<Node> NodeExists(const N&) const;
 
-	std::shared_ptr<Node> node_exists(N val) const{
+	std::shared_ptr<Node> NodeExists(N val) const{
 		for(const auto& node : nodes_){
 			if(node.get()->value == val){
 					return node;
