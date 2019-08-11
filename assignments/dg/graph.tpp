@@ -170,27 +170,42 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 }
 
 /* Replace node */
-// TODOS
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
-	/* Check if in list of nodes */
-	const auto& old_node = node_exists(old_data);
-
-	if (old_node == nullptr) {
-		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
-	}
-
-	/* Cannot replace is data already exists */
-	const auto& new_node = node_exists(new_data);
-	if (new_node != nullptr) {
+	if (this->IsNode(new_data) == true)
 		return false;
+	for (const auto &it : this->nodes) {
+		if (it->value == old_data) {
+			it->value = new_data;
+		}
 	}
 
-	// TODO: ERASE OLD EDGES AND ADD TO NEW NODE
-	nodes.erase(old_node);
+	return true;
+}
 
-	/* Delete */
-	return 1;
+/* MergeReplace */
+template <typename N, typename E>
+void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
+	const auto &old_node = node_exists(oldData);
+	const auto &new_node = node_exists(newData);
+
+	// replace old_node with new_node in node->out_edges and node->in_edges
+	for (const auto &it : old_node->out_edges) {
+		// set the src of the edge to new_node
+		it.lock()->src = new_node;
+		// add weak pointers to new_node->out_edges
+		new_node->out_edges.push_back(it);
+	}
+
+	for (const auto &it : old_node->in_edges) {
+		// set the dst of the edge to new_node
+		it.lock()->dst = new_node;
+		// add weak pointers to new_node->in_edges
+		new_node->in_edges.push_back(it);
+	}
+
+	// clean all of old_node;
+	this->DeleteNode(oldData);
 }
 
 /* IsNode */
@@ -243,6 +258,7 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
 	return ret_nodes;
 }
  
+// GetWeights
 template <typename N, typename E>
 std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
   	const auto &src_node = node_exists(src);
