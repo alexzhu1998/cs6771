@@ -20,32 +20,45 @@ int main() {
 	// std::cout << b1 << "\n";
 
 	// Constructor using a vector of tuples representing edges
-	std::string s1{"Hello"};
-	std::string s2{"how"};
-	std::string s3{"are"};
-	auto e1 = std::make_tuple(s1, s2, 5.4);
-	auto e2 = std::make_tuple(s2, s3, 7.6);
-	auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
-	gdwg::Graph<std::string, double> b2{e.begin(), e.end()};
-	std::cout << b2 << "------------\n";
+	// std::string s1{"Hello"};
+	// std::string s2{"how"};
+	// std::string s3{"are"};
+	// auto e1 = std::make_tuple(s1, s2, 5.4);
+	// auto e2 = std::make_tuple(s2, s3, 7.6);
+	// auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+	// gdwg::Graph<std::string, double> b2{e.begin(), e.end()};
+	// std::cout << b2 << "------------\n";
 
 	// Testing delete
-	b2.InsertNode("lmao");
-	b2.InsertEdge("lmao", "Hello", 2);
-	b2.InsertEdge("Hello", "lmao", 5);
+	// b2.InsertNode("lmao");
+	// b2.InsertEdge("lmao", "Hello", 2);
+	// b2.InsertEdge("Hello", "lmao", 5);
 	
 	// Testing erase(src, dst, w)
-	std::cout << b2 << "\n" << "--------------------\n";
+	// std::cout << b2 << "\n" << "--------------------\n";
 	// b2.erase("Hello", "lmao", 5);
 	// b2.erase("lmao", "Hello", 2);
-	b2.DeleteNode("lmao");
-	std::cout << b2;
+	// std::cout << b2;
 
 	// Testing DeleteNode
 	// std::cout << b2;
 	// std::cout << "-----------\n";
 	// b2.DeleteNode("lmao");
 	// std::cout << b2;
+
+	// Testing replace
+	// b2.Replace("lmao", "lol");
+	// std::cout << b2;
+	
+	std::vector<std::string> v{"a", "b", "c", "d"};
+	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
+	g.InsertEdge("a", "b", 1);
+	g.InsertEdge("a", "c", 2);
+	g.InsertEdge("a", "d", 3);
+	std::cout << g;
+	g.MergeReplace("a", "b");
+	std::cout << "------\n";
+	std::cout << g;
 
 	// Testing copy operator
 	// gdwg::Graph<std::string, double> b3;

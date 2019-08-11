@@ -169,27 +169,24 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 }
 
 /* Replace node */
-// TODOS
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
-	/* Check if in list of nodes */
-	const auto& old_node = node_exists(old_data);
-
-	if (old_node == nullptr) {
-		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
-	}
-
-	/* Cannot replace is data already exists */
-	const auto& new_node = node_exists(new_data);
-	if (new_node != nullptr) {
+	if (this->IsNode(new_data) == true)
 		return false;
+	for (const auto &it : this->nodes) {
+		if (it->value == old_data) {
+			it->value = new_data;
+		}
 	}
 
-	// TODO: ERASE OLD EDGES AND ADD TO NEW NODE
-	nodes.erase(old_node);
+	return true;
+}
 
-	/* Delete */
-	return 1;
+/* MergeReplace */
+template <typename N, typename E>
+void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
+	std::cout << oldData << newData << "\n";
+
 }
 
 /* IsNode */
@@ -242,6 +239,7 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
 	return ret_nodes;
 }
  
+// GetWeights
 template <typename N, typename E>
 std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
   	const auto &src_node = node_exists(src);
