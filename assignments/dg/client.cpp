@@ -27,6 +27,7 @@ int main() {
 	auto e2 = std::make_tuple(s2, s3, 7.6);
 	auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
 	gdwg::Graph<std::string, double> b2{e.begin(), e.end()};
+	std::cout << b2 << "------------\n";
 
 	// Testing delete
 	b2.InsertNode("lmao");
@@ -36,6 +37,7 @@ int main() {
 	// Testing erase(src, dst, w)
 	std::cout << b2 << "\n" << "--------------------\n";
 	b2.erase("Hello", "lmao", 5);
+	b2.erase("lmao", "Hello", 2);
 	std::cout << b2;
 
 	// Testing DeleteNode
