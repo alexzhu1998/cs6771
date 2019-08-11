@@ -3,6 +3,15 @@
 /*****************
  * CONSTRUCTORS
  *****************/
+/*template <typename N, typename E>
+std::shared_ptr<Node> gdwg::Graph<N, E>::node_exists(const N& node_name) const{
+    for(const auto& node : nodes){
+        if(i.get()->val == node_name){
+            return node;
+        }
+    }
+    return {};
+}*/
 
 /* Copy constructor */
 template <typename N, typename E>
@@ -45,16 +54,6 @@ gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>&& other) noexcept {
 
 	// but delete other afterwards
 	other.~Graph();
-}
-
-template <typename N, typename E>
-gdwg::Graph<N, E>& operator=(const gdwg::Graph<N, E>& other) {
-	if (this == &other) {
-		return *this;
-	}
-
-
-
 }
 
 /***********
@@ -115,12 +114,56 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	return true;
 }
 
-// /* Delete node */
-// void gdwg::Graph<N, E>::DeleteNode(const N &node) noexcept { 
-// 	/* Check if in list of nodes */
+/* Delete node */
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::DeleteNode(const N &node) noexcept { 
+	/* Check if in list of nodes */
+	const auto& found_node = node_exists(node);
 
-// 	/* Delete */
-// }
+	if (found_node == nullptr) {
+		return 0;
+	}
+
+	for (const auto& out_node : found_node.get()->out_edges) {
+		if (!out_node.expired()) {
+			edges.erase(out_node.lock());
+		}	
+	}
+
+	for (const auto& in_node : found_node.get()->in_edges) {
+		if (!in_node.expired()) {
+			edges.erase(in_node.lock());
+		}	
+	}
+
+	nodes.erase(found_node);
+
+	return 1;
+}
+
+/* Delete node */
+// TODOS
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
+	/* Check if in list of nodes */
+	const auto& old_node = node_exists(old_data);
+
+	if (old_node == nullptr) {
+		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
+	}
+
+	/* Cannot replace is data already exists */
+	const auto& new_node = node_exists(new_data);
+	if (new_node != nullptr) {
+		return false;
+	}
+
+	// TODO: ERASE OLD EDGES AND ADD TO NEW NODE
+	nodes.erase(old_node);
+
+	/* Delete */
+	return 1;
+}
 
 /* IsNode */
 template <typename N, typename E>
@@ -148,7 +191,28 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 
 /* Clear/delete */
 template <typename N, typename E>
-void gdwg::Graph<N, E>::Clear() {
+void gdwg::Graph<N, E>::Clear() noexcept {
     edges.clear();
     nodes.clear();
 }
+
+template <typename N, typename E>
+std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
+
+}
+
+template <typename N, typename E>
+std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
+	
+}
+
+//template <typename N, typename E>
+//const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
+	
+//}
+
+
+/*************
+ * ITERATORS *
+ *************/
+

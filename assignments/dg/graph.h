@@ -137,38 +137,32 @@ class Graph {
 	*************/
 
 	/* Copy assignment */
-	Graph& operator=(Graph&);
-
-	// Graph& operator=(Graph& o) {
-	//   if (this != &o) {
-	//       // TODO: delete "this"
-  // 
-	//       [> Copy across class atttributes <]
-	//       for (const auto& node : o.nodes) {
-	//         // TODO: insert node
-	//       }
-  // 
-	//       for (const auto& edge : o.edges) {
-	//         // TODO: insert edge
-	//       }
-  //     }
-  //     return *this;
-	// }
+	Graph& operator=(Graph& other) {
+		if (this == &other) {
+		} else {
+			this->clear();
+			for (const auto & node : other.nodes) {
+				this->InsertNode(node);
+			}
+			for (const auto & edge : other.edges) {
+				this->InsertEdge(edge->src.lock().get()->value, edge->dest.lock().get()->value, edge.weight);
+			}
+		}
+		return *this;
+	}
 
 	/* Move assigment */
-	Graph& operator= (const Graph&& o) {
-		if (this != &o) {
-	    	// TODO: delete "this"
-
-	    	/* Copy across class atttributes */
-	    	for (const auto& node : o.nodes) {
-	    		// TODO: insert node
-	    	}
-
-	    	for (const auto& edge : o.edges) {
-	    		// TODO: insert edge
-	    	}
-	    	// delete other - for move
+	Graph& operator= (const Graph&& other) {
+		if (this == &other) {
+		} else {
+			this->clear();
+			for (const auto & node : other.nodes) {
+				this->InsertNode(node);
+			}
+			for (const auto & edge : other.edges) {
+				this->InsertEdge(edge->src.lock().get()->value, edge->dest.lock().get()->value, edge.weight);
+			}
+			other.clear();
 		}
 		return *this;
 	}
@@ -178,10 +172,10 @@ class Graph {
 	 ***********/
 	bool InsertNode(const N&);
 	bool InsertEdge(const N&, const N&, const E&);
-	bool DeleteNode(const N&);
+	bool DeleteNode(const N&) noexcept;
 	bool Replace(const N&, const N&);
 	void MergeReplace(const N&, const N&);
-	void Clear();
+	void Clear() noexcept;
 	bool IsNode(const N&);
 	bool IsConnected(const N&, const N&);
 	std::vector<N> GetNodes() const ;
@@ -236,6 +230,7 @@ class Graph {
 	 * EXTRA FUNCTIONS
 	 ***************/
 	std::shared_ptr<Node> GetNode(const N&);
+	std::shared_ptr<Node> node_exists(const N&) const;
  
  private:
   // TODO set compare protocol
