@@ -40,6 +40,9 @@ class Graph {
 		
 
 		// Node Destroyer?
+		~Node() {
+			
+		}
     
   };
 
@@ -154,7 +157,7 @@ class Graph {
 	std::vector<N> GetNodes() const ;
 	std::vector<N> GetConnected(const N&);
 	std::vector<E> GetWeights(const N&, const N&);
-	const_iterator find(const N&, const N&);
+	const_iterator find(const N&, const N&, const E&);
 	bool erase(const N&, const N&, const E&);
 
 	/*************
