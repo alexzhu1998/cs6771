@@ -3,6 +3,9 @@
 /*****************
  * CONSTRUCTORS
  *****************/
+#include <iterator>
+#include <vector>
+
 
 /* Copy constructor */
 template <typename N, typename E>
@@ -277,19 +280,35 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
  * Find a given edge in the graph.
  */
 template <typename N, typename E>
-const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
-	
+typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
+	const auto &src_node = node_exists(src);
+	const auto &dst_node = node_exists(dst);
+	if (src_node == nullptr || dst_node == nullptr) {
+		return edges.end();
+	}
+
+	for (const auto it = edges.begin(); it != edges.end; ++it) {
+		if (it->lock()->dst->lock()->value == dst 
+			&& it->lock()->src->lock()->value == src 
+			&& it->lock()->weight == wt) {
+				return it;
+		}
+	}
+
+	/* if we found nothing, return the end */
+	return edges.end();
 }
 
 /* erase(edge) */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
+	bool found = false;
+
 	for (const auto &edge : this->edges) {
 		auto src_node = edge->src.lock();
 		auto dst_node = edge->dst.lock();
 
 		// return false if edge not found
-		bool found = false;
 		// if edge(src, dst, w) exists
 		if (src_node->value == src && dst_node->value == dst && edge->weight == w) {
 			found = true;

@@ -45,7 +45,7 @@ class Graph {
 
 	// Edge Definition
   struct Edge {
-		std::weak_ptr<Node> src;
+	std::weak_ptr<Node> src;
     std::weak_ptr<Node> dst;
     E weight;
 
@@ -119,16 +119,16 @@ class Graph {
 
   class const_iterator {};
 
-  /* Copy constructor */
-  Graph(const Graph&);
+	/* Copy constructor */
+	Graph(const Graph&);
 	/* Move constructor */
 	Graph(Graph&&) noexcept;
 		
 	/* Destructor */
 	~Graph() {
-    nodes.clear();
-    edges.clear();
-  }
+		nodes.clear();
+		edges.clear();
+	}
 
 	/*************
 	* OPERATORS *
@@ -154,7 +154,7 @@ class Graph {
 	std::vector<N> GetNodes() const ;
 	std::vector<N> GetConnected(const N&);
 	std::vector<E> GetWeights(const N&, const N&);
-	const_iterator find(const N&, const N&);
+	const_iterator find(const N&, const N&, const E&);
 	bool erase(const N&, const N&, const E&);
 
 	/*************
