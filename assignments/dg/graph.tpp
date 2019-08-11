@@ -281,39 +281,41 @@ const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) 
 	
 }
 
+/* erase(edge) */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
-	std::cout << "debug output for erase\n";
-	for (const auto &it : this->edges) {
-		auto src_node = it->src.lock();
-		auto dst_node = it->dst.lock();
+	for (const auto &edge : this->edges) {
+		auto src_node = edge->src.lock();
+		auto dst_node = edge->dst.lock();
 
-		if (src_node->value == src && dst_node->value == dst && it->weight == w) {
-			// first delete outedge link from src node
-			// std::weak_ptr<gdwg::Graph<N, E>::Edge> out_edge;
-			int out_pos = 0;
-			for (auto out = src_node->out_edges.begin(); out != src_node->out_edges.end(); ++out) {
-				auto out_edge_dst = out->lock()->dst.lock();
-				std::cout << out_edge_dst->value << "\n";
-				if (out_edge_dst->value == dst) {
-					// out_edge = out;
-					std::cout << "OUT_EDGE ASSIGNED\n";
-					src_node->out_edges.erase(out);
+		// return false if edge not found
+		bool found = false;
+		// if edge(src, dst, w) exists
+		if (src_node->value == src && dst_node->value == dst && edge->weight == w) {
+			found = true;
+			for (auto it = src_node->out_edges.begin(); it != src_node->out_edges.end(); ++it) {
+				auto out_edge_dst = it->lock()->dst.lock();
+				if (out_edge_dst->value == dst && it->lock()->weight == w) {
+					src_node->out_edges.erase(it);
 					break;
 				}
-				out_pos++;
 			}
 
-			std::cout << out_pos;
-
-			// remove weak_ptr from vector
+			for (auto it = dst_node->in_edges.begin(); it != dst_node->in_edges.end(); ++it) {
+				auto in_edge_src = it->lock()->src.lock();
+				if (in_edge_src->value == src && it->lock()->weight == w) {
+					dst_node->in_edges.erase(it);
+					break;
+				}
+			}
 			
+			// removing the break will cause the loop to segfault because capacity
+			// is greater than size and the end() iterator is not adjusted it's not 
+			// a huge problem because edges are unique, so a break can be used
 		}
 	}
 	
-	std:: cout << "debug output finish\n";
-	
-	return true;
+	return found;
 }
 
 /*************
