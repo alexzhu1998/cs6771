@@ -142,27 +142,27 @@ class Graph {
 		typename std::set<std::shared_ptr<Edge>>::iterator edge_it_;
 
 		// TODO: tuple-ise?
-		// Edge operator*() const { return edges_->lock(); }
-    // 
-		// const_iterator operator++() {
-		//   edges_ = edges_->next.get();
-		//   return *this;
-		// }
-		// const_iterator operator++(int) {
-		//   auto copy{*this};
-		//   ++(*this);
-		//   return copy;
-		// }
-    // 
-		// const_iterator operator--() {
-		//   edges_ = edges_->back.get();
-		//   return *this;
-		// }
-		// const_iterator operator--(int) {
-		//   auto copy{*this};
-		//   --(*this);
-		//   return copy;
-		// }
+		Edge operator*() const { return edges_->lock(); }
+		
+		const_iterator operator++() {
+			edges_ = edges_->next.get();
+			return *this;
+		}
+		const_iterator operator++(int) {
+			auto copy{*this};
+			++(*this);
+			return copy;
+		}
+		
+		const_iterator operator--() {
+			edges_ = edges_->back.get();
+			return *this;
+		}
+		const_iterator operator--(int) {
+			auto copy{*this};
+			--(*this);
+			return copy;
+		}
 
 		friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
 		  return *lhs == *rhs;
