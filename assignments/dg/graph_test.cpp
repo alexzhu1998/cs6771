@@ -487,6 +487,7 @@ SCENARIO("Accessing a graph's iterator") {
 
    	THEN("End should point to the end of the edge container") {
 		  auto end = b.cend();
+			end--;
     	const auto& [from, to, weight] = *end;
    
       REQUIRE(from == "how");
