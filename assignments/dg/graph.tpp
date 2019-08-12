@@ -434,7 +434,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() noexcept{
 /* cend() */
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() noexcept{
-  auto end = --(this->edges_.end());
+  auto end = (this->edges_.end());
   return {end};
 }
 

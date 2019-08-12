@@ -24,8 +24,6 @@ int main() {
 	std::cout << g2 << "\n";
 
 	for (const auto& [from, to, weight] : g) {
-		std::cout << from << " -> " << "(weight " << weight << ")\n";
-		if (false)
-		std::cout << to;
+		std::cout << from << " -> " << to << " (weight " << weight << ")\n";
 	}
 }
