@@ -128,8 +128,8 @@ class Graph {
   Graph() : nodes_{}, edges_{} {};
 
   /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph(std::vector<std::string>::const_iterator begin,
-        std::vector<std::string>::const_iterator end) {
+  Graph(const std::vector<std::string>::const_iterator begin,
+        const std::vector<std::string>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
       this->InsertNode(*i);
     }
@@ -331,10 +331,10 @@ class Graph {
 		return !(a == b);
   }
 
-  /*******************
-   * EXTRA FUNCTIONS *
-   *******************/
-  bool edge_exists(N src, N dst, E w) {
+  /***********
+   * HELPERS *
+   ***********/
+  bool EdgeExists(const N src, const N dst, const E w) const {
     /* check if edge already exists (return false) */
     for (const auto& it : this->edges_) {
       auto src_node = it->src.lock();

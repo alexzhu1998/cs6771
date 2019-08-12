@@ -15,6 +15,12 @@
 #include <memory>
 #include <vector>
 
+/***********
+ * HELPERS *
+ ***********/
+
+
+
 /*****************
  * CONSTRUCTORS
  *****************/
@@ -215,7 +221,7 @@ void gdwg::Graph<N, E>::MergeReplace(const N& old_data, const N& new_data) {
 
   // replace old_node with new_node in node->out_edges and node->in_edges
   for (const auto& it : old_node->out_edges) {
-    if (edge_exists(new_node->value, it.lock()->dst.lock()->value, it.lock()->weight) == false) {
+    if (EdgeExists(new_node->value, it.lock()->dst.lock()->value, it.lock()->weight) == false) {
       // set the src of the edge to new_node
       it.lock()->src = new_node;
       // add weak pointers to new_node->out_edges
@@ -224,7 +230,7 @@ void gdwg::Graph<N, E>::MergeReplace(const N& old_data, const N& new_data) {
   }
 
   for (const auto& it : old_node->in_edges) {
-    if (edge_exists(it.lock()->src.lock()->value, new_node->value, it.lock()->weight) == false) {
+    if (EdgeExists(it.lock()->src.lock()->value, new_node->value, it.lock()->weight) == false) {
       // set the dst of the edge to new_node
       it.lock()->dst = new_node;
       // add weak pointers to new_node->in_edges

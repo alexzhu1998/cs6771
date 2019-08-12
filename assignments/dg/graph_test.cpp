@@ -452,8 +452,43 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
           "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
     }
   }
+}
 
-  WHEN("A node is merge replaced") {}
+SCENARIO("A node is erased") {
+  WHEN("A node is erased in the graph") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    std::string s4{"Help me"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e3 = std::make_tuple(s1, s3, 3.0);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e3, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    bool result = b.erase(s1, s2, 5.4);
+    bool result2 = b.erase(s3, "aaa", 8.0); /* cannot replace if data already exists */
+
+    auto result3 = b.find(s1, s3, 3.0);
+    auto result4 = b.find(s1, s3, 3.1);
+
+
+
+    THEN("The copy should be equivalent to the old graph") {
+      REQUIRE(result == true);
+      REQUIRE(result2 == false);
+      REQUIRE(b.GetConnected(s1).size() == 1);
+      REQUIRE(b.GetConnected(s1).at(0) == "are");
+    }
+
+    THEN("A remaining edge can be found") {
+      REQUIRE((*result3) == e3);
+      REQUIRE(result4 == b.cend());
+      b.erase(result3);
+      REQUIRE(b.GetConnected(s1).size() == 0);
+      REQUIRE(b.GetConnected(s3).size() == 0);
+      REQUIRE(b.erase(result3) == b.end());
+    }
+  }
 }
 
 /*************
@@ -483,7 +518,35 @@ SCENARIO("Accessing a graph's iterator") {
     }
 
 		// TODO
-		THEN("Begin++ should point to the second edge in the container") {}
+		THEN("Begin++ should point to the second edge in the container and begin-- first") {
+      auto begin = b.cbegin();
+      begin++;
+      const auto& [from, to, weight] = *begin;
+      REQUIRE(from == "how");
+      REQUIRE(to == "are");
+      REQUIRE(weight == 7.6);
+
+      begin--;
+      const auto& [from1, to1, weight1] = *begin;
+      REQUIRE(from1 == "Hello");
+      REQUIRE(to1 == "how");
+      REQUIRE(weight1 == 5.4);
+    }
+
+    THEN("++Begin should point to the second edge in the container eng --begin first") {
+      auto begin = b.cbegin();
+      ++begin;
+      const auto& [from, to, weight] = *begin;
+      REQUIRE(from == "how");
+      REQUIRE(to == "are");
+      REQUIRE(weight == 7.6);
+
+      --begin;
+      const auto& [from1, to1, weight1] = *begin;
+      REQUIRE(from1 == "Hello");
+      REQUIRE(to1 == "how");
+      REQUIRE(weight1 == 5.4);
+    }
 
    	THEN("End should point to the end of the edge container") {
 		  auto end = b.cend();
@@ -494,10 +557,24 @@ SCENARIO("Accessing a graph's iterator") {
       REQUIRE(weight == 7.6);
     }
 
-		// TODO
-		THEN("Edge-- should point to the second last edge in the container") {}
+		THEN("Edge-- should point to the second last edge in the container") {
+      auto end = b.cend();
+      const auto& [from, to, weight] = *end;
+   
+      REQUIRE(from == "are");
+      REQUIRE(to == "how");
+      REQUIRE(weight == 1.1);
 
+      end--;
+      const auto& [from1, to1, weight1] = *end;
+      REQUIRE(from1 == "are");
+      REQUIRE(to1 == "Hello");
+      REQUIRE(weight1 == 9.8);
+
+    }
 	}
+
+  WHEN("") {}
 }
 
 /***********
