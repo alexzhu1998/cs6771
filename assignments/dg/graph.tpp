@@ -426,16 +426,16 @@ operator*() const noexcept {
 
 /* cbegin() */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
+typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() noexcept{
   auto begin = this->edges_.begin();
-  return begin;
+  return {begin};
 }
 
 /* cend() */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() {
+typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() noexcept{
   auto end = --(this->edges_.end());
-  return end;
+  return {end};
 }
 
 // Not sure if these work
