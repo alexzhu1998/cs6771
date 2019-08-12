@@ -90,7 +90,7 @@ class Graph {
 
   /* Sorting edges_ */
   struct SortEdgeComparator {
-    bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) {
+    bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) const {
       if (a.get()->src.lock().get()->value != b.get()->src.lock().get()->value) {
         return a.get()->src.lock()->value < b.get()->src.lock()->value;
       } else if (a.get()->dst.lock()->value != b.get()->dst.lock()->value) {
@@ -100,7 +100,7 @@ class Graph {
       }
     }
 
-    bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) {
+    bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) const {
       if (a.lock().get()->src.lock().get()->value != b.lock().get()->src.lock().get()->value) {
         return a.lock().get()->src.lock().get()->value < b.lock().get()->src.lock().get()->value;
       } else if (a.lock().get()->dst.lock().get()->value !=
@@ -113,7 +113,7 @@ class Graph {
   };
 
   struct SortNodeComparator {
-    bool operator()(const std::weak_ptr<Node>& a, const std::weak_ptr<Node>& b) {
+    bool operator()(const std::weak_ptr<Node>& a, const std::weak_ptr<Node>& b) const {
       return a.lock()->value < b.lock()->value;
     }
   };
