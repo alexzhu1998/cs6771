@@ -267,11 +267,13 @@ SCENARIO("Populating graph with insert node") {
 
 SCENARIO("Populating graph with insertEdge") {
   WHEN("Adding an edge to an empty graph") {
-    gdwg::Graph<char, double> g{}; 
+    gdwg::Graph<char, double> g{'a'}; 
 
     THEN("A runtime exception will be thrown") {
       REQUIRE_THROWS_AS(g.InsertEdge('a', 'b', 1), std::runtime_error);
       REQUIRE_THROWS_WITH(g.InsertEdge('a', 'b', 1), "Cannot call Graph::InsertEdge when either src or dst node does not exist");
+      REQUIRE_THROWS_AS(g.InsertEdge('b', 'a', 1), std::runtime_error);
+      REQUIRE_THROWS_WITH(g.InsertEdge('b', 'a', 1), "Cannot call Graph::InsertEdge when either src or dst node does not exist");
     }
   }
 
@@ -343,6 +345,27 @@ SCENARIO("Deleting a node from a graph") {
       REQUIRE_THROWS_AS(b.GetWeights("Hello", "how"), std::out_of_range); 
       REQUIRE_THROWS_WITH(b.GetConnected("Hello"), "Cannot call Graph::GetConnected if src doesn't exist in the graph");
     } 
+  }
+}
+
+SCENARIO("Using is and get methods fringe cases") {
+  WHEN("Getting a node's connected list that doesn't exist") {
+    gdwg::Graph<char, int> b{'a', 'b', 'x', 'y'};
+
+    THEN("An exception is thrown") {
+      REQUIRE_THROWS_AS(b.GetConnected('c'), std::out_of_range);
+      REQUIRE_THROWS_WITH(b.GetConnected('c'), "Cannot call Graph::GetConnected if src doesn't exist in the graph");
+      /* Check src and dest separately */
+      REQUIRE_THROWS_AS(b.IsConnected('c', 'e'), std::runtime_error);
+      REQUIRE_THROWS_WITH(b.IsConnected('c', 'e'), "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_AS(b.IsConnected('e', 'c'), std::runtime_error);
+      REQUIRE_THROWS_WITH(b.IsConnected('e', 'c'), "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+      /* Check src and dest separately */
+      REQUIRE_THROWS_AS(b.GetWeights('a', 'e'), std::out_of_range);
+      REQUIRE_THROWS_WITH(b.GetWeights('a', 'e'), "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_AS(b.GetWeights('e', 'a'), std::out_of_range);
+      REQUIRE_THROWS_WITH(b.GetWeights('e', 'a'), "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
+    }
   }
 }
 

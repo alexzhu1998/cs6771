@@ -312,7 +312,7 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) const {
 
   	/* throw exception if src doesn't exist or dst */
 	if (src_node == nullptr || dst_node == nullptr) {
-		throw std::out_of_range("Cannot call Graph::GetWeights if src doesn't exist in the graph");
+		throw std::out_of_range("Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
 	}
 
 	/* Retreieve edges and return */
