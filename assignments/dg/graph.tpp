@@ -1,8 +1,8 @@
 /*
- * Advanced C++ (COMP6771) 2019T2 Assignment 2
+ * Advanced C++ (COMP6771) 2019T2 Assignment 3
  
  * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
- * Christopher Shi - TODO 
+ * Christopher Shi - (z5165244) - christopher.shi@student.unsw.edu.au
  *
  * Implementation of graph.h:
  * "A Graph class that provides the implementation and functionality to create and manipulate
@@ -253,7 +253,7 @@ bool gdwg::Graph<N, E>::IsNode(const N& val) const {
 	return false;
 }
 
-/* */
+/* IsConnected */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
 	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
