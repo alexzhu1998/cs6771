@@ -128,42 +128,18 @@ class Graph {
   Graph() : nodes_{}, edges_{} {};
 
   /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph(const std::vector<std::string>::const_iterator begin,
-        const std::vector<std::string>::const_iterator end) {
-    for (auto i = begin; i != end; ++i) {
-      this->InsertNode(*i);
-    }
-  }
+  Graph<N, E>(typename const std::vector<N>::const_iterator begin,
+        	  typename const std::vector<N>::const_iterator end);
 
   /* Constructor iterates over tuples containing source node, destination node and edge
    * weight and add them to the graph. Essentially iterates over a vector of edges_ and
    * adds them to a new graph.
    */
   Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator begin,
-              typename std::vector<std::tuple<N, N, E>>::const_iterator end) {
-    for (auto i = begin; i != end; ++i) {
-      /* getting the strings from the tuples */
-      auto src_string = std::get<0>(*i);
-      auto dest_string = std::get<1>(*i);
-
-      /* if nodes_ missing, create them */
-      if (this->IsNode(src_string) == false) {
-        this->InsertNode(src_string);
-      }
-      if (this->IsNode(dest_string) == false) {
-        this->InsertNode(dest_string);
-      }
-
-      this->InsertEdge(std::get<0>(*i), std::get<1>(*i), std::get<2>(*i));
-    }
-  }
+              typename std::vector<std::tuple<N, N, E>>::const_iterator end);
 
   /* Initialiser list constructor */
-  Graph(std::initializer_list<N> new_nodes_) {
-    for (const auto& it : new_nodes_) {
-      this->InsertNode(it);
-    }
-  }
+  Graph(typename std::initializer_list<N> new_nodes_);
 
   /* Copy constructor */
   Graph(const Graph&);

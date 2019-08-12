@@ -24,6 +24,44 @@
 /*****************
  * CONSTRUCTORS
  *****************/
+/* Constructor iterates over nodes_ and adds them to the graph*/
+template <typename N, typename E>
+gdwg::Graph<N, E>::Graph(const std::vector<std::string>::const_iterator begin,
+       const std::vector<std::string>::const_iterator end) {
+	for (auto i = begin; i != end; ++i) {
+	    this->InsertNode(*i);
+	}
+}
+
+/* iterator constructor */
+template <typename N, typename E>
+gdwg::Graph<N, E>::Graph(
+	typename std::vector<std::tuple<N, N, E>>::const_iterator begin,
+    typename std::vector<std::tuple<N, N, E>>::const_iterator end) {
+    for (auto i = begin; i != end; ++i) {
+      /* getting the strings from the tuples */
+      auto src_string = std::get<0>(*i);
+      auto dest_string = std::get<1>(*i);
+
+      /* if nodes_ missing, create them */
+      if (this->IsNode(src_string) == false) {
+        this->InsertNode(src_string);
+      }
+      if (this->IsNode(dest_string) == false) {
+        this->InsertNode(dest_string);
+      }
+
+      this->InsertEdge(std::get<0>(*i), std::get<1>(*i), std::get<2>(*i));
+    }
+}
+
+/* INITIALISER list constructor */
+template <typename N, typename E>
+gdwg::Graph<N, E>::Graph(std::initializer_list<N> new_nodes_) {
+    for (const auto& it : new_nodes_) {
+      this->InsertNode(it);
+    }
+}
 
 /* Copy constructor */
 template <typename N, typename E>
