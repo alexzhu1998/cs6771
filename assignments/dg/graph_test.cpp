@@ -491,12 +491,13 @@ SCENARIO("Using graph friend functions") {
     auto e_cont1 = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
     gdwg::Graph<std::string, double> a{e_cont1.begin(), e_cont1.end()};
 
+    /* Edges are inserted in different order */
     std::string s4{"Hello"};
     std::string s5{"how"};
     std::string s6{"are"};
     auto e3 = std::make_tuple(s4, s5, 5.4);
     auto e4 = std::make_tuple(s5, s6, 7.6);
-    auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e3, e4};
+    auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e4, e3};
     gdwg::Graph<std::string, double> b{e_cont2.begin(), e_cont2.end()};
 
     THEN("Both graphs should be equal") {
@@ -524,5 +525,43 @@ SCENARIO("Using graph friend functions") {
     THEN("Both graphs should be equal") {
       REQUIRE(a != b);
     }  
+  }
+
+  WHEN("Printing out empty graph") {
+    std::ostringstream oss;
+    gdwg::Graph<std::string, double> g{};
+    oss << g;
+
+    THEN("Print out nothing") {
+      REQUIRE(oss.str () == "");
+    }
+  }
+
+  WHEN("Printing out graph with nodes with no edges and not sorted upon insertion") {
+    gdwg::Graph<char, int> b{'a', 'x', 'y', 'b'};
+    std::ostringstream oss;
+
+    oss << b;
+    THEN("Print out a graph with empty nodes") {
+      REQUIRE(oss.str() == "a (\n)\nb (\n)\nx (\n)\ny (\n)\n");
+    }
+  }
+
+  WHEN("Printing out graph with a combination of nodes and edges populated") {
+    auto e1 = std::make_tuple(1, 2, 5.3);
+    auto e2 = std::make_tuple(2, 3, -1.0);
+    auto e3 = std::make_tuple(2, 2, 5.3);
+    auto e4 = std::make_tuple(3, 1, 4.0);
+    auto e = std::vector<std::tuple<int, int, double>>{e3, e4, e2, e1};
+    gdwg::Graph<int, double> b{e.begin(), e.end()};
+    b.InsertNode(-2);
+
+
+    std::ostringstream oss;
+    oss << b;
+
+    THEN("Print out the graph") {
+      REQUIRE(oss.str() == "-2 (\n)\n1 (\n 2 | 5.3\n)\n2 (\n 2 | 5.3\n 3 | -1\n)\n3 (\n 1 | 4.0\n)\n");
+    }
   }
 }
