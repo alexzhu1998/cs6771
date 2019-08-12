@@ -75,12 +75,11 @@ class Graph {
 
     /* Operator overloading for comprisons */
     bool operator==(const Edge& rhs) {
-      return (this->src->lock() == rhs.src->lock() && this->dst->lock() == rhs.dst->lock() && this->weight == rhs.weight);
+      return (this->src->lock() == rhs.src->lock() && this->dst->lock() == rhs.dst->lock() &&
+              this->weight == rhs.weight);
     }
 
-    bool operator!=(const Edge& rhs) {
-      return !(*this == rhs);
-    }
+    bool operator!=(const Edge& rhs) { return !(*this == rhs); }
 
     /* Destructor */
     ~Edge() {
@@ -90,33 +89,34 @@ class Graph {
   };
 
   /* Sorting edges_ */
-	struct SortEdgeComparator {
-		bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) {
-		    if (a.get()->src.lock().get()->value != b.get()->src.lock().get()->value) {
-			        return a.get()->src.lock()->value < b.get()->src.lock()->value;
-			    } else if (a.get()->dst.lock()->value != b.get()->dst.lock()->value) {
-			        return a.get()->dst.lock()->value < b.get()->dst.lock()->value;
-			    } else {
-			        return a.get()->weight < b.get()->weight;
-		    }
-		}
+  struct SortEdgeComparator {
+    bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) {
+      if (a.get()->src.lock().get()->value != b.get()->src.lock().get()->value) {
+        return a.get()->src.lock()->value < b.get()->src.lock()->value;
+      } else if (a.get()->dst.lock()->value != b.get()->dst.lock()->value) {
+        return a.get()->dst.lock()->value < b.get()->dst.lock()->value;
+      } else {
+        return a.get()->weight < b.get()->weight;
+      }
+    }
 
-		bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) {
-            if(a.lock().get()->src.lock().get()->value != b.lock().get()->src.lock().get()->value) {
-                return a.lock().get()->src.lock().get()->value < b.lock().get()->src.lock().get()->value;
-            } else if (a.lock().get()->dst.lock().get()->value != b.lock().get()->dst.lock().get()->value) {
-                return a.lock().get()->dst.lock().get()->value < b.lock().get()->dst.lock().get()->value;
-            } else{
-                return a.lock().get()->weight < b.lock().get()->weight;
-            }
-        }
-	};
+    bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) {
+      if (a.lock().get()->src.lock().get()->value != b.lock().get()->src.lock().get()->value) {
+        return a.lock().get()->src.lock().get()->value < b.lock().get()->src.lock().get()->value;
+      } else if (a.lock().get()->dst.lock().get()->value !=
+                 b.lock().get()->dst.lock().get()->value) {
+        return a.lock().get()->dst.lock().get()->value < b.lock().get()->dst.lock().get()->value;
+      } else {
+        return a.lock().get()->weight < b.lock().get()->weight;
+      }
+    }
+  };
 
-	struct SortNodeComparator {
-	    bool operator()(const std::weak_ptr<Node>& a, const std::weak_ptr<Node> &b) {
-	        return a.lock()->value < b.lock()->value;
-	    }
-	};
+  struct SortNodeComparator {
+    bool operator()(const std::weak_ptr<Node>& a, const std::weak_ptr<Node>& b) {
+      return a.lock()->value < b.lock()->value;
+    }
+  };
 
   /************************************
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
@@ -176,157 +176,155 @@ class Graph {
     nodes_.clear();
     edges_.clear();
   }
-  
+
   /*************
-	* OPERATORS *
-	*************/
+   * OPERATORS *
+   *************/
 
-	/* Copy assignment */
-	Graph& operator=(const Graph& other);
-	/* Move assigment */
-	Graph& operator=(Graph&& other);
+  /* Copy assignment */
+  Graph& operator=(const Graph& other);
+  /* Move assigment */
+  Graph& operator=(Graph&& other);
 
-	/******************
-	 * ITERATOR CLASS *
-	 ******************/
-	class const_iterator {
-		public:
-			using iterator_category = std::bidirectional_iterator_tag;
-			using value_type = std::tuple<N, N, E>;
-			using reference = std::tuple<const N&, const N&, const E&>;
-			using pointer = std::tuple<const N*, const N*, const E*>;
-			using difference_type = int;
+  /******************
+   * ITERATOR CLASS *
+   ******************/
+  class const_iterator {
+   public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = std::tuple<N, N, E>;
+    using reference = std::tuple<const N&, const N&, const E&>;
+    using pointer = std::tuple<const N*, const N*, const E*>;
+    using difference_type = int;
 
-			reference operator*() const noexcept;
-			// reference operator*() const { return this->edges_->lock(); }
-						
-			const_iterator& operator++() noexcept;
-			const_iterator operator++(int) noexcept {
-				auto copy{*this};
-				++(*this);
-				return copy;
-			}	
+    reference operator*() const noexcept;
+    // reference operator*() const { return this->edges_->lock(); }
 
-			const_iterator& operator--() noexcept;
-			const_iterator operator--(int) noexcept {
-				auto copy{*this};
-				--(*this);
-				return copy;
-			}
-			
-			// This one isn't strictly required, but it's nice to have
-			pointer operator->() const { return &(operator*()); }
+    const_iterator& operator++() noexcept;
+    const_iterator operator++(int) noexcept {
+      auto copy{*this};
+      ++(*this);
+      return copy;
+    }
 
-			friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept {
-				return (lhs.edge_ == rhs.edge_);
-			}
+    const_iterator& operator--() noexcept;
+    const_iterator operator--(int) noexcept {
+      auto copy{*this};
+      --(*this);
+      return copy;
+    }
 
-			friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) noexcept { 
-				return !(lhs == rhs); 
-			}
+    pointer operator->() const { return &(operator*()); }
 
-		private:
-			typename std::set<std::shared_ptr<Edge>>::iterator edge_;
+    friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept {
+      return (lhs.edge_ == rhs.edge_);
+    }
 
-			friend class Graph;
-			const_iterator(const decltype(edge_) edge): edge_{edge} {};
-	};
+    friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) noexcept {
+      return !(lhs == rhs);
+    }
 
-	/***********
-	 * METHODS *
-	 ***********/
-	bool InsertNode(const N&);
-	bool InsertEdge(const N&, const N&, const E&);
-	bool DeleteNode(const N&) noexcept;
-	bool Replace(const N&, const N&);
-	void MergeReplace(const N&, const N&);
-	void Clear() noexcept;
-	bool IsNode(const N&) const;
-	bool IsConnected(const N&, const N&) const;
-	std::vector<N> GetNodes() const;
-	std::vector<N> GetConnected(const N&) const;
-	std::vector<E> GetWeights(const N&, const N&) const;
-	const_iterator find(const N&, const N&, const E&);
-	bool erase(const N&, const N&, const E&);
-	const_iterator erase(const_iterator);
+   private:
+    typename std::set<std::shared_ptr<Edge>>::iterator edge_;
 
-	/*************
-	 * ITERATORS *
-	 *************/
+    friend class Graph;
+    explicit const_iterator(const decltype(edge_) edge) : edge_{edge} {};
+  };
 
-	using iterator = const_iterator;
-	iterator begin() noexcept { return cbegin(); }
-	iterator end() noexcept { return cend(); }
-	const_iterator cbegin();
-	const_iterator cend();
-	const_iterator begin() const noexcept { return cbegin(); }
-	const_iterator end() const noexcept { return cend(); }
+  /***********
+   * METHODS *
+   ***********/
+  bool InsertNode(const N&);
+  bool InsertEdge(const N&, const N&, const E&);
+  bool DeleteNode(const N&) noexcept;
+  bool Replace(const N&, const N&);
+  void MergeReplace(const N&, const N&);
+  void Clear() noexcept;
+  bool IsNode(const N&) const;
+  bool IsConnected(const N&, const N&) const;
+  std::vector<N> GetNodes() const;
+  std::vector<N> GetConnected(const N&) const;
+  std::vector<E> GetWeights(const N&, const N&) const;
+  const_iterator find(const N&, const N&, const E&);
+  bool erase(const N&, const N&, const E&);
+  const_iterator erase(const_iterator);
 
-	using reverse_iterator = std::reverse_iterator<iterator>;
-	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+  /*************
+   * ITERATORS *
+   *************/
 
-	reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
-	reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
-	const_reverse_iterator crbegin() { return const_reverse_iterator{cend()}; }
-	const_reverse_iterator crend() { return const_reverse_iterator{cbegin()}; }
-	const_reverse_iterator rbegin() const noexcept { return crbegin(); }
-	const_reverse_iterator rend() const noexcept { return crend(); }
+  using iterator = const_iterator;
+  iterator begin() noexcept { return cbegin(); }
+  iterator end() noexcept { return cend(); }
+  const_iterator cbegin();
+  const_iterator cend();
+  const_iterator begin() const noexcept { return cbegin(); }
+  const_iterator end() const noexcept { return cend(); }
 
-	/***********
-	 * FRIENDS *
-	 ***********/
-	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-		// For each node
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+  reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
+  reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
+  const_reverse_iterator crbegin() { return const_reverse_iterator{cend()}; }
+  const_reverse_iterator crend() { return const_reverse_iterator{cbegin()}; }
+  const_reverse_iterator rbegin() const noexcept { return crbegin(); }
+  const_reverse_iterator rend() const noexcept { return crend(); }
+
+  /***********
+   * FRIENDS *
+   ***********/
+  friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
+    // For each node
     for (const auto& node : g.nodes_) {
-        os << node->value;
-    os << " (\n";
-    // Each node has a vector containing edges_
-    auto begin = node->out_edges.begin();
-    auto end = node->out_edges.end();
-    // Loop through this vector
-    for (auto it = begin; it != end; ++it) {
-      // Create shared_ptr from weak_ptr to manage
-      auto edge = it->lock();
-      auto dest_node = edge->dst.lock();
-      os << "  " << dest_node->value << " | " << edge->weight << "\n";
+      os << node->value;
+      os << " (\n";
+      // Each node has a vector containing edges_
+      auto begin = node->out_edges.begin();
+      auto end = node->out_edges.end();
+      // Loop through this vector
+      for (auto it = begin; it != end; ++it) {
+        // Create shared_ptr from weak_ptr to manage
+        auto edge = it->lock();
+        auto dest_node = edge->dst.lock();
+        os << "  " << dest_node->value << " | " << edge->weight << "\n";
+      }
+      os << ")\n";
     }
-    os << ")\n";
-    }
-  
   }
 
-  /* 
-    * Friend operator for graph equality
-    * Overrides attempted comparison operators for edge 
-    */
+  /*
+   * Friend operator for graph equality
+   * Overrides attempted comparison operators for edge
+   */
   friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
     if (a.GetNodes() != b.GetNodes()) {
-          return false;
+      return false;
     }
 
     /* Track iteration through vectors by choosing one of the containers */
     for (const auto& node : a.GetNodes()) {
       /* Retrieve the current node in both graphs */
-    std::shared_ptr<Node> node_a = a.NodeExists(node);
+      std::shared_ptr<Node> node_a = a.NodeExists(node);
       std::shared_ptr<Node> node_b = b.NodeExists(node);
 
       /* Values are equal, check outgoing edges */
-      bool edges_equal = std::equal(
-          node_a->out_edges.begin(), node_a->out_edges.end(), 
-          node_b->out_edges.begin(), node_b->out_edges.end(),
-          [](const std::weak_ptr<Edge> lhs, const std::weak_ptr<Edge> rhs) {
-              return (lhs.lock()->src.lock()->value == rhs.lock()->src.lock()->value
-                  && lhs.lock()->dst.lock()->value == rhs.lock()->dst.lock()->value
-                  && lhs.lock()->weight == rhs.lock()->weight);
-          });
+      bool edges_equal =
+          std::equal(node_a->out_edges.begin(), node_a->out_edges.end(), node_b->out_edges.begin(),
+                     node_b->out_edges.end(),
+                     [](const std::weak_ptr<Edge> lhs, const std::weak_ptr<Edge> rhs) {
+                       return (lhs.lock()->src.lock()->value == rhs.lock()->src.lock()->value &&
+                               lhs.lock()->dst.lock()->value == rhs.lock()->dst.lock()->value &&
+                               lhs.lock()->weight == rhs.lock()->weight);
+                     });
 
       /* If inline fails, not equal */
       if (!edges_equal) {
-          return false;
+        return false;
       }
     }
     return true;
-	}
+  }
 
 	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
 		return !(a == b);
