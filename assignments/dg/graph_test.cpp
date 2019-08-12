@@ -467,13 +467,49 @@ SCENARIO("Accessing a graph's iterator") {
     std::string s3{"are"};
     auto e1 = std::make_tuple(s1, s2, 5.4);
     auto e2 = std::make_tuple(s2, s3, 7.6);
-    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+		auto e3 = std::make_tuple(s3, s1, 9.8);
+		auto e4 = std::make_tuple(s3, s2, 1.1);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2, e3, e4};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
-    auto it = b.cbegin();
 
     THEN("it should point to the beginning of the edge container") {
-      REQUIRE((*it) == "Hello");//).src->lock()->value == "Hello");
+
+			auto begin = b.cbegin();
+			const auto& [from, to, weight] = *begin;
+
+      REQUIRE(from == "Hello");
+      REQUIRE(to == "how");
+      REQUIRE(weight == 5.4);
+
+			[from, to, weight] = *(begin++);
     }
+
+   THEN("it should point to the end of the edge container") {
+		  auto end = b.cend();
+    	const auto& [end_from, end_to, end_weight] = *end;
+   
+      REQUIRE(end_from == "how");
+      REQUIRE(end_to == "are");
+      REQUIRE(end_weight == 7.6);
+    }
+ 
+		// auto ie = b.cend();
+    // auto rt = b.crbegin();
+    // auto re = b crend();
+    // auto beg = b.begin();
+    // auto end = b.end();
+    // auto rbeg = b.rbegin();
+    // auto rend = b.rend();/
+    // 
+    // THEN("it should point to the beginning of the edge container") {
+		// REQUIRE(std::get<0>(it) == "Hello");
+		// REQUIRE(std::get<1>(ie) == "how");
+    // REQUIRE(std::get<1>(ie) == "how");
+		// REQUIRE(beg == it);
+		// REQUIRE(end == ie);
+		// REQUIRE(rbeg == rt);
+		// REQUIRE(rend == re);/
+    // }
   }
 }
 
