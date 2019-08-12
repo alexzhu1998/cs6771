@@ -432,9 +432,8 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
       REQUIRE(b.GetNodes().size() == 3);
       REQUIRE(b.IsNode(s4) == true);
       REQUIRE(b.GetConnected(s4).size() == 2);
-      // TODO(amri): UNCOMMENT ONCE SORTING HAS BEEN FINISHED
-      // REQUIRE(b.GetWeights(s4, s2).at(0) == 3.0);
-      // REQUIRE(b.GetWeights(s4, s3).at(1) == 5.4);
+      REQUIRE(b.GetWeights(s4, s2).at(1) == 3.0);
+      REQUIRE(b.GetWeights(s4, s3).at(0) == 5.4);
       REQUIRE(b.IsNode(s1) == false);
     }
   }
@@ -470,11 +469,11 @@ SCENARIO("Accessing a graph's iterator") {
     auto e2 = std::make_tuple(s2, s3, 7.6);
     auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
-    // auto it = b.cbegin();
+    auto it = b.cbegin();
 
-    // THEN("it should point to the beginning of the edge container") {
-    //  REQUIRE(*it->lock()->src == "Hello");
-    //}
+    THEN("it should point to the beginning of the edge container") {
+      REQUIRE((*it) == "Hello");//).src->lock()->value == "Hello");
+    }
   }
 }
 
