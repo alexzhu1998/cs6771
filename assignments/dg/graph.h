@@ -228,7 +228,7 @@ class Graph {
     typename std::set<std::shared_ptr<Edge>>::iterator edge_;
 
     friend class Graph;
-    explicit const_iterator(const decltype(edge_) edge) : edge_{edge} {};
+    explicit const_iterator(const decltype(edge_) edge) noexcept : edge_{edge} {};
   };
 
   /***********
