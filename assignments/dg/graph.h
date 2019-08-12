@@ -75,11 +75,11 @@ class Graph {
 
     /* Operator overloading for comprisons */
     bool operator==(const Edge& rhs) {
-      return (this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+      return (this->src->lock() == rhs.src->lock() && this->dst->lock() == rhs.dst->lock() && this->weight == rhs.weight);
     }
 
     bool operator!=(const Edge& rhs) {
-      return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+      return !(*this == rhs);
     }
 
     /* Destructor */
@@ -90,8 +90,33 @@ class Graph {
   };
 
   /* Sorting edges_ */
-  // TODO(amri/chris)
-  struct SortEdgeComparator {};
+	struct SortEdgeComparator {
+		bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) {
+		    if (a.get()->src.lock().get()->value != b.get()->src.lock().get()->value) {
+			        return a.get()->src.lock()->value < b.get()->src.lock()->value;
+			    } else if (a.get()->dst.lock()->value != b.get()->dst.lock()->value) {
+			        return a.get()->dst.lock()->value < b.get()->dst.lock()->value;
+			    } else {
+			        return a.get()->weight < b.get()->weight;
+		    }
+		}
+
+		bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) {
+            if(a.lock().get()->src.lock().get()->value != b.lock().get()->src.lock().get()->value) {
+                return a.lock().get()->src.lock().get()->value < b.lock().get()->src.lock().get()->value;
+            } else if (a.lock().get()->dst.lock().get()->value != b.lock().get()->dst.lock().get()->value) {
+                return a.lock().get()->dst.lock().get()->value < b.lock().get()->dst.lock().get()->value;
+            } else{
+                return a.lock().get()->weight < b.lock().get()->weight;
+            }
+        }
+	};
+
+	struct SortNodeComparator {
+	    bool operator()(const std::weak_ptr<Node>& a, const std::weak_ptr<Node> &b) {
+	        return a.lock()->value < b.lock()->value;
+	    }
+	};
 
   /************************************
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
@@ -296,14 +321,38 @@ class Graph {
     return os;
   }
 
-  /* This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_ */
-  friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-    return (a.edges_ == b.edges_ || a.nodes_ == b.nodes_);
-  }
+	/* This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_ */
+	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+		if (a.GetNodes() != b.GetNodes()) {
+	      	return false;
+	    }
 
-  friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-    return !(a.edges_ == b.edges_ || a.nodes_ == b.nodes_);
-  }
+	    for (const auto& node : a.GetNodes()) {
+	    	/* Retrieve the current node in both graphs */
+			std::shared_ptr<Node> node_a = a.NodeExists(node);
+		    std::shared_ptr<Node> node_b = b.NodeExists(node);
+
+		    /* Values are equal, check outgoing edges */
+		    bool edges_equal = std::equal(
+		        node_a->out_edges.begin(), node_a->out_edges.end(), 
+		        node_b->out_edges.begin(), node_b->out_edges.end(),
+		        [](const std::weak_ptr<Edge> lhs, const std::weak_ptr<Edge> rhs) {
+		            return (lhs.lock()->src.lock()->value == rhs.lock()->src.lock()->value
+		            		&& lhs.lock()->dst.lock()->value == rhs.lock()->dst.lock()->value
+		            		&& lhs.lock()->weight == rhs.lock()->weight);
+		        });
+
+		    /* If inline fails, not equal */
+		    if (!edges_equal) {
+		        return false;
+		    }
+	    }
+	    return true;
+	}
+
+	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+		return !(a == b);
+	}
 
   /*******************
    * EXTRA FUNCTIONS *
@@ -333,10 +382,9 @@ class Graph {
   }
 
  private:
-  // TODO(amri/chris) set compare protocol
-  std::set<std::shared_ptr<Node>> nodes_;
-  std::set<std::shared_ptr<Edge>> edges_;
-};  // namespace gdwg
+  std::set<std::shared_ptr<Node>, SortNodeComparator> nodes_;
+  std::set<std::shared_ptr<Edge>, SortEdgeComparator> edges_;
+};  
 }  // namespace gdwg
 
 #include "assignments/dg/graph.tpp"

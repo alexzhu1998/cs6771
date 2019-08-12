@@ -481,3 +481,48 @@ SCENARIO("Accessing a graph's iterator") {
 /***********
  * FRIENDS *
  ***********/
+SCENARIO("Using graph friend functions") {
+  WHEN("Creating two graphs with the same values") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e_cont1 = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> a{e_cont1.begin(), e_cont1.end()};
+
+    std::string s4{"Hello"};
+    std::string s5{"how"};
+    std::string s6{"are"};
+    auto e3 = std::make_tuple(s4, s5, 5.4);
+    auto e4 = std::make_tuple(s5, s6, 7.6);
+    auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e3, e4};
+    gdwg::Graph<std::string, double> b{e_cont2.begin(), e_cont2.end()};
+
+    THEN("Both graphs should be equal") {
+      REQUIRE(a == b);
+    }  
+  }
+
+  WHEN("Creating two graphs with the same values") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.3);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e_cont1 = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> a{e_cont1.begin(), e_cont1.end()};
+
+    std::string s4{"Hello"};
+    std::string s5{"how"};
+    std::string s6{"are"};
+    auto e3 = std::make_tuple(s4, s5, 5.4);
+    auto e4 = std::make_tuple(s5, s6, 7.6);
+    auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e3, e4};
+    gdwg::Graph<std::string, double> b{e_cont2.begin(), e_cont2.end()};
+
+    THEN("Both graphs should be equal") {
+      REQUIRE(a != b);
+    }  
+  }
+}
