@@ -131,9 +131,9 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	auto edge = std::make_shared<Edge>(src_sptr, dst_sptr, w);
 	this->edges_.insert(edge);
 
-	// adding edges_ to in_edges_ and out_edges_ of dst/src nodes_
-	dst_sptr->in_edges_.push_back(edge);
-	src_sptr->out_edges_.push_back(edge);
+	// adding edges_ to in_edges and out_edges of dst/src nodes_
+	dst_sptr->in_edges.push_back(edge);
+	src_sptr->out_edges.push_back(edge);
 
 	// returns true if successfully added
 	return true;
@@ -187,22 +187,22 @@ void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
 	const auto &old_node = NodeExists(oldData);
 	const auto &new_node = NodeExists(newData);
 
-	// replace old_node with new_node in node->out_edges_ and node->in_edges_
-	for (const auto &it : old_node->out_edges_) {
+	// replace old_node with new_node in node->out_edges and node->in_edges
+	for (const auto &it : old_node->out_edges) {
 		if (edge_exists(new_node->value, it.lock()->dst.lock()->value, it.lock()->weight) == false) {
 			// set the src of the edge to new_node
 			it.lock()->src = new_node;
-			// add weak pointers to new_node->out_edges_
-			new_node->out_edges_.push_back(it);
+			// add weak pointers to new_node->out_edges
+			new_node->out_edges.push_back(it);
 		}
 	}
 
-	for (const auto &it : old_node->in_edges_) {
+	for (const auto &it : old_node->in_edges) {
 		if (edge_exists(it.lock()->src.lock()->value, new_node->value, it.lock()->weight) == false) {
 			// set the dst of the edge to new_node
 			it.lock()->dst = new_node;
-			// add weak pointers to new_node->in_edges_
-			new_node->in_edges_.push_back(it);
+			// add weak pointers to new_node->in_edges
+			new_node->in_edges.push_back(it);
 		}
 	}
 
@@ -253,27 +253,30 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
 		throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
 	}
 
-	for (const auto &out_edge : node.out_edges_) {
+	for (const auto &out_edge : node.out_edges) {
 		ret_nodes_.push_back(out_edge->lock()->dst->lock());
 	}
 
 	return ret_nodes_;
 }
  
-// GetWeights
+/*
+ * Get weights of edges between two nodes
+ */
 template <typename N, typename E>
 std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
   	const auto &src_node = NodeExists(src);
   	const auto &dst_node = NodeExists(dst);
   	std::vector<E> ret_edges_ = {};
 
-
+  	/* throw exception if src doesn't exist or dst */
 	if (src_node == nullptr || dst_node == nullptr) {
 		throw std::out_of_range("Cannot call Graph::GetWeights if src doesn't exist in the graph");
 	}
 
-	for (const auto &out_edge : src_node.out_edges_) {
-		ret_edges_.push_back(out_edge->lock());
+	/* Retreieve edges and return */
+	for (const auto &out_edge : src_node->out_edges) {
+		ret_edges_.push_back(out_edge);
 	}
 
 	return ret_edges_;
@@ -315,18 +318,18 @@ bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
 		// if edge(src, dst, w) exists
 		if (src_node->value == src && dst_node->value == dst && edge->weight == w) {
 			found = true;
-			for (auto it = src_node->out_edges_.begin(); it != src_node->out_edges_.end(); ++it) {
+			for (auto it = src_node->out_edges.begin(); it != src_node->out_edges.end(); ++it) {
 				auto out_edge_dst = it->lock()->dst.lock();
 				if (out_edge_dst->value == dst && it->lock()->weight == w) {
-					src_node->out_edges_.erase(it);
+					src_node->out_edges.erase(it);
 					break;
 				}
 			}
 
-			for (auto it = dst_node->in_edges_.begin(); it != dst_node->in_edges_.end(); ++it) {
+			for (auto it = dst_node->in_edges.begin(); it != dst_node->in_edges.end(); ++it) {
 				auto in_edge_src = it->lock()->src.lock();
 				if (in_edge_src->value == src && it->lock()->weight == w) {
-					dst_node->in_edges_.erase(it);
+					dst_node->in_edges.erase(it);
 					break;
 				}
 			}

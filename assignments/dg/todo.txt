@@ -1,3 +1,5 @@
+using this to mark off testing now
+
 2.1 constructors and destructors
 x default constructor 
 x constructor
