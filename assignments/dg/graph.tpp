@@ -438,3 +438,20 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() {
 	auto end = --(this->edges_.end());
 	return {end};
 }
+
+// Not sure if these work
+
+
+/* ++ */
+template <typename N, typename E>
+typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::operator++() noexcept {
+	++edge_;
+	return *this;
+}
+
+/* -- */
+template <typename N, typename E>
+typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::operator--() noexcept {
+	--edge_;
+	return *this;
+}

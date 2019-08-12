@@ -179,14 +179,14 @@ class Graph {
 			reference operator*() const noexcept;
 			// reference operator*() const { return this->edges_->lock(); }
 						
-			const_iterator operator++();
+			const_iterator& operator++();
 			const_iterator operator++(int) {
 				auto copy{*this};
 				++(*this);
 				return copy;
 			}	
 
-			const_iterator operator--();
+			const_iterator& operator--();
 			const_iterator operator--(int) {
 				auto copy{*this};
 				--(*this);
@@ -197,7 +197,6 @@ class Graph {
 			pointer operator->() const { return &(operator*()); }
 
 			friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept {
-				// TODO literally check if two edges are the same
 				return (lhs.edge_ == rhs.edge_);
 			}
 
@@ -211,8 +210,6 @@ class Graph {
 			friend class Graph;
 			const_iterator(const decltype(edge_) edge): edge_{edge} {};
 	};
-
-	using const_reverse_iterator = const_iterator;
 
 	/***********
 	 * METHODS *
@@ -230,6 +227,7 @@ class Graph {
 	std::vector<E> GetWeights(const N&, const N&) const;
 	const_iterator find(const N&, const N&, const E&);
 	bool erase(const N&, const N&, const E&);
+	const_iterator erase(const_iterator);
 
 	/*************
 	 * ITERATORS *
@@ -238,16 +236,20 @@ class Graph {
 	using iterator = const_iterator;
 	iterator begin() noexcept { return cbegin(); }
 	iterator end() noexcept { return cend(); }
-	const_iterator erase(const_iterator);
 	const_iterator cbegin();
 	const_iterator cend();
-	const_iterator crbegin();
-	const_iterator crend();
-	//const_reverse_iterator crend();
 	const_iterator begin() const noexcept { return cbegin(); }
 	const_iterator end() const noexcept { return cend(); }
-	//const_reverse_iterator rbegin();
-	//const_reverse_iterator rend();
+
+	using reverse_iterator = std::reverse_iterator<iterator>;
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+	reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
+	reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
+	const_reverse_iterator crbegin();
+	const_reverse_iterator crend();
+	const_reverse_iterator rbegin();
+	const_reverse_iterator rend();
 
 	/***********
 	 * FRIENDS *
