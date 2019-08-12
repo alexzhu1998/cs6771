@@ -13,7 +13,10 @@
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
+
+#include <algorithm>
 #include <initializer_list>
+#include <iostream>
 #include <iterator>
 #include <memory>
 #include <ostream>
@@ -21,9 +24,6 @@
 #include <string>
 #include <tuple>
 #include <vector>
-
-#include <algorithm>
-#include <iostream>
 
 namespace gdwg {
 
