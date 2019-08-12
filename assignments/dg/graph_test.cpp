@@ -470,9 +470,23 @@ SCENARIO("Accessing a graph's iterator") {
     auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
     auto it = b.cbegin();
+    /*auto ie = b.cend();
+    auto rt = b.crbegin();
+    auto re = b crend();
+    auto beg = b.begin();
+    auto end = b.end();
+    auto rbeg = b.regin();
+    auto rend = b.rend();*/
 
     THEN("it should point to the beginning of the edge container") {
-      REQUIRE((*it) == "Hello");//).src->lock()->value == "Hello");
+      REQUIRE(std::get<0>(*it) == "Hello");
+      REQUIRE(std::get<1>(*ie) == "how");
+     /* REQUIRE(std::get<1>(*ie) == "how");
+      // TODO(chris) how to test crend?
+      REQUIRE(beg == it);
+      REQUIRE(end == ie);
+      REQUIRE(rbeg == rt);
+      REQUIRE(rend == re);*/
     }
   }
 }
