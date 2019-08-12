@@ -119,18 +119,18 @@ class Graph {
   Graph() : nodes_{}, edges_{} {};
 
   /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph<N, E>(typename const std::vector<N>::const_iterator begin,
-        	  typename const std::vector<N>::const_iterator end);
+  Graph<N, E>(typename std::vector<N>::const_iterator begin,
+        	  typename std::vector<N>::const_iterator end) noexcept;
 
   /* Constructor iterates over tuples containing source node, destination node and edge
    * weight and add them to the graph. Essentially iterates over a vector of edges_ and
    * adds them to a new graph.
    */
   Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator begin,
-              typename std::vector<std::tuple<N, N, E>>::const_iterator end);
+              typename std::vector<std::tuple<N, N, E>>::const_iterator end) noexcept;
 
   /* Initialiser list constructor */
-  Graph(typename std::initializer_list<N> new_nodes_);
+  Graph(std::initializer_list<N> new_nodes_) noexcept;
 
   /* Copy constructor */
   Graph(const Graph&);
