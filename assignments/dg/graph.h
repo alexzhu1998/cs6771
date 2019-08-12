@@ -19,8 +19,6 @@ template <typename N, typename E>
 class Graph {
  public:
 
-  	
-
   /******************
    * NODE AND EDGES * 
 	 ******************/
@@ -135,7 +133,6 @@ class Graph {
 		}
 	};
 
-
 	/* Copy constructor */
 	Graph(const Graph&);
 	/* Move constructor */
@@ -229,7 +226,7 @@ class Graph {
 		    friend class Graph;
 		    const_iterator(const decltype(outer_)& outer, const decltype(sentinel_end_)& sentinel_end, 
 		    	const decltype(sentinel_start_)& sentinel_start, const decltype(inner_)& inner): 
-		    	outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{inner} {}
+		    	outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{inner} {};
 	};
 
 	using const_reverse_iterator = const_iterator;
@@ -301,13 +298,25 @@ class Graph {
 	}
 
 
-	/***************
-	 * EXTRA FUNCTIONS
-	 ***************/
+	/*******************
+	 * EXTRA FUNCTIONS *
+	 *******************/
 	std::shared_ptr<Node> GetNode(const N&);
-	// std::shared_ptr<Node> NodeExists(const N&) const;
 
-	std::shared_ptr<Node> NodeExists(N val) const{
+	bool edge_exists(N src, N dst, E w) {
+		// check if edge already exists (return false)
+		for (const auto &it : this->edges_) {
+			auto src_node = it->src.lock();
+			auto dst_node = it->dst.lock();
+			if (src_node->value == src && dst_node->value == dst && it->weight == w) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	std::shared_ptr<Node> NodeExists(const N& val) const{
 		for(const auto& node : nodes_){
 			if(node.get()->value == val){
 					return node;
@@ -320,10 +329,8 @@ class Graph {
 	// TODO set compare protocol
 	std::set<std::shared_ptr<Node>> nodes_;
 	std::set<std::shared_ptr<Edge>> edges_;
- 	//explicit const_iterator(std::set<std::shared_ptr<Edge>> edge_it_): edge_it_{edges_} {}
-};
-
-}  // namespace gdwg
+}; // namespace gdwg
+}
 
 #include "assignments/dg/graph.tpp"
 

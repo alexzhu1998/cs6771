@@ -9,7 +9,7 @@ int main() {
 	// Base Constructor
   // gdwg::Graph<std::string, int> g;
 	// 
-	// Constructor using a vector of strings representing nodes_ 
+	// Constructor using a vector of strings representing nodes 
 	// std::vector<std::string> v{"Hello", "how", "are", "you"};
 	// gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
 	// std::cout << b1 << "\n";
@@ -19,7 +19,7 @@ int main() {
 	// gdwg::Graph<std::string, double> b1{v.begin(),v.end()};
 	// std::cout << b1 << "\n";
 
-	// Constructor using a vector of tuples representing edges_
+	// Constructor using a vector of tuples representing edges
 	// std::string s1{"Hello"};
 	// std::string s2{"how"};
 	// std::string s3{"are"};
@@ -51,6 +51,9 @@ int main() {
 	// std::cout << b2;
 	
 	// Testing mergereplace
+	// std::vector<std::string> v{"a", "b", "c", "d"};
+	// gdwg::Graph<std::string, double> g{v.begin(), v.end()};
+
 	// basic case for merge replace~
 	// g.InsertEdge("a", "b", 1);
 	// g.InsertEdge("a", "c", 2);
@@ -59,6 +62,18 @@ int main() {
 	// g.MergeReplace("a", "b");
 	// std::cout << "------\n";
 	// std::cout << g;
+
+
+	// duplicate case for merge replace~
+	// g.InsertEdge("a", "b", 1);
+	// g.InsertEdge("a", "c", 2);
+	// g.InsertEdge("a", "d", 3);
+	// g.InsertEdge("b", "b", 1);
+	// std::cout << g;
+	// g.MergeReplace("a", "b");
+	// std::cout << "------\n";
+	// std::cout << g;
+
 
 	// diagramtic case 1 for merge replace
 	// g.InsertEdge("a", "b", 3);
@@ -142,10 +157,4 @@ int main() {
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }*/
-
-//iterator
-std::vector<std::string> v{"a", "b", "c", "d"};
-	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
-	//auto it = g.cbegin();
-	//std::cout << *it->lock()->dst->lock() << std::endl;
 }
