@@ -18,10 +18,10 @@
   graphs with minimal data, and graphs with more than minimal data.
 
   Due to the time constraint it was attempted to cover these cases in minimal amounts, often
-  combining the testing of different methods while keeping another method as the focus of the 
-  tests, e.g. GetNodes was utilised in almost all tests and did not need a separate testing 
+  combining the testing of different methods while keeping another method as the focus of the
+  tests, e.g. GetNodes was utilised in almost all tests and did not need a separate testing
   suite. Similar functions that fell under this category were monitored, and if an edge case
-  did not arise, e.g. exceptions thrown in IsConnected, they were featured in their own 
+  did not arise, e.g. exceptions thrown in IsConnected, they were featured in their own
   separate tests.
 
   The specification was used as a reference when writing the tests to allow them to be written
@@ -29,44 +29,42 @@
 */
 
 #include "assignments/dg/graph.h"
-#include "catch.h"
 
-// TODO(students): Fill this in.
+#include <utility>
+
+#include "catch.h"
 
 /****************
  * CONSTRUCTORS *
  ****************/
 SCENARIO("Constructing a graph with default, copy, and move") {
-
   /* Empty Construction */
   WHEN("You construct an empty graph with a vector of strings") {
-     std::vector<std::string> v{};
-     gdwg::Graph<std::string, double> b{v.begin(),v.end()};
+    std::vector<std::string> v{};
+    gdwg::Graph<std::string, double> b{v.begin(), v.end()};
 
-     THEN("An EV with corresponding size and values should be produced") {
+    THEN("An EV with corresponding size and values should be produced") {
       REQUIRE(b.GetNodes().size() == 0);
     }
   }
   WHEN("You construct an empty graph with a vector of tuples") {
-     auto v = std::vector<std::tuple<std::string, std::string, double>>{};
-     gdwg::Graph<std::string, double> b{v.begin(),v.end()};
+    auto v = std::vector<std::tuple<std::string, std::string, double>>{};
+    gdwg::Graph<std::string, double> b{v.begin(), v.end()};
 
-     THEN("An EV with corresponding size and values should be produced") {
+    THEN("An EV with corresponding size and values should be produced") {
       REQUIRE(b.GetNodes().size() == 0);
     }
   }
   WHEN("You construct a graph with an empty initialiser list") {
     gdwg::Graph<char, std::string> b{};
 
-    THEN("A graph with no nodes or edges is produced") {
-      REQUIRE(b.GetNodes().size() == 0);
-    }
+    THEN("A graph with no nodes or edges is produced") { REQUIRE(b.GetNodes().size() == 0); }
   }
 
   /* Populated construction */
   WHEN("You construct an graph with iterators") {
     std::vector<std::string> v{"Hello", "how", "are", "you"};
-  	gdwg::Graph<std::string, double> b{v.begin(),v.end()};
+    gdwg::Graph<std::string, double> b{v.begin(), v.end()};
 
     THEN("An EV with corresponding size and values should be produced") {
       REQUIRE(b.GetNodes().size() == 4);
@@ -84,7 +82,6 @@ SCENARIO("Constructing a graph with default, copy, and move") {
     auto e2 = std::make_tuple(s2, s3, 7.6);
     auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
-
 
     THEN("An EV with corresponding dimension and values will be produced") {
       REQUIRE(b.GetNodes().size() == 3);
@@ -110,9 +107,7 @@ SCENARIO("Constructing a graph with default, copy, and move") {
     gdwg::Graph<char, std::string> b{};
     gdwg::Graph<char, std::string> b2{b};
 
-    THEN("The copied graph should be empty") {
-      REQUIRE(b2.GetNodes().size() == 0);
-    }
+    THEN("The copied graph should be empty") { REQUIRE(b2.GetNodes().size() == 0); }
   }
 
   WHEN("You construct a graph with a copy constructor") {
@@ -141,7 +136,7 @@ SCENARIO("Constructing a graph with default, copy, and move") {
 
     THEN("The copied graph should be empty") {
       REQUIRE(b2.GetNodes().size() == 0);
-      //REQUIRE(b == NULL);
+      // REQUIRE(b == NULL);
     }
   }
 
@@ -162,11 +157,10 @@ SCENARIO("Constructing a graph with default, copy, and move") {
       REQUIRE(b_copy.IsNode("are") == true);
       REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
       REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
-      //REQUIRE(b == NULL);
+      // REQUIRE(b == NULL);
     }
   }
 }
-
 
 /***********************
  * COPY/MOVE ASSIGMENT *
@@ -179,9 +173,7 @@ SCENARIO("Utilising copy/move assignments") {
     gdwg::Graph<char, std::string> b2;
     b2 = b;
 
-    THEN("The copied graph should be empty") {
-      REQUIRE(b2.GetNodes().size() == 0);
-    }
+    THEN("The copied graph should be empty") { REQUIRE(b2.GetNodes().size() == 0); }
   }
 
   WHEN("You construct a graph with a copy constructor") {
@@ -213,7 +205,7 @@ SCENARIO("Utilising copy/move assignments") {
 
     THEN("The copied graph should be empty") {
       REQUIRE(b2.GetNodes().size() == 0);
-      //REQUIRE(b == NULL);
+      // REQUIRE(b == NULL);
     }
   }
 
@@ -236,11 +228,10 @@ SCENARIO("Utilising copy/move assignments") {
       REQUIRE(b_copy.IsNode("are") == true);
       REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
       REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
-      //REQUIRE(b == NULL);
+      // REQUIRE(b == NULL);
     }
   }
 }
-
 
 /***********
  * METHODS *
@@ -295,13 +286,17 @@ SCENARIO("Populating graph with insert node") {
 
 SCENARIO("Populating graph with insertEdge") {
   WHEN("Adding an edge to an empty graph") {
-    gdwg::Graph<char, double> g{'a'}; 
+    gdwg::Graph<char, double> g{'a'};
 
     THEN("A runtime exception will be thrown") {
       REQUIRE_THROWS_AS(g.InsertEdge('a', 'b', 1), std::runtime_error);
-      REQUIRE_THROWS_WITH(g.InsertEdge('a', 'b', 1), "Cannot call Graph::InsertEdge when either src or dst node does not exist");
+      REQUIRE_THROWS_WITH(
+          g.InsertEdge('a', 'b', 1),
+          "Cannot call Graph::InsertEdge when either src or dst node does not exist");
       REQUIRE_THROWS_AS(g.InsertEdge('b', 'a', 1), std::runtime_error);
-      REQUIRE_THROWS_WITH(g.InsertEdge('b', 'a', 1), "Cannot call Graph::InsertEdge when either src or dst node does not exist");
+      REQUIRE_THROWS_WITH(
+          g.InsertEdge('b', 'a', 1),
+          "Cannot call Graph::InsertEdge when either src or dst node does not exist");
     }
   }
 
@@ -312,9 +307,9 @@ SCENARIO("Populating graph with insertEdge") {
     THEN("Edge will exist in graph with given weight") {
       REQUIRE(b.IsConnected('a', 'b') == true);
       REQUIRE(b.IsConnected('b', 'a') == false);
-      REQUIRE(b.GetWeights('a', 'b').size() == 1); 
-      REQUIRE(*(b.GetWeights('a', 'b').begin()) == 2); 
-      REQUIRE(b.GetWeights('b', 'a').size() == 0); 
+      REQUIRE(b.GetWeights('a', 'b').size() == 1);
+      REQUIRE(*(b.GetWeights('a', 'b').begin()) == 2);
+      REQUIRE(b.GetWeights('b', 'a').size() == 0);
       REQUIRE(result == true);
     }
   }
@@ -325,8 +320,8 @@ SCENARIO("Populating graph with insertEdge") {
 
     THEN("Edge will exist in graph with given weight") {
       REQUIRE(b.IsConnected('a', 'a') == true);
-      REQUIRE(b.GetWeights('a', 'a').size() == 1); 
-      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2); 
+      REQUIRE(b.GetWeights('a', 'a').size() == 1);
+      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2);
       REQUIRE(result == true);
     }
   }
@@ -338,8 +333,8 @@ SCENARIO("Populating graph with insertEdge") {
 
     THEN("Edge will exist in graph with given weight") {
       REQUIRE(b.IsConnected('a', 'a') == true);
-      REQUIRE(b.GetWeights('a', 'a').size() == 1); 
-      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2); 
+      REQUIRE(b.GetWeights('a', 'a').size() == 1);
+      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2);
       REQUIRE(result1 == true);
       REQUIRE(result2 == false);
     }
@@ -370,9 +365,10 @@ SCENARIO("Deleting a node from a graph") {
     THEN("Node and accompanying edges will be deleted") {
       REQUIRE(result1 == true);
       REQUIRE(b.GetConnected("how").size() == 1);
-      REQUIRE_THROWS_AS(b.GetWeights("Hello", "how"), std::out_of_range); 
-      REQUIRE_THROWS_WITH(b.GetConnected("Hello"), "Cannot call Graph::GetConnected if src doesn't exist in the graph");
-    } 
+      REQUIRE_THROWS_AS(b.GetWeights("Hello", "how"), std::out_of_range);
+      REQUIRE_THROWS_WITH(b.GetConnected("Hello"),
+                          "Cannot call Graph::GetConnected if src doesn't exist in the graph");
+    }
   }
 }
 
@@ -382,17 +378,26 @@ SCENARIO("Using is and get methods fringe cases") {
 
     THEN("An exception is thrown") {
       REQUIRE_THROWS_AS(b.GetConnected('c'), std::out_of_range);
-      REQUIRE_THROWS_WITH(b.GetConnected('c'), "Cannot call Graph::GetConnected if src doesn't exist in the graph");
+      REQUIRE_THROWS_WITH(b.GetConnected('c'),
+                          "Cannot call Graph::GetConnected if src doesn't exist in the graph");
       /* Check src and dest separately */
       REQUIRE_THROWS_AS(b.IsConnected('c', 'e'), std::runtime_error);
-      REQUIRE_THROWS_WITH(b.IsConnected('c', 'e'), "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          b.IsConnected('c', 'e'),
+          "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
       REQUIRE_THROWS_AS(b.IsConnected('e', 'c'), std::runtime_error);
-      REQUIRE_THROWS_WITH(b.IsConnected('e', 'c'), "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          b.IsConnected('e', 'c'),
+          "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
       /* Check src and dest separately */
       REQUIRE_THROWS_AS(b.GetWeights('a', 'e'), std::out_of_range);
-      REQUIRE_THROWS_WITH(b.GetWeights('a', 'e'), "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          b.GetWeights('a', 'e'),
+          "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
       REQUIRE_THROWS_AS(b.GetWeights('e', 'a'), std::out_of_range);
-      REQUIRE_THROWS_WITH(b.GetWeights('e', 'a'), "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          b.GetWeights('e', 'a'),
+          "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
     }
   }
 }
@@ -403,7 +408,8 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
 
     THEN("An exception is thrown") {
       REQUIRE_THROWS_AS(b.Replace('c', 'a'), std::runtime_error);
-      REQUIRE_THROWS_WITH(b.Replace('c', 'a'), "Cannot call Graph::Replace on a node that doesn't exist");
+      REQUIRE_THROWS_WITH(b.Replace('c', 'a'),
+                          "Cannot call Graph::Replace on a node that doesn't exist");
     }
   }
 
@@ -426,9 +432,9 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
       REQUIRE(b.GetNodes().size() == 3);
       REQUIRE(b.IsNode(s4) == true);
       REQUIRE(b.GetConnected(s4).size() == 2);
-      // TODO: UNCOMMENT ONCE SORTING HAS BEEN FINISHED
-      //REQUIRE(b.GetWeights(s4, s2).at(0) == 3.0);
-      //REQUIRE(b.GetWeights(s4, s3).at(1) == 5.4);
+      // TODO(amri): UNCOMMENT ONCE SORTING HAS BEEN FINISHED
+      // REQUIRE(b.GetWeights(s4, s2).at(0) == 3.0);
+      // REQUIRE(b.GetWeights(s4, s3).at(1) == 5.4);
       REQUIRE(b.IsNode(s1) == false);
     }
   }
@@ -438,17 +444,18 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
 
     THEN("An exception is thrown") {
       REQUIRE_THROWS_AS(c.MergeReplace('c', 'a'), std::runtime_error);
-      REQUIRE_THROWS_WITH(c.MergeReplace('c', 'a'),  "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          c.MergeReplace('c', 'a'),
+          "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
       REQUIRE_THROWS_AS(c.MergeReplace('a', 'c'), std::runtime_error);
-      REQUIRE_THROWS_WITH(c.MergeReplace('a', 'c'),  "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+      REQUIRE_THROWS_WITH(
+          c.MergeReplace('a', 'c'),
+          "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
     }
   }
 
-  WHEN("A node is merge replaced") {
-
-  }
+  WHEN("A node is merge replaced") {}
 }
-
 
 /*************
  * ITERATORS *
@@ -463,16 +470,14 @@ SCENARIO("Accessing a graph's iterator") {
     auto e2 = std::make_tuple(s2, s3, 7.6);
     auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
-    //auto it = b.cbegin();
+    // auto it = b.cbegin();
 
-    //THEN("it should point to the beginning of the edge container") {
+    // THEN("it should point to the beginning of the edge container") {
     //  REQUIRE(*it->lock()->src == "Hello");
     //}
-  } 
+  }
 }
 
 /***********
  * FRIENDS *
  ***********/
-
-SCENARIO
