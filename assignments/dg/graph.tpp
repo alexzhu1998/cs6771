@@ -2,7 +2,7 @@
  * Advanced C++ (COMP6771) 2019T2 Assignment 2
  
  * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
- * Christopher Shi - TODO 
+ * Christopher Shi (z5165244) - christopher.shi@unsw 
  *
  * Implementation of graph.h:
  * "A Graph class that provides the implementation and functionality to create and manipulate
@@ -17,7 +17,6 @@
 /*****************
  * CONSTRUCTORS
  *****************/
-
 
 /* Copy constructor */
 template <typename N, typename E>

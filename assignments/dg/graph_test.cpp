@@ -6,6 +6,26 @@
    to which you're certain you have covered all possibilities,
    and why you think your tests are that thorough.
 
+  == Response ==
+
+  The tests chosen here ensure 100% test coverage over the code that has been written, and
+  also attempts to diversify test cases in comparing and utilising different use cases
+  considering the class being handled is templated and has numerous methods of
+  population and checking validity with regards to nodes and edges.
+
+  As such, tests were often written to consider edge cases, used a mix of contructors and
+  also dat types for these constructors. Edges cases commonly considered were empty graphs.
+  graphs with minimal data, and graphs with more than minimal data.
+
+  Due to the time constraint it was attempted to cover these cases in minimal amounts, often
+  combining the testing of different methods while keeping another method as the focus of the 
+  tests, e.g. GetNodes was utilised in almost all tests and did not need a separate testing 
+  suite. Similar functions that fell under this category were monitored, and if an edge case
+  did not arise, e.g. exceptions thrown in IsConnected, they were featured in their own 
+  separate tests.
+
+  The specification was used as a reference when writing the tests to allow them to be written
+  as a user from which the implementation was abstracted away from.
 */
 
 #include "assignments/dg/graph.h"
@@ -13,7 +33,9 @@
 
 // TODO(students): Fill this in.
 
-/* Constructors */
+/****************
+ * CONSTRUCTORS *
+ ****************/
 SCENARIO("Constructing a graph with default, copy, and move") {
 
   /* Empty Construction */
@@ -145,7 +167,11 @@ SCENARIO("Constructing a graph with default, copy, and move") {
   }
 }
 
-// COPY/MOVE ASSIGNMENT
+
+/***********************
+ * COPY/MOVE ASSIGMENT *
+ ***********************/
+
 SCENARIO("Utilising copy/move assignments") {
   /* Copy/Move construction */
   WHEN("You copy construct a graph with an empty graph") {
@@ -215,9 +241,11 @@ SCENARIO("Utilising copy/move assignments") {
   }
 }
 
-/*
- * METHODS 
- */
+
+/***********
+ * METHODS *
+ ***********/
+
 SCENARIO("Populating graph with insert node") {
   WHEN("Adding a node to an empty graph") {
     gdwg::Graph<std::string, double> g;
@@ -422,9 +450,10 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
 }
 
 
-/**
- * ITERATORS
- */
+/*************
+ * ITERATORS *
+ *************/
+
 SCENARIO("Accessing a graph's iterator") {
   WHEN("Accessing the beginning using begin") {
     std::string s1{"Hello"};
@@ -441,3 +470,9 @@ SCENARIO("Accessing a graph's iterator") {
     //}
   } 
 }
+
+/***********
+ * FRIENDS *
+ ***********/
+
+SCENARIO

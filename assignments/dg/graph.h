@@ -2,7 +2,7 @@
  * Advanced C++ (COMP6771) 2019T2 Assignment 2
  
  * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
- * Christopher Shi - TODO 
+ * Christopher Shi (z5165244) - christopher.shi@unsw 
  *
  * A Graph class that provides the implementation and functionality to create and manipulate
  * a directed weighted graph, along with a custom iterator to traverse the edges of the 
@@ -51,16 +51,16 @@ class Graph {
 		// TODO should we have initialisers/methods for adding to int/out_edges?
 		
 		bool operator==(const Node& o) {
-			return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+			return (this->value == o.value && this->out_edges == o.out_edges 
+					&& this->in_edges == o.in_edges);
 		}
 
 		bool operator!=(const Node& o) {
-			return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
+			return !(this->value == o.value && this->out_edges == o.out_edges 
+					&& this->in_edges == o.in_edges);
 		}    
-		// Node Destroyer?
-		~Node() {
-			
-		}
+	
+		~Node() {}
 
   };
 
@@ -76,13 +76,14 @@ class Graph {
     Edge(std::weak_ptr<Node> source, 
          std::weak_ptr<Node> destination, E w) : src{source}, dst{destination}, weight{w} {};
 
+    /* Operator overloading for comprisons */
     bool operator==(const Edge& rhs) {
 	    return (this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
-		}
+	}
 
-		bool operator!=(const Edge& rhs) {
-				return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
-		}
+	bool operator!=(const Edge& rhs) {
+			return !(this->src == rhs.src && this->dst == rhs.dst && this->weight == rhs.weight);
+	}
   
   	/* Destructor */
   	~Edge() {
@@ -103,18 +104,18 @@ class Graph {
 	// Nodes == strings (out_edges and in_edges)
 	// Edges == dest_node, src_node, weight(double)
 
-  /* Default contructor*/	
-  Graph(): nodes_{}, edges_{} {};
+	/* Default contructor*/	
+	Graph(): nodes_{}, edges_{} {};
 
-  /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph(std::vector<std::string>::const_iterator begin, 
+	/* Constructor iterates over nodes_ and adds them to the graph*/
+	Graph(std::vector<std::string>::const_iterator begin, 
 				std::vector<std::string>::const_iterator end) {
-    for (auto i = begin; i != end; ++i) {
+		for (auto i = begin; i != end; ++i) {
 			this->InsertNode(*i);
-    }
-  }
+		}
+	}
   
-  /* Constructor iterates over tuples containing source node, destination node and edge 
+  	/* Constructor iterates over tuples containing source node, destination node and edge 
 	 * weight and add them to the graph. Essentially iterates over a vector of edges_ and 
 	 * adds them to a new graph.
 	 */
@@ -122,11 +123,11 @@ class Graph {
 				std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
 
 		for (auto i = begin; i != end; ++i) {
-			// getting the strings from the tuples
+			/* getting the strings from the tuples */
 			std::string src_string = std::get<0>(*i);
 			std::string dest_string = std::get<1>(*i);
 
-			// if nodes_ missing, create them
+			/* if nodes_ missing, create them */
 			if (this->IsNode(src_string) == false) {
 				this->InsertNode(src_string);
 			}
@@ -278,16 +279,16 @@ class Graph {
 	 * FRIENDS *
 	 ***********/
 	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-		// For each node
+		/* For each node */
 	    for (const auto& node : g.nodes_) {
 	      	os << node->value;
 			os << " (\n";
-			// Each node has a vector containing edges_
+			/*  Each node has a vector containing edges_ */
 			auto begin = node->out_edges.begin();
 			auto end = node->out_edges.end();
-			// Loop through this vector
+			/* Loop through this vector */
 			for (auto it = begin; it != end; ++it) {
-				// Create shared_ptr from weak_ptr to manage
+				/* Create shared_ptr from weak_ptr to manage */
 				auto edge = it->lock();
 				auto dest_node = edge->dst.lock();
 				os << "  " << dest_node->value << " | " << edge->weight << "\n";
@@ -298,7 +299,7 @@ class Graph {
 	    return os;
 	}
 
-	// This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_
+	/* This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_ */
 	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
 		return (a.edges_ == b.edges_ || a.nodes_ == b.nodes_);
 	}
@@ -314,7 +315,7 @@ class Graph {
 	std::shared_ptr<Node> GetNode(const N&);
 
 	bool edge_exists(N src, N dst, E w) {
-		// check if edge already exists (return false)
+		/* check if edge already exists (return false) */
 		for (const auto &it : this->edges_) {
 			auto src_node = it->src.lock();
 			auto dst_node = it->dst.lock();
