@@ -12,6 +12,7 @@
  */
 
 #include <iterator>
+#include <memory>
 #include <vector>
 
 /*****************
@@ -257,7 +258,6 @@ bool gdwg::Graph<N, E>::IsNode(const N& val) const {
 /* Determine if two nodes are connected */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
-
   /* throw exception if one of the given nodes doesn't exist */
   if (this->IsNode(src) == false || this->IsNode(dst) == false) {
     throw std::runtime_error(
