@@ -261,7 +261,7 @@ bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
 	}
 
 	const auto &src_node = NodeExists(src);
-	for (const auto &edges : src_node->out_edges_) {
+	for (const auto &edges : src_node->out_edges) {
 		if (edges.lock()->dst.lock()->value == dst) {
 			return true;
 		}
@@ -294,8 +294,8 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) const {
 		throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
 	}
 
-	for (const auto &out_edge : node.out_edges) {
-		ret_nodes_.push_back(out_edge->lock()->dst->lock());
+	for (const auto &out_edge : node->out_edges) {
+		ret_nodes_.push_back(out_edge.lock()->dst.lock()->value);
 	}
 
 	return ret_nodes_;

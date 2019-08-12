@@ -215,6 +215,137 @@ SCENARIO("Utilising copy/move assignments") {
   }
 }
 
+/*
+ * METHODS 
+ */
+SCENARIO("Populating graph with insert node") {
+  WHEN("Adding a node to an empty graph") {
+    gdwg::Graph<std::string, double> g;
+    std::string s{"a"};
+    bool result1 = g.InsertNode(s);
+
+    THEN("The graph should have a new node") {
+      REQUIRE(g.GetNodes().size() == 1);
+      REQUIRE(g.IsNode("a") == true);
+      REQUIRE(result1 == true);
+    }
+  }
+
+  WHEN("Adding mutliple nodes to a graph") {
+    gdwg::Graph<std::string, double> g{"a"};
+    std::string s{"b"};
+    std::string t{"c"};
+    bool result1 = g.InsertNode(s);
+    bool result2 = g.InsertNode(t);
+
+    THEN("The graph should have a new node") {
+      REQUIRE(g.GetNodes().size() == 3);
+      REQUIRE(g.IsNode("a") == true);
+      REQUIRE(g.IsNode("b") == true);
+      REQUIRE(g.IsNode("c") == true);
+      REQUIRE(result1 == true);
+      REQUIRE(result2 == true);
+    }
+  }
+
+  WHEN("Adding a node that already exists in a graph") {
+    gdwg::Graph<std::string, double> g{"a"};
+    std::string s{"b"};
+    std::string t{"a"};
+    bool result1 = g.InsertNode(s);
+    bool result2 = g.InsertNode(t);
+
+    THEN("The graph should remain unchanged") {
+      REQUIRE(g.GetNodes().size() == 2);
+      REQUIRE(g.IsNode("a") == true);
+      REQUIRE(g.IsNode("b") == true);
+      REQUIRE(result1 == true);
+      REQUIRE(result2 == false);
+    }
+  }
+}
+
+SCENARIO("Populating graph with insertEdge") {
+  WHEN("Adding an edge to an empty graph") {
+    gdwg::Graph<char, double> g{}; 
+
+    THEN("A runtime exception will be thrown") {
+      REQUIRE_THROWS_AS(g.InsertEdge('a', 'b', 1), std::runtime_error);
+      REQUIRE_THROWS_WITH(g.InsertEdge('a', 'b', 1), "Cannot call Graph::InsertEdge when either src or dst node does not exist");
+    }
+  }
+
+  WHEN("Adding an edge to a graph") {
+    gdwg::Graph<char, int> b{'a', 'b', 'x', 'y'};
+    bool result = b.InsertEdge('a', 'b', 2);
+
+    THEN("Edge will exist in graph with given weight") {
+      REQUIRE(b.IsConnected('a', 'b') == true);
+      REQUIRE(b.IsConnected('b', 'a') == false);
+      REQUIRE(b.GetWeights('a', 'b').size() == 1); 
+      REQUIRE(*(b.GetWeights('a', 'b').begin()) == 2); 
+      REQUIRE(b.GetWeights('b', 'a').size() == 0); 
+      REQUIRE(result == true);
+    }
+  }
+
+  WHEN("Adding an edge pointed at the same node") {
+    gdwg::Graph<char, int> b{'a', 'b', 'x', 'y'};
+    bool result = b.InsertEdge('a', 'a', 2);
+
+    THEN("Edge will exist in graph with given weight") {
+      REQUIRE(b.IsConnected('a', 'a') == true);
+      REQUIRE(b.GetWeights('a', 'a').size() == 1); 
+      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2); 
+      REQUIRE(result == true);
+    }
+  }
+
+  WHEN("Adding an edge pointed at the same node") {
+    gdwg::Graph<char, int> b{'a', 'b', 'x', 'y'};
+    bool result1 = b.InsertEdge('a', 'a', 2);
+    bool result2 = b.InsertEdge('a', 'a', 2);
+
+    THEN("Edge will exist in graph with given weight") {
+      REQUIRE(b.IsConnected('a', 'a') == true);
+      REQUIRE(b.GetWeights('a', 'a').size() == 1); 
+      REQUIRE(*(b.GetWeights('a', 'a').begin()) == 2); 
+      REQUIRE(result1 == true);
+      REQUIRE(result2 == false);
+    }
+  }
+}
+
+SCENARIO("Deleting a node from a graph") {
+  WHEN("The graph is empty") {
+    gdwg::Graph<char, int> b{};
+    bool result1 = b.DeleteNode('a');
+
+    THEN("Result will be false") {
+      REQUIRE(b.GetNodes().size() == 0);
+      REQUIRE(result1 == false);
+    }
+  }
+
+  WHEN("Deleting an existing node from the graph") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    bool result1 = b.DeleteNode("Hello");
+
+    THEN("Node and accompanying edges will be deleted") {
+      REQUIRE(result1 == true);
+      REQUIRE(b.GetConnected("how").size() == 1);
+      REQUIRE_THROWS_AS(b.GetWeights("Hello", "how"), std::out_of_range); 
+      REQUIRE_THROWS_WITH(b.GetConnected("Hello"), "Cannot call Graph::GetConnected if src doesn't exist in the graph");
+    } 
+  }
+}
+
 
 /**
  * ITERATORS

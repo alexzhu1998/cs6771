@@ -16,8 +16,8 @@ x copy assignment
 x move assignment
 
 2.3 methods
-insert node
-insert edge
+x insert node
+x insert edge
 delete node
 replace
 merge replace
@@ -64,3 +64,6 @@ output stream
 misc todo: 
 
 make edge and node implementations privtae
+use more char tests
+shift implementation to h
+add comparators
