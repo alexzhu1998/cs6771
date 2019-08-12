@@ -27,12 +27,15 @@ int main() {
 	std::cout << b2 << "---------------\n";
 	
 	auto it = b2.find("lmao", "Hello", 2);
+	std::cout << "hello\n";
 	if (it != b2.end()) {
+		std::cout << "hello2\n";
 		b2.erase(it);
-	}
-	
-	
-	std::cout << b2 << "---------------\n";
+	}	
+	std::cout << b2 << "--------\n";
+	// 
+	// 
+	// std::cout << b2 << "---------------\n";
 
 	// Testing delete
 	// b2.InsertNode("lmao");

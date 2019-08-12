@@ -186,116 +186,150 @@ class Graph {
 	/* Move assigment */
 	Graph& operator=(Graph&& other);
 
-  /******************
-   * ITERATOR CLASS *
-   ******************/
-  class const_iterator {
-   public:
-    using iterator_category = std::forward_iterator_tag;
-    using value_type = char;
-    using reference = char&;
-    using pointer = char*;
-    using difference_type = int;
+	/******************
+	 * ITERATOR CLASS *
+	 ******************/
+	class const_iterator {
+		public:
+			using iterator_category = std::bidirectional_iterator_tag;
+			using value_type = std::tuple<N, N, E>;
+			using reference = std::tuple<const N&, const N&, const E&>;
+			using pointer = std::tuple<const N*, const N*, const E*>;
+			using difference_type = int;
 
-    // pointer operator->() const { return &(operator*()); }
-    // Edge operator*() const { return edges_->lock(); }
+			reference operator*() const noexcept;
+			// reference operator*() const { return this->edges_->lock(); }
+						
+			const_iterator& operator++() noexcept;
+			const_iterator operator++(int) noexcept {
+				auto copy{*this};
+				++(*this);
+				return copy;
+			}	
 
-    const_iterator operator--() {
-      --inner_;
-      if (inner_ == outer_->begin()) {
-        do {
-          --outer_;
-        } while (outer_ != sentinel_start_ && outer_->end() == outer_->begin());
-        if (outer_ != sentinel_start_) {
-          inner_ = outer_->end();
-        }
+			const_iterator& operator--() noexcept;
+			const_iterator operator--(int) noexcept {
+				auto copy{*this};
+				--(*this);
+				return copy;
+			}
+			
+			// This one isn't strictly required, but it's nice to have
+			pointer operator->() const { return &(operator*()); }
+
+			friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept {
+				return (lhs.edge_ == rhs.edge_);
+			}
+
+			friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) noexcept { 
+				return !(lhs == rhs); 
+			}
+
+		private:
+			typename std::set<std::shared_ptr<Edge>>::iterator edge_;
+
+			friend class Graph;
+			const_iterator(const decltype(edge_) edge): edge_{edge} {};
+	};
+
+	/***********
+	 * METHODS *
+	 ***********/
+	bool InsertNode(const N&);
+	bool InsertEdge(const N&, const N&, const E&);
+	bool DeleteNode(const N&) noexcept;
+	bool Replace(const N&, const N&);
+	void MergeReplace(const N&, const N&);
+	void Clear() noexcept;
+	bool IsNode(const N&) const;
+	bool IsConnected(const N&, const N&) const;
+	std::vector<N> GetNodes() const;
+	std::vector<N> GetConnected(const N&) const;
+	std::vector<E> GetWeights(const N&, const N&) const;
+	const_iterator find(const N&, const N&, const E&);
+	bool erase(const N&, const N&, const E&);
+	const_iterator erase(const_iterator);
+
+	/*************
+	 * ITERATORS *
+	 *************/
+
+	using iterator = const_iterator;
+	iterator begin() noexcept { return cbegin(); }
+	iterator end() noexcept { return cend(); }
+	const_iterator cbegin();
+	const_iterator cend();
+	const_iterator begin() const noexcept { return cbegin(); }
+	const_iterator end() const noexcept { return cend(); }
+
+	using reverse_iterator = std::reverse_iterator<iterator>;
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+	reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
+	reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
+	const_reverse_iterator crbegin() { return const_reverse_iterator{cend()}; }
+	const_reverse_iterator crend() { return const_reverse_iterator{cbegin()}; }
+	const_reverse_iterator rbegin() const noexcept { return crbegin(); }
+	const_reverse_iterator rend() const noexcept { return crend(); }
+
+	/***********
+	 * FRIENDS *
+	 ***********/
+	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
+		// For each node
+    for (const auto& node : g.nodes_) {
+        os << node->value;
+    os << " (\n";
+    // Each node has a vector containing edges_
+    auto begin = node->out_edges.begin();
+    auto end = node->out_edges.end();
+    // Loop through this vector
+    for (auto it = begin; it != end; ++it) {
+      // Create shared_ptr from weak_ptr to manage
+      auto edge = it->lock();
+      auto dest_node = edge->dst.lock();
+      os << "  " << dest_node->value << " | " << edge->weight << "\n";
+    }
+    os << ")\n";
+    }
+  
+  }
+
+  /* 
+    * Friend operator for graph equality
+    * Overrides attempted comparison operators for edge 
+    */
+  friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+    if (a.GetNodes() != b.GetNodes()) {
+          return false;
+    }
+
+    /* Track iteration through vectors by choosing one of the containers */
+    for (const auto& node : a.GetNodes()) {
+      /* Retrieve the current node in both graphs */
+    std::shared_ptr<Node> node_a = a.NodeExists(node);
+      std::shared_ptr<Node> node_b = b.NodeExists(node);
+
+      /* Values are equal, check outgoing edges */
+      bool edges_equal = std::equal(
+          node_a->out_edges.begin(), node_a->out_edges.end(), 
+          node_b->out_edges.begin(), node_b->out_edges.end(),
+          [](const std::weak_ptr<Edge> lhs, const std::weak_ptr<Edge> rhs) {
+              return (lhs.lock()->src.lock()->value == rhs.lock()->src.lock()->value
+                  && lhs.lock()->dst.lock()->value == rhs.lock()->dst.lock()->value
+                  && lhs.lock()->weight == rhs.lock()->weight);
+          });
+
+      /* If inline fails, not equal */
+      if (!edges_equal) {
+          return false;
       }
-      return *this;
     }
+    return true;
+	}
 
-    const_iterator operator++() {
-      ++inner_;
-      if (inner_ == outer_->end()) {
-        do {
-          ++outer_;
-        } while (outer_ != sentinel_end_ && outer_->begin() == outer_->end());
-        if (outer_ != sentinel_end_) {
-          inner_ = outer_->begin();
-        }
-      }
-      return *this;
-    }
-
-    /* Prefix increment/decrement */
-    const_iterator operator++(int) {
-      auto copy{*this};
-      ++(*this);
-      return copy;
-    }
-
-    const_iterator operator--(int) {
-      auto copy{*this};
-      --(*this);
-      return copy;
-    }
-
-    friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
-      // We need to check the sentinel because comparison of default constructed iterators is
-      // undefined.
-      return lhs.outer_ == rhs.outer_ && (lhs.outer_ == lhs.sentinel_ || lhs.inner_ == rhs.inner_);
-    }
-
-    friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) {
-      return !(lhs == rhs);
-    }
-
-   private:
-    std::vector<std::string>::iterator outer_;
-    const std::vector<std::string>::iterator sentinel_end_;
-    const std::vector<std::string>::iterator sentinel_start_;
-    std::string::iterator inner_;
-
-    friend class Graph;
-    const_iterator(const decltype(outer_)& outer,
-                   const decltype(sentinel_end_)& sentinel_end,
-                   const decltype(sentinel_start_)& sentinel_start,
-                   const decltype(inner_)& inner)
-      : outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{
-                                                                                         inner} {};
-  };
-
-  using const_reverse_iterator = const_iterator;
-
-  /***********
-   * METHODS *
-   ***********/
-  bool InsertNode(const N&);
-  bool InsertEdge(const N&, const N&, const E&);
-  bool DeleteNode(const N&) noexcept;
-  bool Replace(const N&, const N&);
-  void MergeReplace(const N&, const N&);
-  void Clear() noexcept;
-  bool IsNode(const N&) const;
-  bool IsConnected(const N&, const N&) const;
-  std::vector<N> GetNodes() const;
-  std::vector<N> GetConnected(const N&) const;
-  std::vector<E> GetWeights(const N&, const N&) const;
-  const_iterator find(const N&, const N&, const E&) const;
-  bool erase(const N&, const N&, const E&);
-
-  /*************
-   * ITERATORS *
-   *************/
-  const_iterator erase(const_iterator);
-  const_iterator cbegin();
-  const_iterator cend();
-  const_iterator crbegin();
-  const_iterator crend();
-  // const_reverse_iterator crend();
-  const_iterator begin();
-  const_iterator end();
-  // const_reverse_iterator rbegin();
-  // const_reverse_iterator rend();
+	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
+		return !(a == b);
 
   /***********
    * FRIENDS *
@@ -361,8 +395,6 @@ class Graph {
   /*******************
    * EXTRA FUNCTIONS *
    *******************/
-  std::shared_ptr<Node> GetNode(const N&);
-
   bool edge_exists(N src, N dst, E w) {
     /* check if edge already exists (return false) */
     for (const auto& it : this->edges_) {
