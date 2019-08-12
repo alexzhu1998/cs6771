@@ -103,8 +103,7 @@ class Graph {
     bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) const {
       if (a.lock()->src.lock()->value != b.lock()->src.lock()->value) {
         return a.lock()->src.lock()->value < b.lock()->src.lock()->value;
-      } else if (a.lock()->dst.lock()->value !=
-                 b.lock()->dst.lock()->value) {
+      } else if (a.lock()->dst.lock()->value != b.lock()->dst.lock()->value) {
         return a.lock()->dst.lock()->value < b.lock()->dst.lock()->value;
       } else {
         return a.lock()->weight < b.lock()->weight;
