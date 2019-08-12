@@ -18,15 +18,15 @@ x move assignment
 2.3 methods
 x insert node
 x insert edge
-delete node
-replace
-merge replace
+x delete node
+x replace
+x merge replace
 clear
-is node
-is connected
-get nodes_
-get connected
-get weights
+x is node
+x is connected
+x get nodes_
+x get connected
+x get weights
 
 2.3.2 iterators
 find
