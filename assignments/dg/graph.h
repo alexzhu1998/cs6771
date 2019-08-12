@@ -66,7 +66,7 @@ class Graph {
 
 	// Edge Definition
   struct Edge {
-	std::weak_ptr<Node> src;
+		std::weak_ptr<Node> src;
     std::weak_ptr<Node> dst;
     E weight;
 
@@ -170,77 +170,46 @@ class Graph {
 	 ******************/
 	class const_iterator {
 		public:
-			using iterator_category = std::forward_iterator_tag;
-		    using value_type = char;
-		    using reference = char&;
-		    using pointer = char*;
-		    using difference_type = int;
+			using iterator_category = std::bidirectional_iterator_tag;
+			using value_type = std::tuple<N, N, E>;
+			using reference = std::tuple<const N&, const N&, const E&>;
+			using pointer = std::tuple<const N*, const N*, const E*>;
+			using difference_type = int;
 
-			pointer operator->() const { return &(operator*()); }
-			Edge operator*() const { return this->edges_->lock(); }
-
-			const_iterator operator--() {
-				--inner_;
-				if (inner_ == outer_->begin()) {
-					do {
-						--outer_;
-					} 
-					while (outer_ != sentinel_start_ && outer_->end() == outer_->begin());
-						if (outer_ != sentinel_start_) {
-							inner_ = outer_->end();
-						}
-				}
-				return *this;
-			}
-
-			const_iterator operator++() {
-				++inner_;
-				if (inner_ == outer_->end()) {
-					do {
-						++outer_;
-					} 
-					while (outer_ != sentinel_end_ && outer_->begin() == outer_->end());
-						if (outer_ != sentinel_end_) {
-							inner_ = outer_->begin();
-						}
-				}
-				return *this;
-			}
-
-			/* Prefix increment/decrement */
+			reference operator*() const noexcept;
+			// reference operator*() const { return this->edges_->lock(); }
+						
+			const_iterator operator++();
 			const_iterator operator++(int) {
 				auto copy{*this};
 				++(*this);
 				return copy;
-			}
+			}	
 
+			const_iterator operator--();
 			const_iterator operator--(int) {
 				auto copy{*this};
 				--(*this);
 				return copy;
 			}
+			
+			// This one isn't strictly required, but it's nice to have
+			pointer operator->() const { return &(operator*()); }
 
-			 friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
-		      // We need to check the sentinel because comparison of default constructed iterators is undefined.
-		      return lhs.outer_ == rhs.outer_ && (lhs.outer_ == lhs.sentinel_ || lhs.inner_ == rhs.inner_);
-		    }
+			friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept {
+				// TODO literally check if two edges are the same
+				return (lhs.edge_ == rhs.edge_);
+			}
 
-			friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) { 
+			friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) noexcept { 
 				return !(lhs == rhs); 
 			}
 
 		private:
-			std::vector<std::string>::iterator outer_;
-		    const std::vector<std::string>::iterator sentinel_end_;
-		    const std::vector<std::string>::iterator sentinel_start_;
-		    std::string::iterator inner_;
+			typename std::set<std::shared_ptr<Edge>>::iterator edge_;
 
-		    friend class Graph;
-		    const_iterator(const decltype(outer_)& outer, 
-											 const decltype(sentinel_end_)& sentinel_end, 
-		    							 const decltype(sentinel_start_)& sentinel_start, 
-											 const decltype(inner_)& inner): 
-		    	outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{inner} {};
+			friend class Graph;
+			const_iterator(const decltype(edge_) edge): edge_{edge} {};
 	};
 
 	using const_reverse_iterator = const_iterator;
@@ -259,20 +228,24 @@ class Graph {
 	std::vector<N> GetNodes() const;
 	std::vector<N> GetConnected(const N&) const;
 	std::vector<E> GetWeights(const N&, const N&) const;
-	const_iterator find(const N&, const N&, const E&) const;
+	const_iterator find(const N&, const N&, const E&);
 	bool erase(const N&, const N&, const E&);
 
 	/*************
 	 * ITERATORS *
 	 *************/
+
+	using iterator = const_iterator;
+	iterator begin() noexcept { return cbegin(); }
+	iterator end() noexcept { return cend(); }
 	const_iterator erase(const_iterator);
 	const_iterator cbegin();
 	const_iterator cend();
 	const_iterator crbegin();
 	const_iterator crend();
 	//const_reverse_iterator crend();
-	const_iterator begin();
-	const_iterator end();
+	const_iterator begin() const noexcept { return cbegin(); }
+	const_iterator end() const noexcept { return cend(); }
 	//const_reverse_iterator rbegin();
 	//const_reverse_iterator rend();
 
