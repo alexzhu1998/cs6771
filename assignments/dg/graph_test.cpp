@@ -470,8 +470,11 @@ SCENARIO("A node is erased") {
 
     auto result3 = b.find(s1, s3, 3.0);
     auto result4 = b.find(s1, s3, 3.1);
-
-
+	
+		auto e4 = std::make_tuple(s3, s1, 4);
+		auto e_new = std::vector<std::tuple<std::string, std::string, double>>{e4};
+		gdwg::Graph<std::string, double> b2{e_new.begin(), e_new.end()};
+		auto result5 = b2.find(s3, s1, 4);
 
     THEN("The copy should be equivalent to the old graph") {
       REQUIRE(result == true);
@@ -486,7 +489,7 @@ SCENARIO("A node is erased") {
       b.erase(result3);
       REQUIRE(b.GetConnected(s1).size() == 0);
       REQUIRE(b.GetConnected(s3).size() == 0);
-      REQUIRE(b.erase(result3) == b.end());
+      REQUIRE(b.erase(result5) == b.end());
     }
   }
 }
@@ -520,11 +523,11 @@ SCENARIO("Accessing a graph's iterator") {
 		// TODO
 		THEN("Begin++ should point to the second edge in the container and begin-- first") {
       auto begin = b.cbegin();
-      begin++;
+			begin++;
       const auto& [from, to, weight] = *begin;
-      REQUIRE(from == "how");
-      REQUIRE(to == "are");
-      REQUIRE(weight == 7.6);
+			REQUIRE(from == "are");
+      REQUIRE(to == "Hello");
+      REQUIRE(weight == 9.8);
 
       begin--;
       const auto& [from1, to1, weight1] = *begin;
@@ -537,9 +540,9 @@ SCENARIO("Accessing a graph's iterator") {
       auto begin = b.cbegin();
       ++begin;
       const auto& [from, to, weight] = *begin;
-      REQUIRE(from == "how");
-      REQUIRE(to == "are");
-      REQUIRE(weight == 7.6);
+      REQUIRE(from == "are");
+      REQUIRE(to == "Hello");
+      REQUIRE(weight == 9.8);
 
       --begin;
       const auto& [from1, to1, weight1] = *begin;
@@ -548,7 +551,7 @@ SCENARIO("Accessing a graph's iterator") {
       REQUIRE(weight1 == 5.4);
     }
 
-   	THEN("End should point to the end of the edge container") {
+   	THEN("End should point to the past the end of the edge container") {
 		  auto end = b.cend();
 			end--;
     	const auto& [from, to, weight] = *end;
@@ -560,22 +563,21 @@ SCENARIO("Accessing a graph's iterator") {
 
 		THEN("Edge-- should point to the second last edge in the container") {
       auto end = b.cend();
+			end--;
       const auto& [from, to, weight] = *end;
    
-      REQUIRE(from == "are");
-      REQUIRE(to == "how");
-      REQUIRE(weight == 1.1);
+      REQUIRE(from == "how");
+      REQUIRE(to == "are");
+      REQUIRE(weight == 7.6);
 
-      end--;
-      const auto& [from1, to1, weight1] = *end;
-      REQUIRE(from1 == "are");
-      REQUIRE(to1 == "Hello");
-      REQUIRE(weight1 == 9.8);
+			end--;
+			const auto& [from1, to1, weight1] = *end;
+			REQUIRE(from1 == "are");
+			REQUIRE(to1 == "how");
+			REQUIRE(weight1 == 1.1);
 
     }
 	}
-
-  // WHEN("") {}
 }
 
 /***********

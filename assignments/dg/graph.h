@@ -44,7 +44,7 @@ class Graph {
     std::vector<std::weak_ptr<Edge>> out_edges;
     std::vector<std::weak_ptr<Edge>> in_edges;
 
-    // Node Constructors
+    /* Node Constructors */
     Node() = default;
     explicit Node(N node_value) : value{node_value} {};
 
@@ -61,13 +61,13 @@ class Graph {
     ~Node() {}
   };
 
-  // Edge Definition
+  /* Edge Definition */
   struct Edge {
     std::weak_ptr<Node> src;
     std::weak_ptr<Node> dst;
     E weight;
 
-    // Edge Constructors
+    /* Edge Constructors */
     Edge() = default;
 
     Edge(std::weak_ptr<Node> source, std::weak_ptr<Node> destination, E w)
@@ -112,24 +112,22 @@ class Graph {
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
    ************************************/
 
-  // Nodes == strings (out_edges and in_edges)
-  // Edges == dest_node, src_node, weight(double)
-
   /* Default contructor*/
   Graph() : nodes_{}, edges_{} {};
 
   /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph<N, E>(typename const std::vector<N>::const_iterator begin, typename const std::vector<N>::const_iterator end);
+  Graph<N, E>(typename std::vector<N>::const_iterator begin,
+        	  typename std::vector<N>::const_iterator end) noexcept;
 
   /* Constructor iterates over tuples containing source node, destination node and edge
    * weight and add them to the graph. Essentially iterates over a vector of edges_ and
    * adds them to a new graph.
    */
   Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator begin,
-              typename std::vector<std::tuple<N, N, E>>::const_iterator end);
+              typename std::vector<std::tuple<N, N, E>>::const_iterator end) noexcept;
 
   /* Initialiser list constructor */
-  Graph(typename std::initializer_list<N> new_nodes_);
+  Graph(std::initializer_list<N> new_nodes_) noexcept;
 
   /* Copy constructor */
   Graph(const Graph&);
@@ -163,7 +161,6 @@ class Graph {
     using difference_type = int;
 
     reference operator*() const noexcept;
-    // reference operator*() const { return this->edges_->lock(); }
 
     const_iterator& operator++() noexcept;
     const_iterator operator++(int) noexcept {
@@ -245,12 +242,12 @@ class Graph {
     for (const auto& node : g2.nodes_) {
       os << node->value;
       os << " (\n";
-      // Each node has a vector containing edges_
+      /* Each node has a vector containing edges_ */
       auto begin = node->out_edges.begin();
       auto end = node->out_edges.end();
-      // Loop through this vector
+      /* Loop through this vector */
       for (auto it = begin; it != end; ++it) {
-        // Create shared_ptr from weak_ptr to manage
+        /* Create shared_ptr from weak_ptr to manage */
         auto edge = it->lock();
         auto dest_node = edge->dst.lock();
         os << "  " << dest_node->value << " | " << edge->weight << "\n";
@@ -301,33 +298,15 @@ class Graph {
   /***********
    * HELPERS *
    ***********/
-  bool EdgeExists(const N src, const N dst, const E w) const {
-    /* check if edge already exists (return false) */
-    for (const auto& it : this->edges_) {
-      auto src_node = it->src.lock();
-      auto dst_node = it->dst.lock();
-      if (src_node->value == src && dst_node->value == dst && it->weight == w) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  std::shared_ptr<Node> NodeExists(const N& val) const {
-    for (const auto& node : nodes_) {
-      if (node.get()->value == val) {
-        return node;
-      }
-    }
-    return {};
-    return nullptr;
-  }
+	bool EdgeExists(const N, const N, const E) const;
+	std::shared_ptr<Node> NodeExists(const N&) const;
+  
 
  private:
   std::set<std::shared_ptr<Node>, SortNodeComparator> nodes_;
   std::set<std::shared_ptr<Edge>, SortEdgeComparator> edges_;
-};  // namespace gdwg
+};  /* namespace gdwg */
 }
 #include "assignments/dg/graph.tpp"
 
-#endif  // ASSIGNMENTS_DG_GRAPH_H_
+#endif  /* ASSIGNMENTS_DG_GRAPH_H_ */
