@@ -321,12 +321,16 @@ class Graph {
     return os;
   }
 
-	/* This is probably wrong tbh, right now relying on operator overloading with nodes_ and edges_ */
+	/* 
+	 * Friend operator for graph equality
+	 * Overrides attempted comparison operators for edge 
+	 */
 	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
 		if (a.GetNodes() != b.GetNodes()) {
 	      	return false;
 	    }
 
+	    /* Track iteration through vectors by choosing one of the containers */
 	    for (const auto& node : a.GetNodes()) {
 	    	/* Retrieve the current node in both graphs */
 			std::shared_ptr<Node> node_a = a.NodeExists(node);
