@@ -84,6 +84,15 @@ SCENARIO("Constructing a graph with default, copy, and move") {
   }
 
   /* Copy/Move construction */
+  WHEN("You copy construct a graph with an empty graph") {
+    gdwg::Graph<char, std::string> b{};
+    gdwg::Graph<char, std::string> b2{b};
+
+    THEN("The copied graph should be empty") {
+      REQUIRE(b2.GetNodes().size() == 0);
+    }
+  }
+
   WHEN("You construct a graph with a copy constructor") {
     std::string s1{"Hello"};
     std::string s2{"how"};
@@ -95,14 +104,114 @@ SCENARIO("Constructing a graph with default, copy, and move") {
     gdwg::Graph<std::string, double> b_copy{b};
 
     THEN("The copy should be equivalent to the old graph") {
-      REQUIRE(b_copy.GetNodes().size() == 4);
+      REQUIRE(b_copy.GetNodes().size() == 3);
       REQUIRE(b_copy.IsNode("Hello") == true);
       REQUIRE(b_copy.IsNode("how") == true);
       REQUIRE(b_copy.IsNode("are") == true);
-      REQUIRE(b_copy.GetWeights("s1", "s2").size() == 1);
-      REQUIRE(b_copy.GetWeights("s2", "s3").size() == 1);
+      REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
+      REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
     }
+  }
 
+  WHEN("You move construct a graph with an empty graph") {
+    gdwg::Graph<char, std::string> b{};
+    gdwg::Graph<char, std::string> b2{std::move(b)};
+
+    THEN("The copied graph should be empty") {
+      REQUIRE(b2.GetNodes().size() == 0);
+      //REQUIRE(b == NULL);
+    }
+  }
+
+  WHEN("You move construct a graph") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    gdwg::Graph<std::string, double> b_copy{std::move(b)};
+
+    THEN("The copy should be equivalent to the old graph with old graph destroyed") {
+      REQUIRE(b_copy.GetNodes().size() == 3);
+      REQUIRE(b_copy.IsNode("Hello") == true);
+      REQUIRE(b_copy.IsNode("how") == true);
+      REQUIRE(b_copy.IsNode("are") == true);
+      REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
+      REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
+      //REQUIRE(b == NULL);
+    }
+  }
+}
+
+// COPY/MOVE ASSIGNMENT
+SCENARIO("Utilising copy/move assignments") {
+  /* Copy/Move construction */
+  WHEN("You copy construct a graph with an empty graph") {
+    gdwg::Graph<char, std::string> b{};
+    gdwg::Graph<char, std::string> b2;
+    b2 = b;
+
+    THEN("The copied graph should be empty") {
+      REQUIRE(b2.GetNodes().size() == 0);
+    }
+  }
+
+  WHEN("You construct a graph with a copy constructor") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    gdwg::Graph<std::string, double> b_copy;
+
+    b_copy = b;
+
+    THEN("The copy should be equivalent to the old graph") {
+      REQUIRE(b_copy.GetNodes().size() == 3);
+      REQUIRE(b_copy.IsNode("Hello") == true);
+      REQUIRE(b_copy.IsNode("how") == true);
+      REQUIRE(b_copy.IsNode("are") == true);
+      REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
+      REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
+    }
+  }
+
+  WHEN("You move an empty graph to a new graph") {
+    gdwg::Graph<char, std::string> b{};
+    gdwg::Graph<char, std::string> b2;
+    b2 = std::move(b);
+
+    THEN("The copied graph should be empty") {
+      REQUIRE(b2.GetNodes().size() == 0);
+      //REQUIRE(b == NULL);
+    }
+  }
+
+  WHEN("You move a populated graph to a new graph") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    gdwg::Graph<std::string, double> b_copy;
+
+    b_copy = std::move(b);
+
+    THEN("The copy should be equivalent to the old graph with old graph destroyed") {
+      REQUIRE(b_copy.GetNodes().size() == 3);
+      REQUIRE(b_copy.IsNode("Hello") == true);
+      REQUIRE(b_copy.IsNode("how") == true);
+      REQUIRE(b_copy.IsNode("are") == true);
+      REQUIRE(b_copy.GetWeights(s1, s2).size() == 1);
+      REQUIRE(b_copy.GetWeights(s2, s3).size() == 1);
+      //REQUIRE(b == NULL);
+    }
   }
 }
 

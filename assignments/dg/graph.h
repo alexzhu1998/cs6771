@@ -1,3 +1,15 @@
+/*
+ * Advanced C++ (COMP6771) 2019T2 Assignment 2
+ 
+ * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
+ * Christopher Shi - TODO 
+ *
+ * A Graph class that provides the implementation and functionality to create and manipulate
+ * a directed weighted graph, along with a custom iterator to traverse the edges of the 
+ * graph.
+ *
+ */
+
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
@@ -164,8 +176,8 @@ class Graph {
 		    using pointer = char*;
 		    using difference_type = int;
 
-			pointer operator->() const { return &(operator*()); }
-			Edge operator*() const { return edges_->lock(); }
+			// pointer operator->() const { return &(operator*()); }
+			// Edge operator*() const { return edges_->lock(); }
 
 			const_iterator operator--() {
 				--inner_;
@@ -240,12 +252,12 @@ class Graph {
 	bool Replace(const N&, const N&);
 	void MergeReplace(const N&, const N&);
 	void Clear() noexcept;
-	bool IsNode(const N&);
-	bool IsConnected(const N&, const N&);
-	std::vector<N> GetNodes() const ;
-	std::vector<N> GetConnected(const N&);
-	std::vector<E> GetWeights(const N&, const N&);
-	const_iterator find(const N&, const N&, const E&);
+	bool IsNode(const N&) const;
+	bool IsConnected(const N&, const N&) const;
+	std::vector<N> GetNodes() const;
+	std::vector<N> GetConnected(const N&) const;
+	std::vector<E> GetWeights(const N&, const N&) const;
+	const_iterator find(const N&, const N&, const E&) const;
 	bool erase(const N&, const N&, const E&);
 
 	/*************
@@ -323,6 +335,7 @@ class Graph {
 			}
 		}
 		return {};
+		return nullptr;
 	}
  
  private:

@@ -1,4 +1,15 @@
-// #include "assignments/dg/graph.h" // probably not needed... 
+/*
+ * Advanced C++ (COMP6771) 2019T2 Assignment 2
+ 
+ * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
+ * Christopher Shi - TODO 
+ *
+ * Implementation of graph.h:
+ * "A Graph class that provides the implementation and functionality to create and manipulate
+ * a directed weighted graph, along with a custom iterator to traverse the edges of the 
+ * graph."
+ *
+ */
 
 #include <iterator>
 #include <vector>
@@ -98,6 +109,9 @@ bool gdwg::Graph<N, E>::InsertNode(const N& val) {
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	// raise an exception if src or dst not found in graph
+	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
+		throw std::runtime_error("Cannot call Graph::InsertEdge when either src or dst node does not exist");
+	}
 	// THIS FUNCTION DOES NOT CREATE NODES 
 
 	// check if edge already exists (return false)
@@ -170,8 +184,13 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 /* Replace node */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
-	if (this->IsNode(new_data) == true)
+	// If no node that contains value oldData can be found
+	if (this->IsNode(new_data) == true) {
 		return false;
+	} else {
+		// Node does not exist and raise exception
+		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
+	}
 	for (const auto &it : this->nodes_) {
 		if (it->value == old_data) {
 			it->value = new_data;
@@ -184,6 +203,10 @@ bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
 /* MergeReplace */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
+	if (this->IsNode(oldData) == false || this->IsNode(newData) == false) {
+		throw std::runtime_error("Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+	}
+
 	const auto &old_node = NodeExists(oldData);
 	const auto &new_node = NodeExists(newData);
 
@@ -210,15 +233,40 @@ void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
 	this->DeleteNode(oldData);
 }
 
+
+/* Clear/delete */
+template <typename N, typename E>
+void gdwg::Graph<N, E>::Clear() noexcept {
+    edges_.clear();
+    nodes_.clear();
+}
+
 /* IsNode */
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::IsNode(const N& val) {
+bool gdwg::Graph<N, E>::IsNode(const N& val) const {
 	// loop through nodes_ in (this)
 	for (const auto &it : this->nodes_) {
 		if (it->value == val) {
 			return true;
 		}
 	}
+	return false;
+}
+
+/* */
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
+	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
+		throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+	}
+
+	const auto &src_node = NodeExists(src);
+	for (const auto &edges : src_node->out_edges_) {
+		if (edges.lock()->dst.lock()->value == dst) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -234,18 +282,11 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 }
 
 
-/* Clear/delete */
-template <typename N, typename E>
-void gdwg::Graph<N, E>::Clear() noexcept {
-    edges_.clear();
-    nodes_.clear();
-}
-
 /*
  * Return all nodes_ connected by outgoing edges_ to a given node
  */ 
 template <typename N, typename E>
-std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
+std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) const {
 	const auto &node = NodeExists(src);
     std::vector<N> ret_nodes_ = {};
 
@@ -264,7 +305,7 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
  * Get weights of edges between two nodes
  */
 template <typename N, typename E>
-std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
+std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) const {
   	const auto &src_node = NodeExists(src);
   	const auto &dst_node = NodeExists(dst);
   	std::vector<E> ret_edges_ = {};
@@ -276,7 +317,7 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
 
 	/* Retreieve edges and return */
 	for (const auto &out_edge : src_node->out_edges) {
-		ret_edges_.push_back(out_edge);
+		ret_edges_.push_back(out_edge.lock()->weight);
 	}
 
 	return ret_edges_;
@@ -286,7 +327,7 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
  * Find a given edge in the graph.
  */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
+typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) const {
 	const auto &src_node = NodeExists(src);
 	const auto &dst_node = NodeExists(dst);
 	if (src_node == nullptr || dst_node == nullptr) {

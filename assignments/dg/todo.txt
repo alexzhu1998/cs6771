@@ -5,15 +5,15 @@ x default constructor
 x constructor
 x iterator constructor
 x initializer list constructor
-copy constructor
-move constructor
-destructor
+x copy constructor
+x move constructor
+destructor - can we?
 
 note: freeing/dstroying needs work to mark off copy/move/destructor
 
 2.2 operations
-copy assignment
-move assignment
+x copy assignment
+x move assignment
 
 2.3 methods
 insert node
