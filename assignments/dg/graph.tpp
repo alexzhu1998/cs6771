@@ -331,25 +331,23 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) const {
  * Find a given edge in the graph.
  */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator 
+typename gdwg::Graph<N, E>::const_iterator
 gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) {
-	const auto &src_node = NodeExists(src);
-	const auto &dst_node = NodeExists(dst);
-	if (src_node == nullptr || dst_node == nullptr) {
-		return end();
-	}
+  const auto& src_node = NodeExists(src);
+  const auto& dst_node = NodeExists(dst);
+  if (src_node == nullptr || dst_node == nullptr) {
+    return end();
+  }
 
-	for (auto it = this->edges_.begin(); it != this->edges_.end(); ++it) {
-	// for (auto &it : this->edges_) {
-		if ((*it)->dst.lock()->value == dst 
-			&& (*it)->src.lock()->value == src 
-			&& (*it)->weight == wt) {
-				return {it};
-		}
-	}
+  for (auto it = this->edges_.begin(); it != this->edges_.end(); ++it) {
+    // for (auto &it : this->edges_) {
+    if ((*it)->dst.lock()->value == dst && (*it)->src.lock()->value == src && (*it)->weight == wt) {
+      return {it};
+    }
+  }
 
-	/* if we found nothing, return the end */
-	return end();
+  /* if we found nothing, return the end */
+  return end();
 }
 
 /* erase(edge) */
@@ -393,68 +391,67 @@ bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator
 gdwg::Graph<N, E>::erase(typename gdwg::Graph<N, E>::const_iterator it) {
-	const auto& [src, dst, weight] = *it;
+  const auto& [src, dst, weight] = *it;
 
-	typename gdwg::Graph<N, E>::const_iterator ret_val = this->edges_.begin();
-	for (auto edge = this->edges_.begin(); edge != this->edges_.end(); ++edge) {
-		if ((*edge)->src.lock()->value == src &&
-				(*edge)->dst.lock()->value == dst &&
-				(*edge)->weight == weight) {
-			// record next
-			++edge;
-			ret_val = edge;
-			break;
-		}
-	}
+  typename gdwg::Graph<N, E>::const_iterator ret_val = this->edges_.begin();
+  for (auto edge = this->edges_.begin(); edge != this->edges_.end(); ++edge) {
+    if ((*edge)->src.lock()->value == src && (*edge)->dst.lock()->value == dst &&
+        (*edge)->weight == weight) {
+      // record next
+      ++edge;
+      ret_val = edge;
+      break;
+    }
+  }
 
-
-	// implementation is a wrapper around bool erase
-	if (this->erase(src, dst, weight) == true) {
-		return ret_val;
-	} else {
-		return end();
-	}
+  // implementation is a wrapper around bool erase
+  if (this->erase(src, dst, weight) == true) {
+    return ret_val;
+  } else {
+    return end();
+  }
 }
 
 /*************
  * ITERATORS *
  *************/
- 
+
 /* * operator */
-// 
+//
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator::reference 
-gdwg::Graph<N, E>::const_iterator::operator*() const noexcept {
-	return {(*edge_)->src.lock()->value, (*edge_)->dst.lock()->value, (*edge_)->weight};
+typename gdwg::Graph<N, E>::const_iterator::reference gdwg::Graph<N, E>::const_iterator::
+operator*() const noexcept {
+  return {(*edge_)->src.lock()->value, (*edge_)->dst.lock()->value, (*edge_)->weight};
 }
 
 /* cbegin() */
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
-	auto begin = this->edges_.begin();
-	return begin;
+  auto begin = this->edges_.begin();
+  return begin;
 }
 
 /* cend() */
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() {
-	auto end = --(this->edges_.end());
-	return {end};
+  auto end = --(this->edges_.end());
+  return {end};
 }
 
 // Not sure if these work
 
-
 /* ++ */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::operator++() noexcept {
-	++edge_;
-	return *this;
+typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::
+operator++() noexcept {
+  ++edge_;
+  return *this;
 }
 
 /* -- */
 template <typename N, typename E>
-typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::operator--() noexcept {
-	--edge_;
-	return *this;
+typename gdwg::Graph<N, E>::const_iterator& gdwg::Graph<N, E>::const_iterator::
+operator--() noexcept {
+  --edge_;
+  return *this;
 }

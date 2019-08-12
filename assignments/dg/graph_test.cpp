@@ -500,9 +500,7 @@ SCENARIO("Using graph friend functions") {
     auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e4, e3};
     gdwg::Graph<std::string, double> b{e_cont2.begin(), e_cont2.end()};
 
-    THEN("Both graphs should be equal") {
-      REQUIRE(a == b);
-    }  
+    THEN("Both graphs should be equal") { REQUIRE(a == b); }
   }
 
   WHEN("Creating two graphs with the same values") {
@@ -522,9 +520,7 @@ SCENARIO("Using graph friend functions") {
     auto e_cont2 = std::vector<std::tuple<std::string, std::string, double>>{e3, e4};
     gdwg::Graph<std::string, double> b{e_cont2.begin(), e_cont2.end()};
 
-    THEN("Both graphs should be equal") {
-      REQUIRE(a != b);
-    }  
+    THEN("Both graphs should be equal") { REQUIRE(a != b); }
   }
 
   WHEN("Printing out empty graph") {
@@ -532,9 +528,7 @@ SCENARIO("Using graph friend functions") {
     gdwg::Graph<std::string, double> g{};
     oss << g;
 
-    THEN("Print out nothing") {
-      REQUIRE(oss.str () == "");
-    }
+    THEN("Print out nothing") { REQUIRE(oss.str() == ""); }
   }
 
   WHEN("Printing out graph with nodes with no edges and not sorted upon insertion") {
@@ -556,12 +550,12 @@ SCENARIO("Using graph friend functions") {
     gdwg::Graph<int, double> b{e.begin(), e.end()};
     b.InsertNode(-2);
 
-
     std::ostringstream oss;
     oss << b;
 
     THEN("Print out the graph") {
-      REQUIRE(oss.str() == "-2 (\n)\n1 (\n 2 | 5.3\n)\n2 (\n 2 | 5.3\n 3 | -1\n)\n3 (\n 1 | 4.0\n)\n");
+      REQUIRE(oss.str() ==
+              "-2 (\n)\n1 (\n 2 | 5.3\n)\n2 (\n 2 | 5.3\n 3 | -1\n)\n3 (\n 1 | 4.0\n)\n");
     }
   }
 }
