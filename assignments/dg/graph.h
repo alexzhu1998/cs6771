@@ -2,7 +2,7 @@
  * Advanced C++ (COMP6771) 2019T2 Assignment 2
 
  * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
- * Christopher Shi (z5165244) - christopher.shi@unsw
+ * Christopher Shi (z5165244) - christopher.shi@unsw.edu.au
  *
  * A Graph class that provides the implementation and functionality to create and manipulate
  * a directed weighted graph, along with a custom iterator to traverse the edges of the
@@ -100,15 +100,6 @@ class Graph {
       }
     }
 
-    bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) const {
-      if (a.lock()->src.lock()->value != b.lock()->src.lock()->value) {
-        return a.lock()->src.lock()->value < b.lock()->src.lock()->value;
-      } else if (a.lock()->dst.lock()->value != b.lock()->dst.lock()->value) {
-        return a.lock()->dst.lock()->value < b.lock()->dst.lock()->value;
-      } else {
-        return a.lock()->weight < b.lock()->weight;
-      }
-    }
   };
 
   struct SortNodeComparator {
@@ -274,8 +265,9 @@ class Graph {
    * FRIENDS *
    ***********/
   friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
+		Graph<N, E> g2{g};
     // For each node
-    for (const auto& node : g.nodes_) {
+    for (const auto& node : g2.nodes_) {
       os << node->value;
       os << " (\n";
       // Each node has a vector containing edges_
