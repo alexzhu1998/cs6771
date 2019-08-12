@@ -136,11 +136,11 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
   }
 
   // escalating weak_ptrs to shared_ptrs
-  std::shared_ptr<Node> src_sptr = src_node.lock();
-  std::shared_ptr<Node> dst_sptr = dst_node.lock();
+  std::shared_ptr<gdwg::Graph<N, E>::Node> src_sptr = src_node.lock();
+  std::shared_ptr<gdwg::Graph<N, E>::Node> dst_sptr = dst_node.lock();
 
   // creating edge
-  auto edge = std::make_shared<Edge>(src_sptr, dst_sptr, w);
+  auto edge = std::make_shared<gdwg::Graph<N, E>::Edge>(src_sptr, dst_sptr, w);
   this->edges_.insert(edge);
 
   // adding edges_ to in_edges and out_edges of dst/src nodes_

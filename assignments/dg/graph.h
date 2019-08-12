@@ -330,67 +330,7 @@ class Graph {
 
 	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
 		return !(a == b);
-
-  /***********
-   * FRIENDS *
-   ***********/
-  friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
-    /* For each node */
-    for (const auto& node : g.nodes_) {
-      os << node->value;
-      os << " (\n";
-      /*  Each node has a vector containing edges_ */
-      auto begin = node->out_edges.begin();
-      auto end = node->out_edges.end();
-      /* Loop through this vector */
-      for (auto it = begin; it != end; ++it) {
-        /* Create shared_ptr from weak_ptr to manage */
-        auto edge = it->lock();
-        auto dest_node = edge->dst.lock();
-        os << "  " << dest_node->value << " | " << edge->weight << "\n";
-      }
-      os << ")\n";
-    }
-
-    return os;
   }
-
-	/* 
-	 * Friend operator for graph equality
-	 * Overrides attempted comparison operators for edge 
-	 */
-	friend bool operator==(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-		if (a.GetNodes() != b.GetNodes()) {
-	      	return false;
-	    }
-
-	    /* Track iteration through vectors by choosing one of the containers */
-	    for (const auto& node : a.GetNodes()) {
-	    	/* Retrieve the current node in both graphs */
-			std::shared_ptr<Node> node_a = a.NodeExists(node);
-		    std::shared_ptr<Node> node_b = b.NodeExists(node);
-
-		    /* Values are equal, check outgoing edges */
-		    bool edges_equal = std::equal(
-		        node_a->out_edges.begin(), node_a->out_edges.end(), 
-		        node_b->out_edges.begin(), node_b->out_edges.end(),
-		        [](const std::weak_ptr<Edge> lhs, const std::weak_ptr<Edge> rhs) {
-		            return (lhs.lock()->src.lock()->value == rhs.lock()->src.lock()->value
-		            		&& lhs.lock()->dst.lock()->value == rhs.lock()->dst.lock()->value
-		            		&& lhs.lock()->weight == rhs.lock()->weight);
-		        });
-
-		    /* If inline fails, not equal */
-		    if (!edges_equal) {
-		        return false;
-		    }
-	    }
-	    return true;
-	}
-
-	friend bool operator!=(const gdwg::Graph<N, E>& a, const gdwg::Graph<N, E>& b) {
-		return !(a == b);
-	}
 
   /*******************
    * EXTRA FUNCTIONS *
@@ -420,9 +360,8 @@ class Graph {
  private:
   std::set<std::shared_ptr<Node>, SortNodeComparator> nodes_;
   std::set<std::shared_ptr<Edge>, SortEdgeComparator> edges_;
-};  
-}  // namespace gdwg
-
+};  // namespace gdwg
+}
 #include "assignments/dg/graph.tpp"
 
 #endif  // ASSIGNMENTS_DG_GRAPH_H_
