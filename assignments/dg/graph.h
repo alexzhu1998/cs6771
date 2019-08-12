@@ -1,3 +1,15 @@
+/*
+ * Advanced C++ (COMP6771) 2019T2 Assignment 2
+ 
+ * Amri Chamela (z5116701) - a.chamela@student.unsw.edu.au
+ * Christopher Shi - TODO 
+ *
+ * A Graph class that provides the implementation and functionality to create and manipulate
+ * a directed weighted graph, along with a custom iterator to traverse the edges of the 
+ * graph.
+ *
+ */
+
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
@@ -30,20 +42,20 @@ class Graph {
 	// Node Definition
   struct Node {
     N value;
-    std::vector<std::weak_ptr<Edge>> out_edges_;
-    std::vector<std::weak_ptr<Edge>> in_edges_;
+    std::vector<std::weak_ptr<Edge>> out_edges;
+    std::vector<std::weak_ptr<Edge>> in_edges;
 
 		// Node Constructors
     Node() = default;
     Node(N node_value) : value{node_value} {};
-		// TODO should we have initialisers/methods for adding to int/out_edges_?
+		// TODO should we have initialisers/methods for adding to int/out_edges?
 		
 		bool operator==(const Node& o) {
-			return (this->value == o.value && this->out_edges_ == o.out_edges_ && this->in_edges_ == o.in_edges_);
+			return (this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
 		}
 
 		bool operator!=(const Node& o) {
-			return !(this->value == o.value && this->out_edges_ == o.out_edges_ && this->in_edges_ == o.in_edges_);
+			return !(this->value == o.value && this->out_edges == o.out_edges && this->in_edges == o.in_edges);
 		}    
 		// Node Destroyer?
 		~Node() {
@@ -54,7 +66,7 @@ class Graph {
 
 	// Edge Definition
   struct Edge {
-		std::weak_ptr<Node> src;
+	std::weak_ptr<Node> src;
     std::weak_ptr<Node> dst;
     E weight;
 
@@ -88,7 +100,7 @@ class Graph {
    * GRAPH CONSTRUCTORS & DESTRUCTORS *
    ************************************/
 
-	// Nodes == strings (out_edges_ and in_edges_)
+	// Nodes == strings (out_edges and in_edges)
 	// Edges == dest_node, src_node, weight(double)
 
   /* Default contructor*/	
@@ -242,12 +254,12 @@ class Graph {
 	bool Replace(const N&, const N&);
 	void MergeReplace(const N&, const N&);
 	void Clear() noexcept;
-	bool IsNode(const N&);
-	bool IsConnected(const N&, const N&);
-	std::vector<N> GetNodes() const ;
-	std::vector<N> GetConnected(const N&);
-	std::vector<E> GetWeights(const N&, const N&);
-	const_iterator find(const N&, const N&, const E&);
+	bool IsNode(const N&) const;
+	bool IsConnected(const N&, const N&) const;
+	std::vector<N> GetNodes() const;
+	std::vector<N> GetConnected(const N&) const;
+	std::vector<E> GetWeights(const N&, const N&) const;
+	const_iterator find(const N&, const N&, const E&) const;
 	bool erase(const N&, const N&, const E&);
 
 	/*************
@@ -273,8 +285,8 @@ class Graph {
 	      	os << node->value;
 			os << " (\n";
 			// Each node has a vector containing edges_
-			auto begin = node->out_edges_.begin();
-			auto end = node->out_edges_.end();
+			auto begin = node->out_edges.begin();
+			auto end = node->out_edges.end();
 			// Loop through this vector
 			for (auto it = begin; it != end; ++it) {
 				// Create shared_ptr from weak_ptr to manage
