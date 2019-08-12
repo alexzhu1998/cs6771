@@ -369,6 +369,58 @@ SCENARIO("Using is and get methods fringe cases") {
   }
 }
 
+SCENARIO("Replacing nodes in graph - normal and merge") {
+  WHEN("Replacing a node that doesn't exist") {
+    gdwg::Graph<char, int> b{'a', 'b', 'x', 'y'};
+
+    THEN("An exception is thrown") {
+      REQUIRE_THROWS_AS(b.Replace('c', 'a'), std::runtime_error);
+      REQUIRE_THROWS_WITH(b.Replace('c', 'a'), "Cannot call Graph::Replace on a node that doesn't exist");
+    }
+  }
+
+  WHEN("A node is replaced in the graph") {
+    std::string s1{"Hello"};
+    std::string s2{"how"};
+    std::string s3{"are"};
+    std::string s4{"Help me"};
+    auto e1 = std::make_tuple(s1, s2, 5.4);
+    auto e3 = std::make_tuple(s1, s3, 3.0);
+    auto e2 = std::make_tuple(s2, s3, 7.6);
+    auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e3, e2};
+    gdwg::Graph<std::string, double> b{e.begin(), e.end()};
+    bool result = b.Replace(s1, s4);
+    bool result2 = b.Replace(s3, s4); /* cannot replace if data already exists */
+
+    THEN("The copy should be equivalent to the old graph") {
+      REQUIRE(result == true);
+      REQUIRE(result2 == false);
+      REQUIRE(b.GetNodes().size() == 3);
+      REQUIRE(b.IsNode(s4) == true);
+      REQUIRE(b.GetConnected(s4).size() == 2);
+      // TODO: UNCOMMENT ONCE SORTING HAS BEEN FINISHED
+      //REQUIRE(b.GetWeights(s4, s2).at(0) == 3.0);
+      //REQUIRE(b.GetWeights(s4, s3).at(1) == 5.4);
+      REQUIRE(b.IsNode(s1) == false);
+    }
+  }
+
+  WHEN("A node is merge replaced in an empty graph") {
+    gdwg::Graph<char, int> c{};
+
+    THEN("An exception is thrown") {
+      REQUIRE_THROWS_AS(c.MergeReplace('c', 'a'), std::runtime_error);
+      REQUIRE_THROWS_WITH(c.MergeReplace('c', 'a'),  "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+      REQUIRE_THROWS_AS(c.MergeReplace('a', 'c'), std::runtime_error);
+      REQUIRE_THROWS_WITH(c.MergeReplace('a', 'c'),  "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+    }
+  }
+
+  WHEN("A node is merge replaced") {
+
+  }
+}
+
 
 /**
  * ITERATORS

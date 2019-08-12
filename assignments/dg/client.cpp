@@ -20,30 +20,7 @@ int main() {
 	// std::cout << b1 << "\n";
 
 	// Constructor using a vector of tuples representing edges
-	std::string s1{"Hello"};
-	std::string s2{"how"};
-	std::string s3{"are"};
-	auto e1 = std::make_tuple(s1, s2, 5.4);
-	auto e2 = std::make_tuple(s2, s3, 7.6);
-	auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2};
-	gdwg::Graph<std::string, double> b2{e.begin(), e.end()};
-	std::cout << b2 << "------------\n";
-
-	// Testing IsConnected
-	// std::cout << b2.IsConnected("Hello", "how");
 	
-	// Testing find and erase const_iterators
-	b2.InsertNode("lmao");
-	b2.InsertEdge("lmao", "Hello", 2);
-	std::cout << b2 << "---------------\n";
-	
-	auto it = b2.find("lmao", "Hello", 2);
-	if (it != b2.end()) {
-		b2.erase(it);
-	}
-
-	
-	std::cout << b2 << "---------------\n";
 
 	// Testing delete
 	// b2.InsertNode("lmao");
@@ -173,4 +150,7 @@ int main() {
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }*/
+
+	    gdwg::Graph<char, int> b{'a'};
+b.Replace('c', 'a');
 }

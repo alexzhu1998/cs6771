@@ -19,8 +19,8 @@ x move assignment
 x insert node
 x insert edge
 x delete node
-replace
-merge replace
+x replace
+x merge replace
 clear
 x is node
 x is connected

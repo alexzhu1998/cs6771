@@ -183,14 +183,17 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 
 /* Replace node */
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
-	// If no node that contains value oldData can be found
-	if (this->IsNode(new_data) == true) {
-		return false;
-	} else {
+bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
+	if (this->IsNode(old_data) == false) {
 		// Node does not exist and raise exception
 		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
-	}
+	} 
+
+	/* If no node that contains value oldData can be found */
+	if (this->IsNode(new_data) == true) {
+		return false;
+	} 
+
 	for (const auto &it : this->nodes_) {
 		if (it->value == old_data) {
 			it->value = new_data;
@@ -202,13 +205,13 @@ bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
 
 /* MergeReplace */
 template <typename N, typename E>
-void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
-	if (this->IsNode(oldData) == false || this->IsNode(newData) == false) {
+void gdwg::Graph<N, E>::MergeReplace(const N& old_data, const N& new_data) {
+	if (this->IsNode(new_data) == false || this->IsNode(old_data) == false) {
 		throw std::runtime_error("Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
 	}
 
-	const auto &old_node = NodeExists(oldData);
-	const auto &new_node = NodeExists(newData);
+	const auto &old_node = NodeExists(old_data);
+	const auto &new_node = NodeExists(new_data);
 
 	// replace old_node with new_node in node->out_edges and node->in_edges
 	for (const auto &it : old_node->out_edges) {
@@ -230,7 +233,7 @@ void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
 	}
 
 	// clean all of old_node;
-	this->DeleteNode(oldData);
+	this->DeleteNode(old_data);
 }
 
 
@@ -244,7 +247,7 @@ void gdwg::Graph<N, E>::Clear() noexcept {
 /* IsNode */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsNode(const N& val) const {
-	// loop through nodes_ in (this)
+	/* loop through nodes_ in (this) */
 	for (const auto &it : this->nodes_) {
 		if (it->value == val) {
 			return true;
@@ -253,13 +256,16 @@ bool gdwg::Graph<N, E>::IsNode(const N& val) const {
 	return false;
 }
 
-/* */
+/* Determine if two nodes are connected */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
+
+	/* throw exception if one of the given nodes doesn't exist */
 	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
 		throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
 	}
 
+	/* find a match in the src node's outgoing edges */
 	const auto &src_node = NodeExists(src);
 	for (const auto &edges : src_node->out_edges) {
 		if (edges.lock()->dst.lock()->value == dst) {
@@ -270,7 +276,7 @@ bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) const {
 	return false;
 }
 
-/* GetNodes */
+/* Get all nodes in graph */
 template <typename N, typename E>
 std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
   std::vector<N> ret_nodes_;
@@ -282,14 +288,13 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 }
 
 
-/*
- * Return all nodes_ connected by outgoing edges_ to a given node
- */ 
+/* Return all nodes_ connected by outgoing edges_ to a given node */
 template <typename N, typename E>
 std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) const {
 	const auto &node = NodeExists(src);
     std::vector<N> ret_nodes_ = {};
 
+    /* Throw exception if src not in graph */
 	if (node == nullptr) {
 		throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
 	}
@@ -330,10 +335,13 @@ template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& wt) const {
 	const auto &src_node = NodeExists(src);
 	const auto &dst_node = NodeExists(dst);
+
+	/* Return end iterator if doesn't exist */
 	if (src_node == nullptr || dst_node == nullptr) {
 		return edges_.end();
 	}
 
+	/* Locate desred edge and return iterator */
 	for (const auto it = edges_.begin(); it != edges_.end(); ++it) {
 		if (it->lock()->dst->lock()->value == dst 
 			&& it->lock()->src->lock()->value == src 
