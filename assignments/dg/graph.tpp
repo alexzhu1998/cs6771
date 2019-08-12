@@ -428,7 +428,7 @@ operator*() const noexcept {
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
   auto begin = this->edges_.begin();
-  return begin;
+  return {begin};
 }
 
 /* cend() */
