@@ -119,8 +119,7 @@ class Graph {
   Graph() : nodes_{}, edges_{} {};
 
   /* Constructor iterates over nodes_ and adds them to the graph*/
-  Graph<N, E>(typename const std::vector<N>::const_iterator begin,
-        	  typename const std::vector<N>::const_iterator end);
+  Graph<N, E>(typename const std::vector<N>::const_iterator begin, typename const std::vector<N>::const_iterator end);
 
   /* Constructor iterates over tuples containing source node, destination node and edge
    * weight and add them to the graph. Essentially iterates over a vector of edges_ and

@@ -575,7 +575,7 @@ SCENARIO("Accessing a graph's iterator") {
     }
 	}
 
-  WHEN("") {}
+  // WHEN("") {}
 }
 
 /***********
