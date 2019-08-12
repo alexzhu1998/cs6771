@@ -272,8 +272,6 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 }
 
 
-
-
 /*
  * Return all nodes_ connected by outgoing edges_ to a given node
  */ 
@@ -323,7 +321,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src,
 		return edges_.end();
 	}
 
-	for (const auto it = edges_.begin(); it != edges_.end; ++it) {
+	for (const auto it = edges_.begin(); it != edges_.end(); ++it) {
 		if (it->lock()->dst->lock()->value == dst 
 			&& it->lock()->src->lock()->value == src 
 			&& it->lock()->weight == wt) {
@@ -334,6 +332,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src,
 	/* if we found nothing, return the end */
 	return edges_.end();
 }
+
 
 /* erase(edge) */
 template <typename N, typename E>
@@ -371,6 +370,32 @@ bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
 	}
 	
 	return found;
+}
+
+template <typename N, typename E>
+typename gdwg::Graph<N, E>::const_iterator 
+gdwg::Graph<N, E>::erase(typename gdwg::Graph<N, E>::const_iterator it) {
+
+	typename gdwg::Graph<N, E>::const_iterator ret_val = nullptr;
+	for (const auto &edge : this->edges_) {
+		if (edge->lock()->src.lock()->value == it->src.lock()->value &&
+				edge->lock()->dst.lock()->Value == it->dst.lock()->value &&
+				edge->lock()->weigh == it->weight) {
+			continue;
+			ret_val = edge;
+			break;
+		}
+	}
+
+	// implementation is a wrapper around bool erase
+	this->erase(it.lock()->src->lock()->value, it->dst.lock()->value, it->weight);
+
+		
+	if (ret_val == nullptr) {
+		return edges_.end();
+	} else {
+		return ret_val;
+	}
 }
 
 /*************

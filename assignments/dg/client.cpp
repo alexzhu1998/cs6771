@@ -30,8 +30,20 @@ int main() {
 	std::cout << b2 << "------------\n";
 
 	// Testing IsConnected
-	std::cout << b2.IsConnected("Hello", "how");
+	// std::cout << b2.IsConnected("Hello", "how");
 	
+	// Testing find and erase const_iterators
+	b2.InsertNode("lmao");
+	b2.InsertEdge("lmao", "Hello", 2);
+	std::cout << b2 << "---------------\n";
+	
+	auto it = b2.find("lmao", "Hello", 2);
+	if (it != b2.end()) {
+		b2.erase(it);
+	}
+
+	
+	std::cout << b2 << "---------------\n";
 
 	// Testing delete
 	// b2.InsertNode("lmao");

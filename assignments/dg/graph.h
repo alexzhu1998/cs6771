@@ -265,8 +265,6 @@ class Graph {
 	/***********
 	 * FRIENDS *
 	 ***********/
-	// friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
-	// friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
 	friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g) {
 		// For each node
 	    for (const auto& node : g.nodes_) {
