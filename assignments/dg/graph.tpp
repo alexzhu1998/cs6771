@@ -187,8 +187,8 @@ bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
   // creating edge
   auto edge = std::make_shared<gdwg::Graph<N, E>::Edge>(src_sptr, dst_sptr, w);
   this->edges_.insert(edge);
-
-  // adding edges_ to in_edges and out_edges of dst/src nodes_
+	
+	// adding edges_ to in_edges and out_edges of dst/src nodes_
   dst_sptr->in_edges.push_back(edge);
   src_sptr->out_edges.push_back(edge);
 
@@ -478,7 +478,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() noexcept{
 /* cend() */
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() noexcept{
-  auto end = --(this->edges_.end());
+  auto end = (this->edges_.end());
   return {end};
 }
 
