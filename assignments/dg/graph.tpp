@@ -98,6 +98,9 @@ bool gdwg::Graph<N, E>::InsertNode(const N& val) {
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
 	// raise an exception if src or dst not found in graph
+	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
+		throw std::runtime_error("Cannot call Graph::InsertEdge when either src or dst node does not exist");
+	}
 	// THIS FUNCTION DOES NOT CREATE NODES 
 
 	// check if edge already exists (return false)
@@ -170,8 +173,13 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) noexcept {
 /* Replace node */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  { 
-	if (this->IsNode(new_data) == true)
+	// If no node that contains value oldData can be found
+	if (this->IsNode(new_data) == true) {
 		return false;
+	} else {
+		// Node does not exist and raise exception
+		throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
+	}
 	for (const auto &it : this->nodes_) {
 		if (it->value == old_data) {
 			it->value = new_data;
@@ -184,8 +192,13 @@ bool gdwg::Graph<N, E>::Replace(const N &old_data, const N& new_data)  {
 /* MergeReplace */
 template <typename N, typename E>
 void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
+	if (this->IsNode(oldData) == false || this->IsNode(newData) == false) {
+		throw std::runtime_error("Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+	}
+
 	const auto &old_node = NodeExists(oldData);
 	const auto &new_node = NodeExists(newData);
+
 
 	// replace old_node with new_node in node->out_edges_ and node->in_edges_
 	for (const auto &it : old_node->out_edges_) {
@@ -210,6 +223,14 @@ void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
 	this->DeleteNode(oldData);
 }
 
+
+/* Clear/delete */
+template <typename N, typename E>
+void gdwg::Graph<N, E>::Clear() noexcept {
+    edges_.clear();
+    nodes_.clear();
+}
+
 /* IsNode */
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsNode(const N& val) {
@@ -219,6 +240,23 @@ bool gdwg::Graph<N, E>::IsNode(const N& val) {
 			return true;
 		}
 	}
+	return false;
+}
+
+/* */
+template <typename N, typename E>
+bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) {
+	if (this->IsNode(src) == false || this->IsNode(dst) == false) {
+		throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+	}
+
+	const auto &src_node = NodeExists(src);
+	for (const auto &edges : src_node->out_edges_) {
+		if (edges.lock()->dst.lock()->value == dst) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -234,12 +272,7 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 }
 
 
-/* Clear/delete */
-template <typename N, typename E>
-void gdwg::Graph<N, E>::Clear() noexcept {
-    edges_.clear();
-    nodes_.clear();
-}
+
 
 /*
  * Return all nodes_ connected by outgoing edges_ to a given node

@@ -164,8 +164,8 @@ class Graph {
 		    using pointer = char*;
 		    using difference_type = int;
 
-			pointer operator->() const { return &(operator*()); }
-			Edge operator*() const { return edges_->lock(); }
+			// pointer operator->() const { return &(operator*()); }
+			// Edge operator*() const { return edges_->lock(); }
 
 			const_iterator operator--() {
 				--inner_;
@@ -323,6 +323,7 @@ class Graph {
 			}
 		}
 		return {};
+		return nullptr;
 	}
  
  private:
