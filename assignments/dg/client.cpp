@@ -41,7 +41,7 @@ int main() {
 	if (it != b2.end()) {
 		b2.erase(it);
 	}
-
+	
 	
 	std::cout << b2 << "---------------\n";
 

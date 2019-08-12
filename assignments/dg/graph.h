@@ -164,8 +164,8 @@ class Graph {
 		    using pointer = char*;
 		    using difference_type = int;
 
-			// pointer operator->() const { return &(operator*()); }
-			// Edge operator*() const { return edges_->lock(); }
+			pointer operator->() const { return &(operator*()); }
+			Edge operator*() const { return this->edges_->lock(); }
 
 			const_iterator operator--() {
 				--inner_;
@@ -224,8 +224,10 @@ class Graph {
 		    std::string::iterator inner_;
 
 		    friend class Graph;
-		    const_iterator(const decltype(outer_)& outer, const decltype(sentinel_end_)& sentinel_end, 
-		    	const decltype(sentinel_start_)& sentinel_start, const decltype(inner_)& inner): 
+		    const_iterator(const decltype(outer_)& outer, 
+											 const decltype(sentinel_end_)& sentinel_end, 
+		    							 const decltype(sentinel_start_)& sentinel_start, 
+											 const decltype(inner_)& inner): 
 		    	outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{inner} {};
 	};
 

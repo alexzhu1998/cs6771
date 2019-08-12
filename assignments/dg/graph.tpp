@@ -318,19 +318,19 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::find(const N& src,
 	const auto &src_node = NodeExists(src);
 	const auto &dst_node = NodeExists(dst);
 	if (src_node == nullptr || dst_node == nullptr) {
-		return edges_.end();
+		return end();
 	}
 
-	for (const auto it = edges_.begin(); it != edges_.end(); ++it) {
-		if (it->lock()->dst->lock()->value == dst 
-			&& it->lock()->src->lock()->value == src 
-			&& it->lock()->weight == wt) {
+	for (const auto &it : this->edges_) {
+		if (it->dst.lock()->value == dst 
+			&& it->src.lock()->value == src 
+			&& it->weight == wt) {
 				return it;
 		}
 	}
 
 	/* if we found nothing, return the end */
-	return edges_.end();
+	return end();
 }
 
 
