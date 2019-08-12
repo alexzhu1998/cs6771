@@ -555,7 +555,7 @@ SCENARIO("Using graph friend functions") {
 
     THEN("Print out the graph") {
       REQUIRE(oss.str() ==
-              "-2 (\n)\n1 (\n 2 | 5.3\n)\n2 (\n 2 | 5.3\n 3 | -1\n)\n3 (\n 1 | 4.0\n)\n");
+              "-2 (\n)\n1 (\n  2 | 5.3\n)\n2 (\n  2 | 5.3\n  3 | -1\n)\n3 (\n  1 | 4\n)\n");
     }
   }
 }

@@ -140,12 +140,12 @@ class Graph {
    * weight and add them to the graph. Essentially iterates over a vector of edges_ and
    * adds them to a new graph.
    */
-  Graph(std::vector<std::tuple<std::string, std::string, double>>::const_iterator begin,
-        std::vector<std::tuple<std::string, std::string, double>>::const_iterator end) {
+  Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator begin,
+              typename std::vector<std::tuple<N, N, E>>::const_iterator end) {
     for (auto i = begin; i != end; ++i) {
       /* getting the strings from the tuples */
-      std::string src_string = std::get<0>(*i);
-      std::string dest_string = std::get<1>(*i);
+      auto src_string = std::get<0>(*i);
+      auto dest_string = std::get<1>(*i);
 
       /* if nodes_ missing, create them */
       if (this->IsNode(src_string) == false) {
@@ -291,6 +291,8 @@ class Graph {
       }
       os << ")\n";
     }
+
+    return os;
   }
 
   /*
