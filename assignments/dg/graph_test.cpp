@@ -461,7 +461,7 @@ SCENARIO("Replacing nodes in graph - normal and merge") {
  *************/
 
 SCENARIO("Accessing a graph's iterator") {
-  WHEN("Accessing the beginning using begin") {
+  WHEN("Generating a graph") {
     std::string s1{"Hello"};
     std::string s2{"how"};
     std::string s3{"are"};
@@ -471,8 +471,8 @@ SCENARIO("Accessing a graph's iterator") {
 		auto e4 = std::make_tuple(s3, s2, 1.1);
     auto e = std::vector<std::tuple<std::string, std::string, double>>{e1, e2, e3, e4};
     gdwg::Graph<std::string, double> b{e.begin(), e.end()};
-
-    THEN("it should point to the beginning of the edge container") {
+	
+    THEN("Begin should point to the beginning of the edge container") {
 
 			auto begin = b.cbegin();
 			const auto& [from, to, weight] = *begin;
@@ -480,37 +480,24 @@ SCENARIO("Accessing a graph's iterator") {
       REQUIRE(from == "Hello");
       REQUIRE(to == "how");
       REQUIRE(weight == 5.4);
-
-			[from, to, weight] = *(begin++);
     }
 
-   THEN("it should point to the end of the edge container") {
+		// TODO
+		THEN("Begin++ should point to the second edge in the container") {}
+
+   	THEN("End should point to the end of the edge container") {
 		  auto end = b.cend();
-    	const auto& [end_from, end_to, end_weight] = *end;
+    	const auto& [from, to, weight] = *end;
    
-      REQUIRE(end_from == "how");
-      REQUIRE(end_to == "are");
-      REQUIRE(end_weight == 7.6);
+      REQUIRE(from == "how");
+      REQUIRE(to == "are");
+      REQUIRE(weight == 7.6);
     }
- 
-		// auto ie = b.cend();
-    // auto rt = b.crbegin();
-    // auto re = b crend();
-    // auto beg = b.begin();
-    // auto end = b.end();
-    // auto rbeg = b.rbegin();
-    // auto rend = b.rend();/
-    // 
-    // THEN("it should point to the beginning of the edge container") {
-		// REQUIRE(std::get<0>(it) == "Hello");
-		// REQUIRE(std::get<1>(ie) == "how");
-    // REQUIRE(std::get<1>(ie) == "how");
-		// REQUIRE(beg == it);
-		// REQUIRE(end == ie);
-		// REQUIRE(rbeg == rt);
-		// REQUIRE(rend == re);/
-    // }
-  }
+
+		// TODO
+		THEN("Edge-- should point to the second last edge in the container") {}
+
+	}
 }
 
 /***********

@@ -91,23 +91,22 @@ class Graph {
   /* Sorting edges_ */
   struct SortEdgeComparator {
     bool operator()(const std::shared_ptr<Edge>& a, const std::shared_ptr<Edge>& b) const {
-      if (a.get()->src.lock().get()->value != b.get()->src.lock().get()->value) {
-        return a.get()->src.lock()->value < b.get()->src.lock()->value;
-      } else if (a.get()->dst.lock()->value != b.get()->dst.lock()->value) {
-        return a.get()->dst.lock()->value < b.get()->dst.lock()->value;
+      if (a->src.lock()->value != b->src.lock()->value) {
+        return a->src.lock()->value < b->src.lock()->value;
+      } else if (a->dst.lock()->value != b->dst.lock()->value) {
+        return a->dst.lock()->value < b->dst.lock()->value;
       } else {
-        return a.get()->weight < b.get()->weight;
+        return a->weight < b->weight;
       }
     }
 
     bool operator()(const std::weak_ptr<Edge>& a, const std::weak_ptr<Edge>& b) const {
-      if (a.lock().get()->src.lock().get()->value != b.lock().get()->src.lock().get()->value) {
-        return a.lock().get()->src.lock().get()->value < b.lock().get()->src.lock().get()->value;
-      } else if (a.lock().get()->dst.lock().get()->value !=
-                 b.lock().get()->dst.lock().get()->value) {
-        return a.lock().get()->dst.lock().get()->value < b.lock().get()->dst.lock().get()->value;
+      if (a.lock()->src.lock()->value != b.lock()->src.lock()->value) {
+        return a.lock()->src.lock()->value < b.lock()->src.lock()->value;
+      } else if (a.lock()->dst.lock()->value != b.lock()->dst.lock()->value) {
+        return a.lock()->dst.lock()->value < b.lock()->dst.lock()->value;
       } else {
-        return a.lock().get()->weight < b.lock().get()->weight;
+        return a.lock()->weight < b.lock()->weight;
       }
     }
   };
