@@ -19,6 +19,8 @@ template <typename N, typename E>
 class Graph {
  public:
 
+  	
+
   /******************
    * NODE AND EDGES * 
 	 ******************/
@@ -133,56 +135,17 @@ class Graph {
 		}
 	};
 
-	/*
-	 * THIS IS NOT DONE
-	 * Has to utilise the actual attributes - node it and edge it
-	 */
-	class const_iterator {
-		typename std::set<std::shared_ptr<Node>>::iterator node_it_;
-		typename std::set<std::shared_ptr<Edge>>::iterator edge_it_;
 
-		// TODO: tuple-ise?
-		Edge operator*() const { return edges_->lock(); }
-
-		const_iterator operator++() {
-		  edges_ = edges_->next.get();
-		  return *this;
-		}
-		const_iterator operator++(int) {
-			auto copy{*this};
-			++(*this);
-			return copy;
-		}
-
-		const_iterator operator--() {
-		  edges_ = edges_->back.get();
-		  return *this;
-		}
-		const_iterator operator--(int) {
-			auto copy{*this};
-			--(*this);
-			return copy;
-		}
-
-		friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
-		  return *lhs == *rhs;
-		}
-
-		friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) { 
-			return !(lhs == rhs); 
-		}
-	};
-
-  /* Copy constructor */
-  Graph(const Graph&);
+	/* Copy constructor */
+	Graph(const Graph&);
 	/* Move constructor */
 	Graph(Graph&&) noexcept;
 		
 	/* Destructor */
 	~Graph() {
-    nodes_.clear();
-    edges_.clear();
-  }
+		nodes_.clear();
+		edges_.clear();
+	}
 
 	/*************
 	* OPERATORS *
@@ -193,6 +156,83 @@ class Graph {
 	/* Move assigment */
 	Graph& operator=(Graph&& other);
 
+	/******************
+	 * ITERATOR CLASS *
+	 ******************/
+	class const_iterator {
+		public:
+			using iterator_category = std::forward_iterator_tag;
+		    using value_type = char;
+		    using reference = char&;
+		    using pointer = char*;
+		    using difference_type = int;
+
+			pointer operator->() const { return &(operator*()); }
+			Edge operator*() const { return edges_->lock(); }
+
+			const_iterator operator--() {
+				--inner_;
+				if (inner_ == outer_->begin()) {
+					do {
+						--outer_;
+					} 
+					while (outer_ != sentinel_start_ && outer_->end() == outer_->begin());
+						if (outer_ != sentinel_start_) {
+							inner_ = outer_->end();
+						}
+				}
+				return *this;
+			}
+
+			const_iterator operator++() {
+				++inner_;
+				if (inner_ == outer_->end()) {
+					do {
+						++outer_;
+					} 
+					while (outer_ != sentinel_end_ && outer_->begin() == outer_->end());
+						if (outer_ != sentinel_end_) {
+							inner_ = outer_->begin();
+						}
+				}
+				return *this;
+			}
+
+			/* Prefix increment/decrement */
+			const_iterator operator++(int) {
+				auto copy{*this};
+				++(*this);
+				return copy;
+			}
+
+			const_iterator operator--(int) {
+				auto copy{*this};
+				--(*this);
+				return copy;
+			}
+
+			 friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
+		      // We need to check the sentinel because comparison of default constructed iterators is undefined.
+		      return lhs.outer_ == rhs.outer_ && (lhs.outer_ == lhs.sentinel_ || lhs.inner_ == rhs.inner_);
+		    }
+
+			friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) { 
+				return !(lhs == rhs); 
+			}
+
+		private:
+			std::vector<std::string>::iterator outer_;
+		    const std::vector<std::string>::iterator sentinel_end_;
+		    const std::vector<std::string>::iterator sentinel_start_;
+		    std::string::iterator inner_;
+
+		    friend class Graph;
+		    const_iterator(const decltype(outer_)& outer, const decltype(sentinel_end_)& sentinel_end, 
+		    	const decltype(sentinel_start_)& sentinel_start, const decltype(inner_)& inner): 
+		    	outer_{outer}, sentinel_end_{sentinel_end}, sentinel_start_{sentinel_start}, inner_{inner} {}
+	};
+
+	using const_reverse_iterator = const_iterator;
 
 	/***********
 	 * METHODS *

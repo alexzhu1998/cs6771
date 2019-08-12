@@ -65,3 +65,15 @@ SCENARIO("Constructing a graph with default, copy, and move") {
     
   }
 }
+
+
+/**
+ * ITERATORS
+ */
+SCENARIO("Accessing a graph's iterator") {
+  WHEN("Accessing the beginning using begin") {
+    std::vector<std::string> v{"a", "b", "c", "d"};
+    gdwg::Graph<std::string, double> g{v.begin(), v.end()};
+    auto it = g.cbegin();
+  } 
+}

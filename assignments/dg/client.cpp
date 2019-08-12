@@ -51,9 +51,6 @@ int main() {
 	// std::cout << b2;
 	
 	// Testing mergereplace
-	std::vector<std::string> v{"a", "b", "c", "d"};
-	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
-
 	// basic case for merge replace~
 	// g.InsertEdge("a", "b", 1);
 	// g.InsertEdge("a", "c", 2);
@@ -145,4 +142,10 @@ int main() {
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }*/
+
+//iterator
+std::vector<std::string> v{"a", "b", "c", "d"};
+	gdwg::Graph<std::string, double> g{v.begin(), v.end()};
+	//auto it = g.cbegin();
+	//std::cout << *it->lock()->dst->lock() << std::endl;
 }
