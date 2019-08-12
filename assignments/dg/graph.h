@@ -179,15 +179,15 @@ class Graph {
 			reference operator*() const noexcept;
 			// reference operator*() const { return this->edges_->lock(); }
 						
-			const_iterator& operator++();
-			const_iterator operator++(int) {
+			const_iterator& operator++() noexcept;
+			const_iterator operator++(int) noexcept {
 				auto copy{*this};
 				++(*this);
 				return copy;
 			}	
 
-			const_iterator& operator--();
-			const_iterator operator--(int) {
+			const_iterator& operator--() noexcept;
+			const_iterator operator--(int) noexcept {
 				auto copy{*this};
 				--(*this);
 				return copy;
@@ -246,10 +246,10 @@ class Graph {
 
 	reverse_iterator rbegin() noexcept { return reverse_iterator{end()}; }
 	reverse_iterator rend() noexcept { return reverse_iterator{begin()}; }
-	const_reverse_iterator crbegin();
-	const_reverse_iterator crend();
-	const_reverse_iterator rbegin();
-	const_reverse_iterator rend();
+	const_reverse_iterator crbegin() { return const_reverse_iterator{cend()}; }
+	const_reverse_iterator crend() { return const_reverse_iterator{cbegin()}; }
+	const_reverse_iterator rbegin() const noexcept { return crbegin(); }
+	const_reverse_iterator rend() const noexcept { return crend(); }
 
 	/***********
 	 * FRIENDS *
