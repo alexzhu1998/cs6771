@@ -13,12 +13,15 @@ be set to NULL, allowing for greater safety.
 
 Iterators do **not** use less memory than pointers.
 
+Q8) 3 Components of STL: What is benefit of using STL
+- Iterators, Containers and Algorithms
+- Algorithms not needing to know about iterators
+
 # lvalues and rvalues
 lvalues is something that points to a specific memory location.
 In general, rvalues are temporary and shortlived and do not have a memory location
 
-Example:
-
+Example: 
 int var
 var = 4
 
@@ -31,6 +34,9 @@ following would not work
 4 = var
 
 Q5) Usage1:rvalue, Usage2:lvalue, Usage3: lvalue
+
+Q6) Delegating constructor calls itself.
+
 
 # Static Polymorphism
 [Webcms excerpt]
@@ -45,5 +51,14 @@ Sounds like containers - which are probably an example of static polymorphism.
 C++ polymorphism means that a call to a member function will cause a different function to be 
 executed depending on the type of object that invokes the function.
 
+Q9) Non-type parameter
 
+template 
+auto createDefaultArray(int size) {
+  return std::make_unique(size);
+}
 
+template 
+auto createDefaultArray() {
+  return std::make_unique(size);
+}
